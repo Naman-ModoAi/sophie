@@ -2,6 +2,8 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getIronSession } from 'iron-session';
 import { sessionOptions, SessionData } from '@/lib/session';
+import { createServiceClient } from '@/lib/supabase/server'
+import { syncCalendar } from './actions'
 
 async function getSession() {
   const cookieStore = await cookies();
@@ -21,32 +23,45 @@ async function getSession() {
 
 async function getMeetings(userId: string) {
   try {
-    // Call backend API instead of direct Supabase query
-    const backendUrl = process.env.BACKEND_SERVICE_URL || 'http://localhost:8000';
-    const response = await fetch(`${backendUrl}/api/calendar/meetings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_id: userId,
-        limit: 50,
-      }),
-    });
+    const supabase = await createServiceClient()
 
-    if (!response.ok) {
-      console.error('Error fetching meetings:', await response.text());
-      return [];
+    console.log('Fetching meetings for user:', userId)
+
+    const { data, error } = await supabase
+      .from('meetings')
+      .select(`
+        *,
+        attendees (*)
+      `)
+      .eq('user_id', userId)
+      .eq('is_cancelled', false)
+      .gte('start_time', new Date().toISOString())
+      .order('start_time', { ascending: true })
+      .limit(50)
+
+    if (error) {
+      console.error('Meetings query error:', error)
+      return []
     }
 
-    const meetings = await response.json();
-    return meetings || [];
+    console.log('Found meetings:', data?.length || 0)
+    return data || []
   } catch (error) {
-    console.error('Error fetching meetings:', error);
-    return [];
+    console.error('Error fetching meetings:', error)
+    return []
   }
 }
 
 export default async function Dashboard() {
   const session = await getSession();
+
+  // Auto-sync calendar on page load
+  try {
+    await syncCalendar(session.userId, 7);
+  } catch (error: any) {
+    console.error('Auto-sync failed:', error.message);
+  }
+
   const meetings = await getMeetings(session.userId);
 
   return (
@@ -71,9 +86,14 @@ export default async function Dashboard() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          Upcoming Meetings (Next 7 Days)
-        </h2>
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">
+            Upcoming Meetings (Next 7 Days)
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Calendar syncs automatically when you visit this page
+          </p>
+        </div>
 
         {meetings.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
