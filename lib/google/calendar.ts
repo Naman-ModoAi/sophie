@@ -27,7 +27,10 @@ export async function fetchCalendarEvents(
   accessToken: string,
   daysAhead: number = 7
 ): Promise<CalendarEvent[]> {
-  const calendar = google.calendar({ version: 'v3' })
+  const oauth2Client = new google.auth.OAuth2()
+  oauth2Client.setCredentials({ access_token: accessToken })
+
+  const calendar = google.calendar({ version: 'v3', auth: oauth2Client })
 
   const now = new Date()
   const future = new Date()
@@ -40,10 +43,9 @@ export async function fetchCalendarEvents(
       timeMax: future.toISOString(),
       singleEvents: true,
       orderBy: 'startTime',
-      access_token: accessToken,
     })
 
-    return response.data.items || []
+    return (response.data.items || []) as CalendarEvent[]
   } catch (error: any) {
     if (error.code === 401 || error.code === 403) {
       throw new Error('CALENDAR_PERMISSION_ERROR')
