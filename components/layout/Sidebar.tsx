@@ -29,7 +29,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="w-64 bg-surface border-r border-text/10 h-screen flex flex-col">
+    <aside className="w-60 bg-surface border-r border-text/10 h-screen flex flex-col">
       <div className="p-6">
         <h1 className="text-xl font-bold text-text">PrepFor.app</h1>
       </div>
