@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
     // Process events
     for (const event of events) {
       if (!event.id || !event.summary || event.status === 'cancelled') continue
+      if (!event.start || !event.end) continue
 
       const start = event.start.dateTime || event.start.date
       const end = event.end.dateTime || event.end.date
@@ -77,7 +78,7 @@ export async function POST(request: NextRequest) {
 
       const attendees = event.attendees || []
       const isExternal = attendees.some(
-        (a) => a.email.split('@')[1] !== userDomain
+        (a) => a.email && a.email.split('@')[1] !== userDomain
       )
 
       // Upsert meeting
@@ -104,21 +105,51 @@ export async function POST(request: NextRequest) {
       if (meeting) {
         meetingsSynced++
 
-        // Store attendees
+        // Store attendees with company linkage
         if (attendees.length > 0) {
-          const attendeeRecords = attendees.map((a) => ({
-            meeting_id: meeting.id,
-            email: a.email.toLowerCase(),
-            name: a.displayName || null,
-            domain: a.email.split('@')[1],
-            is_internal: a.email.split('@')[1] === userDomain,
-          }))
+          // Filter out attendees without email addresses
+          const validAttendees = attendees.filter(a => a.email)
 
-          await supabase
-            .from('attendees')
-            .upsert(attendeeRecords, { onConflict: 'meeting_id,email' })
+          if (validAttendees.length > 0) {
+            // Extract unique domains from attendees
+            const domains = [...new Set(validAttendees.map(a => a.email!.split('@')[1]))]
 
-          attendeesSynced += attendeeRecords.length
+            // Upsert companies for each unique domain
+            const companyMap = new Map<string, string>() // domain -> company_id
+            for (const domain of domains) {
+              const { data: company } = await supabase
+                .from('companies')
+                .upsert(
+                  { domain },
+                  { onConflict: 'domain' }
+                )
+                .select('id, domain')
+                .single()
+
+              if (company) {
+                companyMap.set(company.domain, company.id)
+              }
+            }
+
+            // Build attendee records with company_id
+            const attendeeRecords = validAttendees.map((a) => {
+              const domain = a.email!.split('@')[1]
+              return {
+                meeting_id: meeting.id,
+                email: a.email!.toLowerCase(),
+                name: a.displayName || null,
+                domain,
+                is_internal: domain === userDomain,
+                company_id: companyMap.get(domain) || null,
+              }
+            })
+
+            await supabase
+              .from('attendees')
+              .upsert(attendeeRecords, { onConflict: 'meeting_id,email' })
+
+            attendeesSynced += attendeeRecords.length
+          }
         }
       }
     }

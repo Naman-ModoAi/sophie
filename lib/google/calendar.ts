@@ -1,33 +1,17 @@
 import { google } from 'googleapis'
+import type { calendar_v3 } from 'googleapis'
 
-interface CalendarEvent {
-  id: string
-  summary: string
-  start: {
-    dateTime?: string
-    date?: string
-    timeZone?: string
-  }
-  end: {
-    dateTime?: string
-    date?: string
-    timeZone?: string
-  }
-  attendees?: Array<{
-    email: string
-    displayName?: string
-    responseStatus?: string
-  }>
-  status?: string
-  description?: string
-  location?: string
-}
+export type CalendarEvent = calendar_v3.Schema$Event
 
 export async function fetchCalendarEvents(
   accessToken: string,
   daysAhead: number = 7
 ): Promise<CalendarEvent[]> {
-  const calendar = google.calendar({ version: 'v3' })
+  // Create OAuth2 client and set credentials
+  const oauth2Client = new google.auth.OAuth2()
+  oauth2Client.setCredentials({ access_token: accessToken })
+
+  const calendar = google.calendar({ version: 'v3', auth: oauth2Client })
 
   const now = new Date()
   const future = new Date()
@@ -40,7 +24,6 @@ export async function fetchCalendarEvents(
       timeMax: future.toISOString(),
       singleEvents: true,
       orderBy: 'startTime',
-      access_token: accessToken,
     })
 
     return response.data.items || []
