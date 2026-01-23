@@ -175,7 +175,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-text">AI-Generated Prep Note</h3>
             <Button
-              variant="ghost"
+              variant="secondary"
               onClick={() => setIsExpanded(!isExpanded)}
               className="text-sm"
             >
