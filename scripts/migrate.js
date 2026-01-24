@@ -5,7 +5,7 @@ const path = require('path')
 const https = require('https')
 
 // Load .env.local
-// require('dotenv').config({ path: path.join(__dirname, '../.env.local') })
+require('dotenv').config({ path: path.join(__dirname, '../.env.local') })
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -23,6 +23,7 @@ if (!supabaseUrl || !supabaseKey) {
 const migrations = [
   '001_init_schema.sql',
   '007_rollback_to_iron_session.sql',
+  '20260123_002_add_email_timing.sql',
 ]
 
 async function runMigration(migrationFile) {
