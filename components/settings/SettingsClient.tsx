@@ -94,11 +94,11 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
                 {user.plan_type.toUpperCase()}
               </Badge>
               {user.plan_type === 'free' ? (
-                <Button variant="primary" size="sm" onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID!)}>
+                <Button variant="primary" onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID!)}>
                   Upgrade to Pro
                 </Button>
               ) : (
-                <Button variant="secondary" size="sm" onClick={handleManageSubscription}>
+                <Button variant="secondary" onClick={handleManageSubscription}>
                   Manage Subscription
                 </Button>
               )}

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
-import { createClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: Request) {
   try {
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     }
 
     // Check if user is trying to set Pro-only option
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: user } = await supabase
       .from('users')
       .select('plan_type')

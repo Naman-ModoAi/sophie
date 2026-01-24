@@ -1,6 +1,6 @@
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import SettingsClient from '@/components/settings/SettingsClient';
 
 export default async function SettingsPage() {
@@ -10,7 +10,7 @@ export default async function SettingsPage() {
     redirect('/');
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Fetch user data
   const { data: user, error } = await supabase
