@@ -191,7 +191,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
             </div>
 
             {/* Talking Points */}
-            {aiPrepNote.suggested_talking_points.length > 0 && (
+            {aiPrepNote.suggested_talking_points && aiPrepNote.suggested_talking_points.length > 0 && (
               <div>
                 <h4 className="text-sm font-medium text-text/70 mb-2">Suggested Talking Points</h4>
                 <ul className="space-y-1">
@@ -206,7 +206,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
             )}
 
             {/* Attendees Research */}
-            {aiPrepNote.attendees.length > 0 && (
+            {aiPrepNote.attendees && aiPrepNote.attendees.length > 0 && (
               <div>
                 <h4 className="text-sm font-medium text-text/70 mb-2">Attendee Insights</h4>
                 <div className="space-y-3">
@@ -221,6 +221,16 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
                           {isExpanded ? attendee.background : `${attendee.background.slice(0, 150)}...`}
                         </p>
                       )}
+                      {attendee.talking_points && attendee.talking_points.length > 0 && isExpanded && (
+                        <ul className="mt-2 space-y-1">
+                          {attendee.talking_points.map((point, j) => (
+                            <li key={j} className="text-xs text-text/70 flex gap-2">
+                              <span className="text-accent">→</span>
+                              <span>{point}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -228,7 +238,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
             )}
 
             {/* Companies Research */}
-            {aiPrepNote.companies.length > 0 && (
+            {aiPrepNote.companies && aiPrepNote.companies.length > 0 && (
               <div>
                 <h4 className="text-sm font-medium text-text/70 mb-2">Company Info</h4>
                 <div className="space-y-3">
@@ -240,10 +250,23 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
                           {isExpanded ? company.overview : `${company.overview.slice(0, 150)}...`}
                         </p>
                       )}
-                      {company.recent_news.length > 0 && (
+                      {company.recent_news && company.recent_news.length > 0 && (
                         <p className="text-xs text-accent mt-1">
                           Recent: {isExpanded ? company.recent_news[0] : `${company.recent_news[0].slice(0, 100)}...`}
                         </p>
+                      )}
+                      {company.products && company.products.length > 0 && isExpanded && (
+                        <div className="mt-2">
+                          <p className="text-xs font-medium text-text/70">Products:</p>
+                          <ul className="mt-1 space-y-1">
+                            {company.products.map((product, j) => (
+                              <li key={j} className="text-xs text-text/70 flex gap-2">
+                                <span className="text-accent">→</span>
+                                <span>{product}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       )}
                     </div>
                   ))}

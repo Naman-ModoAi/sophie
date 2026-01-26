@@ -1,16 +1,108 @@
-import { Badge } from '@/components/ui';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Badge, Button } from '@/components/ui';
+import { createClient } from '@/lib/supabase/client';
 
 interface Attendee {
+  id?: string;
   name: string | null;
   email: string;
   is_internal: boolean;
+  company?: string | null;
 }
 
 interface AttendeesListProps {
   attendees: Attendee[];
+  meetingId: string;
 }
 
-export function AttendeesList({ attendees }: AttendeesListProps) {
+export function AttendeesList({ attendees: initialAttendees, meetingId }: AttendeesListProps) {
+  const [attendees, setAttendees] = useState<Attendee[]>(initialAttendees);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Fetch detailed attendee info with company
+  useEffect(() => {
+    async function fetchDetailedAttendees() {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('attendees')
+        .select(`
+          id,
+          name,
+          email,
+          is_internal,
+          company_id,
+          companies (
+            name,
+            domain
+          )
+        `)
+        .eq('meeting_id', meetingId);
+
+      if (data) {
+        const mappedAttendees = data.map(att => ({
+          id: att.id,
+          name: att.name,
+          email: att.email,
+          is_internal: att.is_internal,
+          company: (att.companies as any)?.name || (att.companies as any)?.domain || null
+        }));
+        setAttendees(mappedAttendees);
+      }
+    }
+
+    fetchDetailedAttendees();
+  }, [meetingId]);
+
+  const handleUpdate = (id: string, field: 'name' | 'company', value: string) => {
+    setAttendees(prev => prev.map(att =>
+      att.id === id ? { ...att, [field]: value } : att
+    ));
+  };
+
+  const handleSave = async (id: string) => {
+    setIsSaving(true);
+    try {
+      const attendee = attendees.find(a => a.id === id);
+      if (!attendee) return;
+
+      const supabase = createClient();
+
+      // Update attendee name
+      const { error: attendeeError } = await supabase
+        .from('attendees')
+        .update({ name: attendee.name })
+        .eq('id', id);
+
+      if (attendeeError) throw attendeeError;
+
+      // Update company name if provided
+      if (attendee.company) {
+        const { data: attendeeData } = await supabase
+          .from('attendees')
+          .select('company_id')
+          .eq('id', id)
+          .single();
+
+        if (attendeeData?.company_id) {
+          await supabase
+            .from('companies')
+            .update({ name: attendee.company })
+            .eq('id', attendeeData.company_id);
+        }
+      }
+
+      setEditingId(null);
+    } catch (error) {
+      console.error('Error saving attendee:', error);
+      alert('Failed to save attendee information.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (!attendees || attendees.length === 0) {
     return (
       <div className="text-sm text-text/50">No attendees</div>
@@ -18,25 +110,88 @@ export function AttendeesList({ attendees }: AttendeesListProps) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {attendees.map((attendee, idx) => (
         <div
-          key={idx}
-          className="flex items-center justify-between gap-3 p-3 bg-background rounded-md"
+          key={attendee.id || idx}
+          className="flex items-start gap-3 p-3 bg-background rounded-md border border-border/50"
         >
-          <div className="flex-1 min-w-0">
-            <div className="font-medium text-text truncate">
-              {attendee.name || attendee.email}
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-text/60 w-20">Name:</label>
+              {editingId === attendee.id ? (
+                <input
+                  type="text"
+                  value={attendee.name || ''}
+                  onChange={(e) => handleUpdate(attendee.id!, 'name', e.target.value)}
+                  className="flex-1 px-2 py-1 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-accent"
+                />
+              ) : (
+                <span className="text-sm text-text font-medium">
+                  {attendee.name || 'Not specified'}
+                </span>
+              )}
             </div>
-            {attendee.name && (
-              <div className="text-sm text-text/60 truncate">
-                {attendee.email}
+
+            {!attendee.is_internal && (
+              <div className="flex items-center gap-2">
+                <label className="text-xs text-text/60 w-20">Company:</label>
+                {editingId === attendee.id ? (
+                  <input
+                    type="text"
+                    value={attendee.company || ''}
+                    onChange={(e) => handleUpdate(attendee.id!, 'company', e.target.value)}
+                    className="flex-1 px-2 py-1 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-accent"
+                  />
+                ) : (
+                  <span className="text-sm text-text">
+                    {attendee.company || 'Not specified'}
+                  </span>
+                )}
               </div>
             )}
+
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-text/60 w-20">Email:</label>
+              <span className="text-sm text-text/70">{attendee.email}</span>
+            </div>
           </div>
-          {!attendee.is_internal && (
-            <Badge variant="accent">External</Badge>
-          )}
+
+          <div className="flex items-center gap-2">
+            {!attendee.is_internal && (
+              <Badge variant="accent">External</Badge>
+            )}
+            {attendee.id && !attendee.is_internal && (
+              editingId === attendee.id ? (
+                <>
+                  <Button
+                    variant="primary"
+                    onClick={() => handleSave(attendee.id!)}
+                    disabled={isSaving}
+                    className="text-xs px-3 py-1"
+                  >
+                    {isSaving ? 'Saving...' : 'Save'}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => setEditingId(null)}
+                    disabled={isSaving}
+                    className="text-xs px-3 py-1"
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="secondary"
+                  onClick={() => setEditingId(attendee.id!)}
+                  className="text-xs px-3 py-1"
+                >
+                  Edit
+                </Button>
+              )
+            )}
+          </div>
         </div>
       ))}
     </div>

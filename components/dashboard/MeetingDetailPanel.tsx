@@ -78,7 +78,7 @@ export function MeetingDetailPanel({ meeting }: MeetingDetailPanelProps) {
             {
               id: 'attendees',
               label: `Attendees (${meeting.attendees?.length || 0})`,
-              content: <AttendeesList attendees={meeting.attendees || []} />,
+              content: <AttendeesList attendees={meeting.attendees || []} meetingId={meeting.id} />,
             },
             {
               id: 'prep-notes',
