@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, Button, Badge } from '@/components/ui';
+import { Card, Button, Badge, Avatar } from '@/components/ui';
 
 type Props = {
   user: {
@@ -18,10 +18,19 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
   const [emailTiming, setEmailTiming] = useState(user.email_timing);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSave = async () => {
+    // Validate email timing
+    const validOptions = ['immediate', '1hr', '30min', 'digest'];
+    if (!validOptions.includes(emailTiming)) {
+      setError('Invalid email timing option');
+      return;
+    }
+
     setSaving(true);
     setSaved(false);
+    setError(null);
 
     try {
       const response = await fetch('/api/settings/email-timing', {
@@ -30,12 +39,17 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
         body: JSON.stringify({ email_timing: emailTiming }),
       });
 
-      if (!response.ok) throw new Error('Failed to save');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Failed to save settings' }));
+        throw new Error(errorData.error || 'Failed to save settings');
+      }
 
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
-    } catch (error) {
-      alert('Failed to save settings');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to save settings';
+      setError(errorMessage);
+      setTimeout(() => setError(null), 5000);
     } finally {
       setSaving(false);
     }
@@ -83,10 +97,20 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
       <Card className="p-6">
         <h2 className="text-xl font-semibold text-text mb-4">Account</h2>
         <div className="space-y-4">
-          <div>
-            <label className="text-sm text-text/70">Email</label>
-            <p className="text-text">{user.email}</p>
+          {/* Profile with Avatar */}
+          <div className="flex items-center gap-4 pb-4 border-b border-text/10">
+            <Avatar
+              fallback={user.email}
+              alt={user.email}
+              size="lg"
+            />
+            <div className="flex-1">
+              <p className="font-medium text-text">{user.email.split('@')[0]}</p>
+              <p className="text-sm text-text/70">{user.email}</p>
+            </div>
           </div>
+
+          {/* Plan Information */}
           <div>
             <label className="text-sm text-text/70">Plan</label>
             <div className="flex items-center gap-2 mt-1">
@@ -104,6 +128,41 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
               )}
             </div>
           </div>
+
+          {/* Plan Features Comparison */}
+          <div className="mt-4 p-4 bg-text/5 rounded-lg">
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Free Plan */}
+              <div>
+                <h3 className="font-medium text-text mb-2 flex items-center gap-2">
+                  Free Plan
+                  {user.plan_type === 'free' && <Badge variant="default">Current</Badge>}
+                </h3>
+                <ul className="space-y-1 text-sm text-text/70">
+                  <li>✓ 5 meetings/month</li>
+                  <li>✓ Basic prep notes</li>
+                  <li>✓ 30min/1hr/digest emails</li>
+                  <li>✓ Calendar sync</li>
+                </ul>
+              </div>
+
+              {/* Pro Plan */}
+              <div>
+                <h3 className="font-medium text-text mb-2 flex items-center gap-2">
+                  Pro Plan
+                  {user.plan_type === 'pro' && <Badge variant="accent">Current</Badge>}
+                </h3>
+                <ul className="space-y-1 text-sm text-text/70">
+                  <li>✓ Unlimited meetings</li>
+                  <li>✓ Advanced prep notes</li>
+                  <li>✓ Immediate email delivery</li>
+                  <li>✓ Priority support</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Usage for Free Plan */}
           {user.plan_type === 'free' && (
             <div>
               <label className="text-sm text-text/70">Monthly Usage</label>
@@ -120,7 +179,7 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
               </div>
               {user.meetings_used >= 5 && (
                 <p className="text-sm text-warning mt-2">
-                  ⚠️ You've reached your free plan limit. Upgrade to Pro for unlimited meetings.
+                  You've reached your free plan limit. Upgrade to Pro for unlimited meetings.
                 </p>
               )}
             </div>
@@ -194,15 +253,22 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
           ))}
         </div>
 
-        <div className="flex items-center gap-3 mt-6">
-          <Button
-            variant="primary"
-            onClick={handleSave}
-            disabled={saving || emailTiming === user.email_timing}
-          >
-            {saving ? 'Saving...' : 'Save Preferences'}
-          </Button>
-          {saved && <span className="text-sm text-accent">✓ Saved successfully</span>}
+        <div className="mt-6">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="primary"
+              onClick={handleSave}
+              disabled={saving || emailTiming === user.email_timing}
+            >
+              {saving ? 'Saving...' : 'Save Preferences'}
+            </Button>
+            {saved && <span className="text-sm text-accent">✓ Saved successfully</span>}
+          </div>
+          {error && (
+            <div className="mt-3 p-3 bg-warning/10 border border-warning/20 rounded-lg">
+              <p className="text-sm text-warning">{error}</p>
+            </div>
+          )}
         </div>
       </Card>
     </div>

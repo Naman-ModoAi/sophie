@@ -19,9 +19,39 @@ export default async function SettingsPage() {
     .eq('id', session.userId)
     .single();
 
-  if (error || !user) {
+  // If columns don't exist, fetch basic user data
+  let userData: {
+    email: string;
+    plan_type: 'free' | 'pro';
+    email_timing: 'immediate' | '1hr' | '30min' | 'digest';
+    meetings_used: number;
+  };
+
+  if (error && error.code === '42703') {
+    console.log('Some columns missing, fetching basic user data');
+    const { data: basicUser, error: basicError } = await supabase
+      .from('users')
+      .select('email')
+      .eq('id', session.userId)
+      .single();
+
+    if (basicError || !basicUser) {
+      console.error('Failed to fetch user:', basicError);
+      redirect('/dashboard');
+    }
+
+    // Set defaults for missing columns
+    userData = {
+      email: basicUser.email,
+      plan_type: 'free' as const,
+      email_timing: 'digest' as const,
+      meetings_used: 0,
+    };
+  } else if (error || !user) {
     console.error('Failed to fetch user:', error);
     redirect('/dashboard');
+  } else {
+    userData = user;
   }
 
   // Fetch OAuth token status
@@ -40,7 +70,7 @@ export default async function SettingsPage() {
       <p className="text-text/70 mb-8">Manage your account preferences and subscription</p>
 
       <SettingsClient
-        user={user}
+        user={userData}
         calendarConnected={calendarConnected}
         tokenExpired={tokenExpired}
       />

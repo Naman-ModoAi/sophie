@@ -5,6 +5,7 @@ import { MeetingCard } from './MeetingCard';
 import { MeetingDetailPanel } from './MeetingDetailPanel';
 import { EmptyState } from './EmptyState';
 import { Button } from '@/components/ui';
+import { SyncIcon } from '@/components/ui/icons/SyncIcon';
 
 interface Meeting {
   id: string;
@@ -60,11 +61,23 @@ export function DashboardClient({ meetings }: DashboardClientProps) {
       {/* Resync Button */}
       <div className="flex justify-end">
         <Button
-          variant="secondary"
+          variant="primary"
           onClick={handleResync}
           disabled={isResyncing}
         >
-          {isResyncing ? 'Resyncing...' : 'Resync Calendar'}
+          <span className="flex items-center gap-2">
+            {isResyncing ? (
+              <>
+                <SyncIcon className="w-4 h-4 animate-spin" />
+                <span>Syncing...</span>
+              </>
+            ) : (
+              <>
+                <SyncIcon className="w-4 h-4" />
+                <span>Sync</span>
+              </>
+            )}
+          </span>
         </Button>
       </div>
 

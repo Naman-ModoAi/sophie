@@ -150,28 +150,193 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
   const exportToPDF = async () => {
     if (!aiPrepNote) return;
     try {
-      // Import html2pdf dynamically
-      const html2pdfModule = await import('html2pdf.js');
-      const html2pdf = html2pdfModule.default;
+      // Dynamic import to avoid SSR issues
+      const { jsPDF } = await import('jspdf');
 
-      // Get the content element
-      const content = document.getElementById('prep-notes-export-content');
-      if (!content) {
-        console.error('Export content element not found');
-        return;
-      }
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const margin = 15;
+      const contentWidth = pageWidth - 2 * margin;
+      let yPosition = margin;
 
-      const opt = {
-        margin: 10,
-        filename: `${aiPrepNote.meeting_title || 'prep-notes'}-${
-          new Date().toISOString().split('T')[0]
-        }.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
+      // Helper: Add text with automatic line wrapping and pagination
+      const addText = (text: string, fontSize: number, fontStyle: string = 'normal', color: number[] = [0, 0, 0]) => {
+        pdf.setFontSize(fontSize);
+        pdf.setFont('helvetica', fontStyle);
+        pdf.setTextColor(color[0], color[1], color[2]);
+
+        const lines = pdf.splitTextToSize(text, contentWidth);
+        const lineHeight = fontSize * 0.5;
+
+        for (const line of lines) {
+          // Check if we need a new page
+          if (yPosition + lineHeight > pageHeight - margin) {
+            pdf.addPage();
+            yPosition = margin;
+          }
+          pdf.text(line, margin, yPosition);
+          yPosition += lineHeight;
+        }
       };
 
-      await html2pdf().from(content).set(opt).save();
+      // Helper: Add spacing
+      const addSpace = (space: number) => {
+        yPosition += space;
+        if (yPosition > pageHeight - margin) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+      };
+
+      // Helper: Add section header
+      const addSectionHeader = (title: string) => {
+        addSpace(8);
+        addText(title, 14, 'bold', [41, 128, 185]);
+        addSpace(4);
+      };
+
+      // Helper: Add subsection header
+      const addSubsectionHeader = (title: string) => {
+        addSpace(5);
+        addText(title, 11, 'bold', [52, 73, 94]);
+        addSpace(3);
+      };
+
+      // Helper: Add bullet list
+      const addBulletList = (items: string[]) => {
+        for (const item of items) {
+          if (!item) continue;
+          const bulletText = `• ${item}`;
+          addText(bulletText, 10, 'normal');
+          addSpace(2);
+        }
+      };
+
+      // Title
+      addText(aiPrepNote.meeting_title || 'Meeting Prep Notes', 18, 'bold', [44, 62, 80]);
+      addSpace(3);
+
+      // Meeting Details
+      if (aiPrepNote.meeting_time) {
+        addText(`📅 ${new Date(aiPrepNote.meeting_time).toLocaleString()}`, 10, 'normal', [100, 100, 100]);
+        addSpace(3);
+      }
+      if (aiPrepNote.generated_at) {
+        addText(`Generated: ${new Date(aiPrepNote.generated_at).toLocaleString()}`, 9, 'italic', [120, 120, 120]);
+        addSpace(6);
+      }
+
+      // Summary
+      if (aiPrepNote.summary) {
+        addSectionHeader('📋 Summary');
+        addText(aiPrepNote.summary, 10, 'normal');
+      }
+
+      // Discussion Points
+      if (aiPrepNote.suggested_talking_points?.length > 0) {
+        addSectionHeader('💡 Discussion Points');
+        addBulletList(aiPrepNote.suggested_talking_points);
+      }
+
+      // People Research
+      if (aiPrepNote.attendees?.length > 0) {
+        addSectionHeader(`👥 People Research (${aiPrepNote.attendees.length})`);
+
+        for (const attendee of aiPrepNote.attendees) {
+          addSubsectionHeader(attendee.name);
+
+          if (attendee.current_role || attendee.company) {
+            const roleText = [attendee.current_role, attendee.company].filter(Boolean).join(' at ');
+            addText(roleText, 10, 'italic', [80, 80, 80]);
+            addSpace(2);
+          }
+
+          if (attendee.tenure) {
+            addText(`Tenure: ${attendee.tenure}`, 9, 'normal', [100, 100, 100]);
+            addSpace(2);
+          }
+
+          if (attendee.linkedin_url) {
+            addText(`LinkedIn: ${attendee.linkedin_url}`, 9, 'normal', [41, 128, 185]);
+            addSpace(2);
+          }
+
+          if (attendee.background) {
+            addText('Background:', 10, 'bold');
+            addSpace(2);
+            addText(attendee.background, 10, 'normal');
+            addSpace(2);
+          }
+
+          if (attendee.talking_points?.length > 0) {
+            addText('Talking Points:', 10, 'bold');
+            addSpace(2);
+            addBulletList(attendee.talking_points);
+          }
+
+          if (attendee.recent_activity) {
+            addText('Recent Activity:', 10, 'bold');
+            addSpace(2);
+            addText(attendee.recent_activity, 10, 'normal');
+            addSpace(2);
+          }
+
+          addSpace(3);
+        }
+      }
+
+      // Company Intel
+      if (aiPrepNote.companies?.length > 0) {
+        addSectionHeader(`🏢 Company Intel (${aiPrepNote.companies.length})`);
+
+        for (const company of aiPrepNote.companies) {
+          addSubsectionHeader(company.name);
+
+          if (company.domain) {
+            addText(company.domain, 9, 'normal', [41, 128, 185]);
+            addSpace(2);
+          }
+
+          if (company.industry || company.size) {
+            const details = [company.industry, company.size].filter(Boolean).join(' • ');
+            addText(details, 9, 'normal', [100, 100, 100]);
+            addSpace(2);
+          }
+
+          if (company.funding) {
+            addText(`Funding: ${company.funding}`, 9, 'normal', [100, 100, 100]);
+            addSpace(2);
+          }
+
+          if (company.overview) {
+            addText('Overview:', 10, 'bold');
+            addSpace(2);
+            addText(company.overview, 10, 'normal');
+            addSpace(2);
+          }
+
+          if (company.products?.length > 0) {
+            addText('Products & Services:', 10, 'bold');
+            addSpace(2);
+            addBulletList(company.products);
+          }
+
+          if (company.recent_news?.length > 0) {
+            addText('Recent News:', 10, 'bold');
+            addSpace(2);
+            addBulletList(company.recent_news);
+          }
+
+          addSpace(3);
+        }
+      }
+
+      // Save the PDF
+      const filename = `${aiPrepNote.meeting_title || 'prep-notes'}-${
+        new Date().toISOString().split('T')[0]
+      }.pdf`;
+      pdf.save(filename);
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Failed to generate PDF. Please try again.');
@@ -251,7 +416,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
 
       {/* AI-Generated Prep Note */}
       {aiPrepNote && (
-        <div id="prep-notes-export-content" className="space-y-6">
+        <div className="space-y-6">
           {/* Actions Bar */}
           <div className="flex justify-between items-center">
             <div className="flex gap-2">
@@ -268,6 +433,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
           </div>
 
           {/* Tabbed Content */}
+          <div id="prep-notes-export-content">
           <Tabs
             defaultTab="overview"
             tabs={[
@@ -306,6 +472,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
               },
             ]}
           />
+          </div>
         </div>
       )}
 
