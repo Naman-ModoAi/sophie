@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Textarea, Button, Badge, Tabs } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
-import { PrepNoteSummaryHeader } from './PrepNoteSummaryHeader';
 import { OverviewTab } from './tabs/OverviewTab';
 import { PeopleResearchTab } from './tabs/PeopleResearchTab';
 import { CompanyIntelTab } from './tabs/CompanyIntelTab';
@@ -253,9 +252,6 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       {/* AI-Generated Prep Note */}
       {aiPrepNote && (
         <div id="prep-notes-export-content" className="space-y-6">
-          {/* Summary Header */}
-          <PrepNoteSummaryHeader prepNote={aiPrepNote} meetingStatus={meetingStatus} />
-
           {/* Actions Bar */}
           <div className="flex justify-between items-center">
             <div className="flex gap-2">

@@ -1,13 +1,10 @@
 'use client';
 
-import { SummaryCard } from '../SummaryCard';
-
 /**
  * OverviewTab Component
  *
- * Displays meeting overview, summary, and quick stats.
- * Includes meeting details, summary text, and statistics about attendees,
- * companies, and talking points.
+ * Displays meeting overview and summary.
+ * Includes meeting details and summary text.
  *
  * @param prepNote - The complete PrepNote object
  */
@@ -80,15 +77,6 @@ function formatTimeAgo(isoString: string): string {
 }
 
 export function OverviewTab({ prepNote }: OverviewTabProps) {
-  // Calculate stats
-  const totalAttendees = prepNote.attendees.length;
-  const totalCompanies = prepNote.companies.length;
-  const totalTalkingPoints =
-    prepNote.suggested_talking_points.length +
-    prepNote.attendees.reduce((sum, att) => sum + att.talking_points.length, 0);
-  const industries = new Set(prepNote.companies.map((c) => c.industry).filter(Boolean));
-  const industriesCount = industries.size;
-
   return (
     <div className="space-y-6">
       {/* Meeting Details Card */}
@@ -118,40 +106,6 @@ export function OverviewTab({ prepNote }: OverviewTabProps) {
       <div className="p-4 bg-surface rounded-lg border border-text/10 space-y-3">
         <h3 className="text-base font-semibold text-text">Summary</h3>
         <p className="text-sm text-text/90 leading-relaxed">{prepNote.summary}</p>
-      </div>
-
-      {/* Quick Stats Grid */}
-      <div>
-        <h3 className="text-base font-semibold text-text mb-3">Quick Stats</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <SummaryCard
-            icon="👥"
-            title="Attendees"
-            value={totalAttendees}
-            subtitle={`${totalAttendees} total`}
-          />
-          <SummaryCard
-            icon="🏢"
-            title="Companies"
-            value={totalCompanies}
-            subtitle={industriesCount > 0 ? `${industriesCount} industries` : undefined}
-          />
-          <SummaryCard
-            icon="💡"
-            title="Talking Points"
-            value={totalTalkingPoints}
-            subtitle={`${prepNote.suggested_talking_points.length} general + ${
-              totalTalkingPoints - prepNote.suggested_talking_points.length
-            } specific`}
-          />
-          <SummaryCard
-            icon="✓"
-            title="Status"
-            value="Ready"
-            subtitle="Research complete"
-            variant="success"
-          />
-        </div>
       </div>
     </div>
   );
