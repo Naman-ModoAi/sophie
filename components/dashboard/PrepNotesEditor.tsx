@@ -1,8 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Textarea, Button, Badge } from '@/components/ui';
+import { Textarea, Button, Badge, Tabs } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
+import { PrepNoteSummaryHeader } from './PrepNoteSummaryHeader';
+import { OverviewTab } from './tabs/OverviewTab';
+import { PeopleResearchTab } from './tabs/PeopleResearchTab';
+import { CompanyIntelTab } from './tabs/CompanyIntelTab';
+import { DiscussionPointsTab } from './tabs/DiscussionPointsTab';
 
 interface PrepNotesEditorProps {
   meetingId: string;
@@ -11,23 +16,34 @@ interface PrepNotesEditorProps {
 }
 
 interface PrepNote {
+  meeting_id: string;
   meeting_title: string;
+  meeting_time: string;
+  generated_at: string;
   summary: string;
+  suggested_talking_points: string[];
+
   attendees: Array<{
     name: string;
     current_role?: string;
     company?: string;
     background?: string;
+    tenure?: string;
+    linkedin_url?: string;
     talking_points: string[];
+    recent_activity?: string;
   }>;
+
   companies: Array<{
     name: string;
     domain: string;
     overview?: string;
-    recent_news: string[];
+    industry?: string;
+    size?: string;
+    funding?: string;
     products: string[];
+    recent_news: string[];
   }>;
-  suggested_talking_points: string[];
 }
 
 export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNotesEditorProps) {
@@ -38,7 +54,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
   const [isSaving, setIsSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
   // Fetch AI-generated prep note on mount
   useEffect(() => {
@@ -95,6 +111,71 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       console.error('Failed to save notes:', error);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const toggleSection = (id: string) => {
+    setExpandedSections((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const expandAll = () => {
+    if (!aiPrepNote) return;
+
+    const allIds = [
+      ...aiPrepNote.attendees.flatMap((_, i) => [
+        `attendee-${i}-background`,
+        `attendee-${i}-talking`,
+        `attendee-${i}-activity`,
+      ]),
+      ...aiPrepNote.companies.flatMap((_, i) => [
+        `company-${i}-overview`,
+        `company-${i}-products`,
+        `company-${i}-news`,
+      ]),
+    ];
+    setExpandedSections(new Set(allIds));
+  };
+
+  const collapseAll = () => {
+    setExpandedSections(new Set());
+  };
+
+  const exportToPDF = async () => {
+    if (!aiPrepNote) return;
+    try {
+      // Import html2pdf dynamically
+      const html2pdfModule = await import('html2pdf.js');
+      const html2pdf = html2pdfModule.default;
+
+      // Get the content element
+      const content = document.getElementById('prep-notes-export-content');
+      if (!content) {
+        console.error('Export content element not found');
+        return;
+      }
+
+      const opt = {
+        margin: 10,
+        filename: `${aiPrepNote.meeting_title || 'prep-notes'}-${
+          new Date().toISOString().split('T')[0]
+        }.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
+      };
+
+      await html2pdf().from(content).set(opt).save();
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.');
     }
   };
 
@@ -171,113 +252,64 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
 
       {/* AI-Generated Prep Note */}
       {aiPrepNote && (
-        <div className="space-y-4 p-4 bg-accent/5 rounded-lg border border-accent/20">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-text">AI-Generated Prep Note</h3>
-            <Button
-              variant="secondary"
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="text-sm"
-            >
-              {isExpanded ? 'Show Less' : 'Show More'}
+        <div id="prep-notes-export-content" className="space-y-6">
+          {/* Summary Header */}
+          <PrepNoteSummaryHeader prepNote={aiPrepNote} meetingStatus={meetingStatus} />
+
+          {/* Actions Bar */}
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2">
+              <Button variant="secondary" onClick={expandAll} className="text-sm">
+                Expand All
+              </Button>
+              <Button variant="secondary" onClick={collapseAll} className="text-sm">
+                Collapse All
+              </Button>
+            </div>
+            <Button variant="secondary" onClick={exportToPDF} className="text-sm">
+              📄 Export PDF
             </Button>
           </div>
 
-          <div className={isExpanded ? 'space-y-4' : 'space-y-4 max-h-96 overflow-hidden relative'}>
-            {/* Summary */}
-            <div>
-              <h4 className="text-sm font-medium text-text/70 mb-1">Summary</h4>
-              <p className="text-sm text-text/90">{aiPrepNote.summary}</p>
-            </div>
-
-            {/* Talking Points */}
-            {aiPrepNote.suggested_talking_points && aiPrepNote.suggested_talking_points.length > 0 && (
-              <div>
-                <h4 className="text-sm font-medium text-text/70 mb-2">Suggested Talking Points</h4>
-                <ul className="space-y-1">
-                  {aiPrepNote.suggested_talking_points.map((point, i) => (
-                    <li key={i} className="text-sm text-text/90 flex gap-2">
-                      <span className="text-accent">•</span>
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Attendees Research */}
-            {aiPrepNote.attendees && aiPrepNote.attendees.length > 0 && (
-              <div>
-                <h4 className="text-sm font-medium text-text/70 mb-2">Attendee Insights</h4>
-                <div className="space-y-3">
-                  {aiPrepNote.attendees.map((attendee, i) => (
-                    <div key={i} className="pl-4 border-l-2 border-accent/30">
-                      <p className="text-sm font-medium text-text">{attendee.name}</p>
-                      {attendee.current_role && (
-                        <p className="text-xs text-text/70">{attendee.current_role} at {attendee.company}</p>
-                      )}
-                      {attendee.background && (
-                        <p className="text-xs text-text/60 mt-1">
-                          {isExpanded ? attendee.background : `${attendee.background.slice(0, 150)}...`}
-                        </p>
-                      )}
-                      {attendee.talking_points && attendee.talking_points.length > 0 && isExpanded && (
-                        <ul className="mt-2 space-y-1">
-                          {attendee.talking_points.map((point, j) => (
-                            <li key={j} className="text-xs text-text/70 flex gap-2">
-                              <span className="text-accent">→</span>
-                              <span>{point}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Companies Research */}
-            {aiPrepNote.companies && aiPrepNote.companies.length > 0 && (
-              <div>
-                <h4 className="text-sm font-medium text-text/70 mb-2">Company Info</h4>
-                <div className="space-y-3">
-                  {aiPrepNote.companies.map((company, i) => (
-                    <div key={i} className="pl-4 border-l-2 border-accent/30">
-                      <p className="text-sm font-medium text-text">{company.name}</p>
-                      {company.overview && (
-                        <p className="text-xs text-text/60 mt-1">
-                          {isExpanded ? company.overview : `${company.overview.slice(0, 150)}...`}
-                        </p>
-                      )}
-                      {company.recent_news && company.recent_news.length > 0 && (
-                        <p className="text-xs text-accent mt-1">
-                          Recent: {isExpanded ? company.recent_news[0] : `${company.recent_news[0].slice(0, 100)}...`}
-                        </p>
-                      )}
-                      {company.products && company.products.length > 0 && isExpanded && (
-                        <div className="mt-2">
-                          <p className="text-xs font-medium text-text/70">Products:</p>
-                          <ul className="mt-1 space-y-1">
-                            {company.products.map((product, j) => (
-                              <li key={j} className="text-xs text-text/70 flex gap-2">
-                                <span className="text-accent">→</span>
-                                <span>{product}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {!isExpanded && (
-              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-accent/5 to-transparent pointer-events-none" />
-            )}
-          </div>
+          {/* Tabbed Content */}
+          <Tabs
+            defaultTab="overview"
+            tabs={[
+              {
+                id: 'overview',
+                label: '📋 Overview',
+                content: <OverviewTab prepNote={aiPrepNote} />,
+              },
+              {
+                id: 'people',
+                label: `👥 People Research (${aiPrepNote.attendees.length})`,
+                content: (
+                  <PeopleResearchTab
+                    attendees={aiPrepNote.attendees}
+                    expandedSections={expandedSections}
+                    toggleSection={toggleSection}
+                  />
+                ),
+              },
+              {
+                id: 'companies',
+                label: `🏢 Company Intel (${aiPrepNote.companies.length})`,
+                content: (
+                  <CompanyIntelTab
+                    companies={aiPrepNote.companies}
+                    attendees={aiPrepNote.attendees}
+                    expandedSections={expandedSections}
+                    toggleSection={toggleSection}
+                  />
+                ),
+              },
+              {
+                id: 'talking-points',
+                label: '💡 Discussion Points',
+                content: <DiscussionPointsTab prepNote={aiPrepNote} />,
+              },
+            ]}
+          />
         </div>
       )}
 
