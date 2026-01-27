@@ -72,7 +72,7 @@ export function CompanyIntelTab({
 
         return (
           <div
-            key={index}
+            key={`${company.domain}-${index}`}
             className="p-4 bg-surface rounded-lg border border-text/10 space-y-4"
           >
             {/* Header Section */}
