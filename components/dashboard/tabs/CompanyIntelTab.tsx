@@ -1,7 +1,6 @@
 'use client';
 
 import { ExpandableSection } from '../ExpandableSection';
-import { Badge } from '@/components/ui';
 
 /**
  * CompanyIntelTab Component

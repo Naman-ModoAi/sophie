@@ -1,4 +1,5 @@
-import { HTMLAttributes, forwardRef } from 'react';
+import { HTMLAttributes, forwardRef, useState } from 'react';
+import Image from 'next/image';
 
 export interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
   src?: string;
@@ -9,10 +10,18 @@ export interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
   ({ src, alt = 'Avatar', fallback, size = 'md', className = '', ...props }, ref) => {
+    const [imageError, setImageError] = useState(false);
+
     const sizeClasses = {
       sm: 'w-8 h-8 text-xs',
       md: 'w-10 h-10 text-sm',
       lg: 'w-12 h-12 text-base',
+    };
+
+    const sizePixels = {
+      sm: 32,
+      md: 40,
+      lg: 48,
     };
 
     const initials = fallback
@@ -31,14 +40,14 @@ export const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         `}
         {...props}
       >
-        {src ? (
-          <img
+        {src && !imageError ? (
+          <Image
             src={src}
             alt={alt}
+            width={sizePixels[size]}
+            height={sizePixels[size]}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-            }}
+            onError={() => setImageError(true)}
           />
         ) : (
           <span>{initials}</span>

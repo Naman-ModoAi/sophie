@@ -27,9 +27,12 @@ export async function fetchCalendarEvents(
     })
 
     return (response.data.items || []) as CalendarEvent[]
-  } catch (error: any) {
-    if (error.code === 401 || error.code === 403) {
-      throw new Error('CALENDAR_PERMISSION_ERROR')
+  } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error) {
+      const errorCode = (error as { code?: number }).code;
+      if (errorCode === 401 || errorCode === 403) {
+        throw new Error('CALENDAR_PERMISSION_ERROR')
+      }
     }
     throw error
   }

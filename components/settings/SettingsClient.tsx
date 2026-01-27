@@ -69,7 +69,7 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
 
       const { url } = await response.json();
       if (url) window.location.href = url;
-    } catch (error) {
+    } catch {
       alert('Failed to start checkout');
     }
   };
@@ -79,7 +79,7 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
       const response = await fetch('/api/stripe/portal', { method: 'POST' });
       const { url } = await response.json();
       if (url) window.location.href = url;
-    } catch (error) {
+    } catch {
       alert('Failed to open customer portal');
     }
   };
@@ -179,7 +179,7 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
               </div>
               {user.meetings_used >= 5 && (
                 <p className="text-sm text-warning mt-2">
-                  You've reached your free plan limit. Upgrade to Pro for unlimited meetings.
+                  You&apos;ve reached your free plan limit. Upgrade to Pro for unlimited meetings.
                 </p>
               )}
             </div>
