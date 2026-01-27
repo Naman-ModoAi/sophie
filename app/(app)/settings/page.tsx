@@ -1,6 +1,6 @@
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import SettingsClient from '@/components/settings/SettingsClient';
 
 export const dynamic = 'force-dynamic';
@@ -12,7 +12,7 @@ export default async function SettingsPage() {
     redirect('/');
   }
 
-  const supabase = await createClient();
+  const supabase = await createServiceClient();
 
   // Fetch user data
   const { data: user, error } = await supabase

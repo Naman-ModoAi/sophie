@@ -56,7 +56,7 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
   };
 
   const handleReconnect = () => {
-    window.location.href = '/api/auth/login';
+    window.location.replace('/api/auth/login');
   };
 
   const handleUpgrade = async (priceId: string) => {
