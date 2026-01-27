@@ -122,10 +122,19 @@ export async function syncCalendar(userId: string, daysAhead: number = 7) {
             // Upsert companies for each unique domain
             const companyMap = new Map<string, string>() // domain -> company_id
             for (const domain of domains) {
+              const domainParts = domain.split('.')
+              const companyNameFromDomain = domainParts[0]
+                .split(/[-_]/)
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ')
+
               const { data: company } = await supabase
                 .from('companies')
                 .upsert(
-                  { domain },
+                  {
+                    domain,
+                    name: companyNameFromDomain
+                  },
                   { onConflict: 'domain' }
                 )
                 .select('id, domain')
@@ -136,13 +145,28 @@ export async function syncCalendar(userId: string, daysAhead: number = 7) {
               }
             }
 
+            // Helper function to extract name from email
+            const extractNameFromEmail = (email: string): string => {
+              const localPart = email.split('@')[0]
+              const nameParts = localPart
+                .replace(/[0-9]/g, '')
+                .split(/[._-]/)
+                .filter(part => part.length > 1)
+
+              return nameParts
+                .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+                .join(' ')
+            }
+
             // Build attendee records with company_id
             const attendeeRecords = validAttendees.map((a) => {
               const domain = a.email!.split('@')[1]
+              const extractedName = extractNameFromEmail(a.email!)
+
               return {
                 meeting_id: meeting.id,
                 email: a.email!.toLowerCase(),
-                name: a.displayName || null,
+                name: a.displayName || extractedName || null,
                 domain,
                 is_internal: domain === userDomain,
                 company_id: companyMap.get(domain) || null,
