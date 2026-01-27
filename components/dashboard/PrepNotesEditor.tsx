@@ -57,6 +57,11 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
 
   // Fetch AI-generated prep note on mount
   useEffect(() => {
+    // Reset state when meetingId changes
+    setIsLoading(true);
+    setAiPrepNote(null);
+    setMeetingStatus('pending');
+
     async function fetchPrepNote() {
       try {
         const supabase = createClient();
