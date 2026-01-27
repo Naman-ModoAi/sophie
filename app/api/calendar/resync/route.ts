@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
 import { createClient } from '@/lib/supabase/server';
 import { fetchCalendarEvents, refreshGoogleToken } from '@/lib/google/calendar';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const session = await getSession();
 
@@ -184,10 +184,11 @@ export async function POST(request: NextRequest) {
       meetings_synced: meetingsSynced,
       attendees_synced: attendeesSynced,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Resync error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: message },
       { status: 500 }
     );
   }
