@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/server';
 import { fetchCalendarEvents, refreshGoogleToken } from '@/lib/google/calendar';
 
 export async function POST() {
@@ -12,7 +12,7 @@ export async function POST() {
     }
 
     const userId = session.userId;
-    const supabase = await createClient();
+    const supabase = await createServiceClient();
 
     // Get user
     const { data: user } = await supabase
