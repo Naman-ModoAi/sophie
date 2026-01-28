@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
-
-const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:8080';
+import { ResearchOrchestrator } from '@/lib/research/agents/orchestrator';
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,27 +28,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call backend research agent
+    // Call local TypeScript research agent
     console.log(`[Research API] Triggering research for meeting: ${meeting_id}`);
 
-    const response = await fetch(`${BACKEND_API_URL}/research`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ meeting_id }),
-    });
+    const orchestrator = new ResearchOrchestrator();
+    const result = await orchestrator.researchMeeting(meeting_id);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`[Research API] Backend error:`, errorText);
-      return NextResponse.json(
-        { error: 'Research agent failed', details: errorText },
-        { status: response.status }
-      );
-    }
-
-    const result = await response.json();
     console.log(`[Research API] Research completed for: ${meeting.title}`);
 
     return NextResponse.json({

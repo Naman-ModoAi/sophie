@@ -24,6 +24,7 @@ const migrations = [
   '001_init_schema.sql',
   '007_rollback_to_iron_session.sql',
   '20260123_002_add_email_timing.sql',
+  '20260126_001_add_token_tracking.sql',
 ]
 
 async function runMigration(migrationFile) {
