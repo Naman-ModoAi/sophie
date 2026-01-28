@@ -7,6 +7,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { CompanyResearch, CompanyResearchSchema } from '../types';
 import { SYSTEM_PROMPT, buildResearchPrompt } from './prompts/company';
 import { TokenTracker } from '../token-tracker';
+import { webSearch, formatSearchResults } from '../serper';
 
 export class CompanyResearchAgent {
   private client: GoogleGenerativeAI;
@@ -27,7 +28,7 @@ export class CompanyResearchAgent {
   }
 
   /**
-   * Research a company using Gemini with built-in grounding
+   * Research a company using Serper API for web search + Gemini for analysis
    */
   async researchCompany(params: {
     domain: string;
@@ -39,24 +40,43 @@ export class CompanyResearchAgent {
 
     console.log(`[CompanyAgent] Researching ${domain}`);
 
-    // Build prompt - Gemini grounding will handle web search automatically
+    // Step 1: Build search query
+    const searchQuery = [
+      companyName || domain,
+      domain,
+      'company overview products news',
+    ].filter(Boolean).join(' ');
+
+    console.log(`[CompanyAgent] Search query: "${searchQuery}"`);
+
+    // Step 2: Perform web search via Serper
+    const searchResults = await webSearch({
+      query: searchQuery,
+      numResults: 5,
+      userId,
+      meetingId,
+    });
+
+    // Step 3: Format search results for context
+    const searchContext = formatSearchResults(searchResults);
+
+    // Step 4: Build prompt with search context
     const prompt = buildResearchPrompt(domain, companyName);
+    const fullPrompt = [
+      prompt,
+      '\n## Web Search Results:\n',
+      searchContext,
+      '\n\nBased on the above information, provide your research in JSON format.',
+    ].join('');
 
-    // Add search context hint for better grounding
-    let searchHint = `\n\nPlease research information about `;
-    searchHint += companyName || domain;
-    searchHint += ` (domain: ${domain}). Focus on recent news, products, company overview, and key developments.`;
-
-    const fullPrompt = `${prompt}${searchHint}\n\nProvide your research in JSON format.`;
-
-    console.log(`[CompanyAgent] Using Gemini grounding for research`);
+    console.log(`[CompanyAgent] Using Serper search + Gemini analysis`);
 
     try {
-      // Generate content with Gemini grounding enabled
+      // Step 5: Generate content with Gemini (NO grounding - we already have search results)
       const model = this.client.getGenerativeModel({
         model: this.modelName,
         systemInstruction: this.systemInstruction,
-        tools: [{ googleSearchRetrieval: {} }], // Enable grounding
+        // No tools config - grounding removed, using Serper instead
       });
 
       const result = await model.generateContent(fullPrompt);

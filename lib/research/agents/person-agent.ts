@@ -7,6 +7,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { PersonResearch, PersonResearchSchema } from '../types';
 import { SYSTEM_PROMPT, buildResearchPrompt } from './prompts/person';
 import { TokenTracker } from '../token-tracker';
+import { webSearch, formatSearchResults } from '../serper';
 
 export class PersonResearchAgent {
   private client: GoogleGenerativeAI;
@@ -27,7 +28,7 @@ export class PersonResearchAgent {
   }
 
   /**
-   * Research a person using Gemini with built-in grounding
+   * Research a person using Serper API for web search + Gemini for analysis
    */
   async researchPerson(params: {
     name: string;
@@ -42,8 +43,8 @@ export class PersonResearchAgent {
 
     // Extract company from email domain if not provided
     let companyFromEmail = company;
-    if (!companyFromEmail && email && email.includes('@')) {
-      const domain = email.split('@')[1];
+    const domain = email && email.includes('@') ? email.split('@')[1] : '';
+    if (!companyFromEmail && domain) {
       // Extract company name from domain (e.g., icecreamlabs.com -> Icecream Labs)
       companyFromEmail = domain
         .replace('.com', '')
@@ -53,29 +54,44 @@ export class PersonResearchAgent {
         .join(' ');
     }
 
-    // Build prompt - Gemini grounding will handle web search automatically
+    // Step 1: Build search query
+    const searchQuery = [
+      name,
+      companyFromEmail || '',
+      domain,
+      'LinkedIn professional background'
+    ].filter(Boolean).join(' ');
+
+    console.log(`[PersonAgent] Search query: "${searchQuery}"`);
+
+    // Step 2: Perform web search via Serper
+    const searchResults = await webSearch({
+      query: searchQuery,
+      numResults: 5,
+      userId,
+      meetingId,
+    });
+
+    // Step 3: Format search results for context
+    const searchContext = formatSearchResults(searchResults);
+
+    // Step 4: Build prompt with search context
     const prompt = buildResearchPrompt(name, email, companyFromEmail);
+    const fullPrompt = [
+      prompt,
+      '\n## Web Search Results:\n',
+      searchContext,
+      '\n\nBased on the above information, provide your research in JSON format.',
+    ].join('');
 
-    // Add search context hint for better grounding
-    let searchContext = `\n\nPlease research information about ${name}`;
-    if (companyFromEmail) {
-      searchContext += ` who works at ${companyFromEmail}`;
-    }
-    if (email && email.includes('@')) {
-      searchContext += ` (email domain: ${email.split('@')[1]})`;
-    }
-    searchContext += '. Focus on their LinkedIn profile, professional background, and recent activities.';
-
-    const fullPrompt = `${prompt}${searchContext}\n\nProvide your research in JSON format.`;
-
-    console.log(`[PersonAgent] Using Gemini grounding for research`);
+    console.log(`[PersonAgent] Using Serper search + Gemini analysis`);
 
     try {
-      // Generate content with Gemini grounding enabled
+      // Step 5: Generate content with Gemini (NO grounding - we already have search results)
       const model = this.client.getGenerativeModel({
         model: this.modelName,
         systemInstruction: this.systemInstruction,
-        tools: [{ googleSearchRetrieval: {} }], // Enable grounding
+        // No tools config - grounding removed, using Serper instead
       });
 
       const result = await model.generateContent(fullPrompt);
