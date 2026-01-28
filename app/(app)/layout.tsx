@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { getIronSession } from 'iron-session';
 import { sessionOptions, SessionData } from '@/lib/session';
 import { AppShell } from '@/components/layout/AppShell';
+import { ToastProvider } from '@/contexts/ToastContext';
 
 async function getSession() {
   const cookieStore = await cookies();
@@ -27,5 +28,9 @@ export default async function AppLayout({
 }) {
   const session = await getSession();
 
-  return <AppShell userEmail={session.email}>{children}</AppShell>;
+  return (
+    <ToastProvider>
+      <AppShell userEmail={session.email}>{children}</AppShell>
+    </ToastProvider>
+  );
 }

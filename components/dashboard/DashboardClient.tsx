@@ -6,6 +6,7 @@ import { MeetingDetailPanel } from './MeetingDetailPanel';
 import { EmptyState } from './EmptyState';
 import { Button } from '@/components/ui';
 import { SyncIcon } from '@/components/ui/icons/SyncIcon';
+import { useToast } from '@/contexts/ToastContext';
 
 interface Meeting {
   id: string;
@@ -29,6 +30,7 @@ export function DashboardClient({ meetings }: DashboardClientProps) {
     meetings.length > 0 ? meetings[0].id : null
   );
   const [isResyncing, setIsResyncing] = useState(false);
+  const { showToast } = useToast();
 
   const selectedMeeting = meetings.find(m => m.id === selectedMeetingId);
 
@@ -47,7 +49,7 @@ export function DashboardClient({ meetings }: DashboardClientProps) {
       window.location.reload();
     } catch (error) {
       console.error('Resync error:', error);
-      alert('Failed to resync calendar. Please try again.');
+      showToast('Failed to resync calendar. Please try again.', 'error');
       setIsResyncing(false);
     }
   };

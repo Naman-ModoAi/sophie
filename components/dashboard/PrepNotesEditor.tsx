@@ -7,6 +7,7 @@ import { OverviewTab } from './tabs/OverviewTab';
 import { PeopleResearchTab } from './tabs/PeopleResearchTab';
 import { CompanyIntelTab } from './tabs/CompanyIntelTab';
 import { DiscussionPointsTab } from './tabs/DiscussionPointsTab';
+import { useToast } from '@/contexts/ToastContext';
 
 interface PrepNotesEditorProps {
   meetingId: string;
@@ -54,6 +55,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const { showToast } = useToast();
 
   // Fetch AI-generated prep note on mount
   useEffect(() => {
@@ -344,7 +346,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       pdf.save(filename);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Failed to generate PDF. Please try again.');
+      showToast('Failed to generate PDF. Please try again.', 'error');
     }
   };
 
@@ -380,10 +382,10 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
         console.error('Error fetching prep note after generation:', fetchError);
       }
 
-      alert('Prep note generated successfully!');
+      showToast('Prep note generated successfully!', 'success');
     } catch (error) {
       console.error('Error generating prep note:', error);
-      alert('Failed to generate prep note. Please try again.');
+      showToast('Failed to generate prep note. Please try again.', 'error');
     } finally {
       setIsGenerating(false);
     }
