@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
-import { Card, Button, Badge, Avatar, Tabs, Toast } from '@/components/ui';
+import { Card, Button, Badge, Tabs, Toast } from '@/components/ui';
 import type { ToastVariant } from '@/components/ui';
 
 type Props = {

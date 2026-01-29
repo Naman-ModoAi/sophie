@@ -130,7 +130,9 @@ export async function getUserCredits(userId: string): Promise<{
   }
 
   // Extract plan info from joined data
-  const subscription = data.subscriptions?.[0];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const subscriptions = (data as any).subscriptions as any[];
+  const subscription = subscriptions?.[0];
   const plan = subscription?.plan;
 
   return {
@@ -151,7 +153,7 @@ export async function getUserCredits(userId: string): Promise<{
  */
 export function calculateCreditsNeeded(
   attendeeCount: number,
-  companyCount: number
+  _companyCount: number
 ): number {
   // Fixed cost: 1 credit per attendee (includes their company research)
   return attendeeCount;

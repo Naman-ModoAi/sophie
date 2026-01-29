@@ -80,7 +80,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
         }
 
         // Fetch prep note if available
-        const { data: prepNote, error: prepNoteError } = await supabase
+        const { data: prepNote } = await supabase
           .from('prep_notes')
           .select('content')
           .eq('meeting_id', meetingId)

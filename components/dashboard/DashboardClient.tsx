@@ -47,7 +47,7 @@ export function DashboardClient({ meetings: initialMeetings }: DashboardClientPr
           schema: 'public',
           table: 'meetings'
         },
-        async (payload) => {
+        async () => {
           // Refetch meetings when any change occurs
           const { data } = await supabase
             .from('meetings')

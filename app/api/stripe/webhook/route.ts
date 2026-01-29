@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       case 'customer.subscription.created':
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
-        const userId = subscription.metadata.userId;
+        const userId = subscription.metadata?.userId;
 
         if (!userId) {
           console.warn('[Stripe Webhook] No userId in subscription metadata');
@@ -66,7 +66,16 @@ export async function POST(request: Request) {
 
         console.log(`[Stripe Webhook] Plan found: ${plan.name} (${plan.id})`);
 
-        // Upsert subscription record
+        // Upsert subscription record - handle period timestamps
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const subData = subscription as any;
+        const currentPeriodStart = typeof subData.current_period_start === 'number'
+          ? new Date(subData.current_period_start * 1000).toISOString()
+          : new Date().toISOString();
+        const currentPeriodEnd = typeof subData.current_period_end === 'number'
+          ? new Date(subData.current_period_end * 1000).toISOString()
+          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days default
+
         const { error: subError } = await supabase
           .from('subscriptions')
           .upsert({
@@ -75,9 +84,9 @@ export async function POST(request: Request) {
             stripe_subscription_id: subscription.id,
             stripe_customer_id: subscription.customer as string,
             status: subscription.status,
-            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-            cancel_at_period_end: subscription.cancel_at_period_end,
+            current_period_start: currentPeriodStart,
+            current_period_end: currentPeriodEnd,
+            cancel_at_period_end: subData.cancel_at_period_end || false,
           }, {
             onConflict: 'stripe_subscription_id'
           });
@@ -154,6 +163,8 @@ export async function POST(request: Request) {
 
       case 'invoice.payment_succeeded': {
         const invoice = event.data.object as Stripe.Invoice;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const invoiceData = invoice as any;
         const customerId = invoice.customer as string;
 
         console.log(`[Stripe Webhook] Processing successful payment for invoice ${invoice.id}`);
@@ -174,7 +185,7 @@ export async function POST(request: Request) {
         const { data: subscription } = await supabase
           .from('subscriptions')
           .select('id')
-          .eq('stripe_subscription_id', invoice.subscription as string)
+          .eq('stripe_subscription_id', invoiceData.subscription as string)
           .single();
 
         // Create transaction record
@@ -183,17 +194,17 @@ export async function POST(request: Request) {
           .insert({
             user_id: user.id,
             subscription_id: subscription?.id || null,
-            stripe_transaction_id: (invoice.charge as string) || invoice.id,
+            stripe_transaction_id: invoiceData.charge || invoice.id,
             stripe_invoice_id: invoice.id,
-            stripe_payment_intent_id: invoice.payment_intent as string,
+            stripe_payment_intent_id: invoiceData.payment_intent,
             amount_cents: invoice.amount_paid,
             currency: invoice.currency,
             status: 'succeeded',
-            description: invoice.description || `Payment for invoice ${invoice.number}`,
+            description: invoice.description || `Payment for invoice ${invoiceData.number || 'N/A'}`,
             metadata: {
-              invoice_number: invoice.number,
-              period_start: invoice.period_start,
-              period_end: invoice.period_end,
+              invoice_number: invoiceData.number,
+              period_start: invoiceData.period_start,
+              period_end: invoiceData.period_end,
             }
           });
 
@@ -207,6 +218,8 @@ export async function POST(request: Request) {
 
       case 'invoice.payment_failed': {
         const invoice = event.data.object as Stripe.Invoice;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const invoiceData = invoice as any;
         const customerId = invoice.customer as string;
 
         console.log(`[Stripe Webhook] Processing failed payment for invoice ${invoice.id}`);
@@ -222,7 +235,7 @@ export async function POST(request: Request) {
           await supabase
             .from('subscriptions')
             .update({ status: 'past_due' })
-            .eq('stripe_subscription_id', invoice.subscription as string);
+            .eq('stripe_subscription_id', invoiceData.subscription as string);
 
           // Update user record
           await supabase
