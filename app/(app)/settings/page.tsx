@@ -5,7 +5,11 @@ import SettingsClient from '@/components/settings/SettingsClient';
 
 export const dynamic = 'force-dynamic';
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: { success?: string; canceled?: string; upgraded?: string };
+}) {
   const session = await getSession();
 
   if (!session.isLoggedIn || !session.userId) {
@@ -17,7 +21,7 @@ export default async function SettingsPage() {
   // Fetch user data
   const { data: user, error } = await supabase
     .from('users')
-    .select('email, plan_type, email_timing, meetings_used')
+    .select('email, plan_type, email_timing, credits_balance, credits_used_this_month')
     .eq('id', session.userId)
     .single();
 
@@ -26,7 +30,8 @@ export default async function SettingsPage() {
     email: string;
     plan_type: 'free' | 'pro';
     email_timing: 'immediate' | '1hr' | '30min' | 'digest';
-    meetings_used: number;
+    credits_balance: number;
+    credits_used_this_month: number;
   };
 
   if (error && error.code === '42703') {
@@ -47,7 +52,8 @@ export default async function SettingsPage() {
       email: basicUser.email,
       plan_type: 'free' as const,
       email_timing: 'digest' as const,
-      meetings_used: 0,
+      credits_balance: 0,
+      credits_used_this_month: 0,
     };
   } else if (error || !user) {
     console.error('Failed to fetch user:', error);
@@ -66,15 +72,39 @@ export default async function SettingsPage() {
   const calendarConnected = !!token;
   const tokenExpired = token ? new Date(token.expires_at) < new Date() : false;
 
+  // Prepare initial toast based on query parameters
+  let initialToast: { message: string; variant: 'success' | 'error' | 'info' } | undefined;
+
+  if (searchParams.upgraded === 'true') {
+    // After real-time update confirmed upgrade
+    initialToast = {
+      message: 'Subscription activated successfully! Welcome to Pro.',
+      variant: 'success',
+    };
+  } else if (searchParams.success === 'true') {
+    // Waiting for webhook to process
+    initialToast = {
+      message: 'Subscription activated successfully! Welcome to Pro.',
+      variant: 'success',
+    };
+  } else if (searchParams.canceled === 'true') {
+    initialToast = {
+      message: 'Checkout was canceled. Your subscription was not changed.',
+      variant: 'info',
+    };
+  }
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold text-text mb-2">Settings</h1>
       <p className="text-text/70 mb-8">Manage your account preferences and subscription</p>
 
       <SettingsClient
+        userId={session.userId}
         user={userData}
         calendarConnected={calendarConnected}
         tokenExpired={tokenExpired}
+        initialToast={initialToast}
       />
     </div>
   );

@@ -7,7 +7,7 @@ import { createServiceClient } from '@/lib/supabase/server';
 
 export class TokenTracker {
   /**
-   * Track token usage for a Gemini API call
+   * Track token usage for a Gemini API call and consume credits
    */
   static async trackUsage(params: {
     userId: string;
@@ -31,7 +31,8 @@ export class TokenTracker {
     try {
       const supabase = await createServiceClient();
 
-      const { data, error } = await supabase.rpc('track_token_usage', {
+      // Track token usage
+      const { data: tokenUsageId, error } = await supabase.rpc('track_token_usage', {
         p_user_id: userId,
         p_meeting_id: meetingId,
         p_agent_type: agentType,
@@ -46,14 +47,56 @@ export class TokenTracker {
         return null;
       }
 
-      if (data) {
+      if (tokenUsageId) {
         const total = inputTokens + outputTokens;
         const cacheInfo = cachedTokens > 0 ? ` (cached: ${cachedTokens})` : '';
         console.log(
           `[TokenTracker] Tracked ${total} tokens${cacheInfo} for user ${userId}, ` +
           `meeting ${meetingId}, agent ${agentType}`
         );
-        return data;
+
+        // Consume credits only for person research (company research is included in person cost)
+        if (agentType === 'person') {
+          const creditCost = 1; // 1 credit per attendee (includes their company)
+
+          console.log(`[TokenTracker] Attempting to consume ${creditCost} credit for person research...`);
+
+          const { data: consumeSuccess, error: consumeError } = await supabase.rpc('consume_credits', {
+            p_user_id: userId,
+            p_credits: creditCost,
+            p_meeting_id: meetingId,
+            p_research_type: agentType,
+          });
+
+          if (consumeError) {
+            console.error('[TokenTracker] Error consuming credits:', {
+              error: consumeError,
+              code: consumeError.code,
+              message: consumeError.message,
+              details: consumeError.details
+            });
+          } else if (consumeSuccess) {
+            console.log(`[TokenTracker] ✅ Successfully consumed ${creditCost} credit for person research`);
+
+            // Update the token_usage record with credits consumed
+            const { error: updateError } = await supabase
+              .from('token_usage')
+              .update({ credits_consumed: creditCost })
+              .eq('id', tokenUsageId);
+
+            if (updateError) {
+              console.error('[TokenTracker] Error updating token_usage with credits:', updateError);
+            } else {
+              console.log(`[TokenTracker] ✅ Updated token_usage record with credits_consumed`);
+            }
+          } else {
+            console.warn('[TokenTracker] ⚠️ Failed to consume credits - function returned false (insufficient balance?)');
+          }
+        } else {
+          console.log(`[TokenTracker] Skipping credit consumption for ${agentType} agent (only person agents consume credits)`);
+        }
+
+        return tokenUsageId;
       }
 
       console.warn('[TokenTracker] Token tracking returned no data');

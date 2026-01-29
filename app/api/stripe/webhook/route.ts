@@ -44,16 +44,75 @@ export async function POST(request: Request) {
         const subscription = event.data.object as Stripe.Subscription;
         const userId = subscription.metadata.userId;
 
-        if (userId) {
-          await supabase
-            .from('users')
-            .update({
-              stripe_subscription_id: subscription.id,
-              stripe_subscription_status: subscription.status,
-              plan_type: subscription.status === 'active' ? 'pro' : 'free',
-            })
-            .eq('id', userId);
+        if (!userId) {
+          console.warn('[Stripe Webhook] No userId in subscription metadata');
+          break;
         }
+
+        console.log(`[Stripe Webhook] Processing subscription ${event.type} for user ${userId}`);
+
+        // Get plan_id from Stripe price_id lookup
+        const priceId = subscription.items.data[0]?.price.id;
+        const { data: plan } = await supabase
+          .from('plans')
+          .select('id, name, monthly_credits')
+          .eq('stripe_price_id', priceId)
+          .single();
+
+        if (!plan) {
+          console.error(`[Stripe Webhook] No plan found for price_id: ${priceId}`);
+          break;
+        }
+
+        console.log(`[Stripe Webhook] Plan found: ${plan.name} (${plan.id})`);
+
+        // Upsert subscription record
+        const { error: subError } = await supabase
+          .from('subscriptions')
+          .upsert({
+            user_id: userId,
+            plan_id: plan.id,
+            stripe_subscription_id: subscription.id,
+            stripe_customer_id: subscription.customer as string,
+            status: subscription.status,
+            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+            cancel_at_period_end: subscription.cancel_at_period_end,
+          }, {
+            onConflict: 'stripe_subscription_id'
+          });
+
+        if (subError) {
+          console.error('[Stripe Webhook] Error upserting subscription:', subError);
+        } else {
+          console.log('[Stripe Webhook] Subscription record created/updated');
+        }
+
+        // Allocate monthly credits immediately for active subscriptions
+        if (subscription.status === 'active') {
+          const { error: creditError } = await supabase.rpc('allocate_monthly_credits', {
+            p_user_id: userId
+          });
+
+          if (creditError) {
+            console.error('[Stripe Webhook] Error allocating credits:', creditError);
+          } else {
+            console.log(`[Stripe Webhook] Allocated ${plan.monthly_credits} credits to user`);
+          }
+        }
+
+        // Update user's plan_type for backward compatibility
+        await supabase
+          .from('users')
+          .update({
+            stripe_subscription_id: subscription.id,
+            stripe_subscription_status: subscription.status,
+            stripe_customer_id: subscription.customer as string,
+            plan_type: subscription.status === 'active' && plan.name === 'pro' ? 'pro' : 'free',
+          })
+          .eq('id', userId);
+
+        console.log('[Stripe Webhook] User record updated');
         break;
       }
 
@@ -61,15 +120,87 @@ export async function POST(request: Request) {
         const subscription = event.data.object as Stripe.Subscription;
         const userId = subscription.metadata.userId;
 
-        if (userId) {
-          await supabase
-            .from('users')
-            .update({
-              stripe_subscription_id: null,
-              stripe_subscription_status: 'canceled',
-              plan_type: 'free',
-            })
-            .eq('id', userId);
+        if (!userId) {
+          console.warn('[Stripe Webhook] No userId in subscription metadata');
+          break;
+        }
+
+        console.log(`[Stripe Webhook] Processing subscription deletion for user ${userId}`);
+
+        // Update subscription status to canceled
+        await supabase
+          .from('subscriptions')
+          .update({ status: 'canceled' })
+          .eq('stripe_subscription_id', subscription.id);
+
+        // Downgrade user to free plan
+        await supabase
+          .from('users')
+          .update({
+            stripe_subscription_id: null,
+            stripe_subscription_status: 'canceled',
+            plan_type: 'free',
+          })
+          .eq('id', userId);
+
+        // Allocate free plan credits
+        await supabase.rpc('allocate_monthly_credits', {
+          p_user_id: userId
+        });
+
+        console.log('[Stripe Webhook] User downgraded to free plan');
+        break;
+      }
+
+      case 'invoice.payment_succeeded': {
+        const invoice = event.data.object as Stripe.Invoice;
+        const customerId = invoice.customer as string;
+
+        console.log(`[Stripe Webhook] Processing successful payment for invoice ${invoice.id}`);
+
+        // Get user ID from customer ID
+        const { data: user } = await supabase
+          .from('users')
+          .select('id')
+          .eq('stripe_customer_id', customerId)
+          .single();
+
+        if (!user) {
+          console.warn('[Stripe Webhook] No user found for customer:', customerId);
+          break;
+        }
+
+        // Get subscription ID from subscriptions table
+        const { data: subscription } = await supabase
+          .from('subscriptions')
+          .select('id')
+          .eq('stripe_subscription_id', invoice.subscription as string)
+          .single();
+
+        // Create transaction record
+        const { error: txError } = await supabase
+          .from('transactions')
+          .insert({
+            user_id: user.id,
+            subscription_id: subscription?.id || null,
+            stripe_transaction_id: (invoice.charge as string) || invoice.id,
+            stripe_invoice_id: invoice.id,
+            stripe_payment_intent_id: invoice.payment_intent as string,
+            amount_cents: invoice.amount_paid,
+            currency: invoice.currency,
+            status: 'succeeded',
+            description: invoice.description || `Payment for invoice ${invoice.number}`,
+            metadata: {
+              invoice_number: invoice.number,
+              period_start: invoice.period_start,
+              period_end: invoice.period_end,
+            }
+          });
+
+        if (txError) {
+          console.error('[Stripe Webhook] Error creating transaction:', txError);
+        } else {
+          console.log('[Stripe Webhook] Transaction record created');
         }
         break;
       }
@@ -78,6 +209,8 @@ export async function POST(request: Request) {
         const invoice = event.data.object as Stripe.Invoice;
         const customerId = invoice.customer as string;
 
+        console.log(`[Stripe Webhook] Processing failed payment for invoice ${invoice.id}`);
+
         const { data: user } = await supabase
           .from('users')
           .select('id')
@@ -85,10 +218,19 @@ export async function POST(request: Request) {
           .single();
 
         if (user) {
+          // Update subscription status to past_due
+          await supabase
+            .from('subscriptions')
+            .update({ status: 'past_due' })
+            .eq('stripe_subscription_id', invoice.subscription as string);
+
+          // Update user record
           await supabase
             .from('users')
             .update({ stripe_subscription_status: 'past_due' })
             .eq('id', user.id);
+
+          console.log('[Stripe Webhook] Subscription marked as past_due');
         }
         break;
       }

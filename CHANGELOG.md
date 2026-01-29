@@ -4,6 +4,204 @@ All notable changes to the PrepFor.app frontend will be documented in this file.
 
 ---
 
+## 2026-01-29
+
+### Credit-Based Usage System (COMPLETE)
+
+#### Added
+
+- **Database Schema** (`lib/migrations/20260129_*.sql`)
+  - **20260129_001_create_plans_table.sql** - Plans table with credit allocation
+    - Free plan: 10 credits/month, no rollover
+    - Pro plan: 1000 credits/month, with rollover
+    - Configurable credit costs per research type
+    - Stripe integration fields
+
+  - **20260129_002_create_subscriptions_table.sql** - User subscriptions
+    - Links users to plans via Stripe
+    - Tracks subscription status and billing periods
+    - Supports multiple subscription states (active, canceled, past_due, trialing, paused)
+
+  - **20260129_003_create_transactions_table.sql** - Payment tracking
+    - Records all Stripe payment transactions
+    - Tracks invoices and payment intents
+    - Supports transaction status tracking
+
+  - **20260129_004_add_user_credits.sql** - User credit tracking
+    - `credits_balance` - Current available credits
+    - `credits_used_this_month` - Monthly consumption tracking
+    - `last_credit_reset_at` - Last reset timestamp
+
+  - **20260129_005_credit_functions.sql** - Credit management functions
+    - `check_credit_balance()` - Verify sufficient credits (Pro = unlimited)
+    - `consume_credits()` - Atomically deduct credits
+    - `allocate_monthly_credits()` - Allocate based on plan and rollover policy
+    - `reset_monthly_credits()` - Monthly cron job for all users
+
+  - **20260129_006_seed_plans.sql** - Initial data
+    - Seeds Free and Pro plans
+    - Migrates existing users to subscription model
+    - Initializes credit balances based on current plan_type
+
+  - **20260129_007_add_credits_to_token_usage.sql** - Credit tracking
+    - Links token usage with credit consumption
+    - `credits_consumed` column tracks credits per API call
+
+  - **20260129_008_cleanup_old_system.sql** - Migration cleanup
+    - Drops old `check_usage_limit()` function
+    - Drops old `increment_usage()` function
+    - Updates `reset_monthly_usage()` to use credit system
+
+- **Credit Checking Utilities** (`lib/research/check-usage.ts`)
+  - `checkResearchAllowed()` - Check if user has sufficient credits
+  - `getUserCredits()` - Get user's credit balance and stats
+  - `calculateCreditsNeeded()` - Calculate credits for a meeting (1 per attendee)
+
+- **Documentation**
+  - `CREDIT_SYSTEM_MIGRATION.md` - Complete migration guide with verification
+  - `MIGRATION_CHECKLIST.md` - Step-by-step migration checklist
+  - `IMPLEMENTATION_SUMMARY.md` - Technical overview and architecture
+  - `QUICK_START.md` - 5-minute migration guide
+  - `CREDIT_PRICING.md` - Detailed pricing model documentation
+  - `FILE_INDEX.md` - Navigation guide for all documentation
+  - `verify-credit-migration.sql` - Database verification script
+
+#### Changed
+
+- **Token Tracking** (`lib/research/token-tracker.ts`)
+  - Now consumes 1 credit per person research
+  - Company research included in person cost (no additional charge)
+  - Updates `token_usage.credits_consumed` field
+  - Pro users bypass credit consumption
+
+- **Research API** (`app/api/research/route.ts`)
+  - Added credit check gate before starting research
+  - Calculates credits needed: 1 per attendee (person + company)
+  - Returns 403 error with helpful message if insufficient credits
+  - Shows credits needed vs available in error response
+
+- **Stripe Webhook** (`app/api/stripe/webhook/route.ts`)
+  - Creates/updates subscription records on subscription events
+  - Records transactions on payment success
+  - Allocates credits immediately on subscription activation
+  - Handles subscription cancellation with graceful downgrade
+
+- **Settings Page UI** (`app/(app)/settings/page.tsx`)
+  - Fetch `credits_balance` and `credits_used_this_month` instead of `meetings_used`
+  - Updated TypeScript types for credit fields
+
+- **Settings Client Component** (`components/settings/SettingsClient.tsx`)
+  - Shows credit balance instead of meeting usage
+  - Progress bar displays credits: "7 / 10 credits"
+  - Explanation text: "1 credit = research for 1 attendee (person + company)"
+  - Warning when low credits (< 3 remaining)
+  - Warning when no credits (0 remaining)
+  - Updated plan descriptions:
+    - Free: "10 credits/month (10 attendees)"
+    - Pro: "1000 credits/month (unlimited for most)"
+
+#### Removed
+
+- Old meeting-based limit system functions
+- Meeting usage tracking in UI (replaced with credit balance)
+
+#### Credit Pricing Model
+
+**Cost Structure:**
+- **1 credit = 1 attendee** (person + company research included)
+- **Examples:**
+  - Meeting with 2 attendees = 2 credits
+  - Meeting with 5 attendees = 5 credits
+
+**Plans:**
+- **Free**: 10 credits/month, no rollover, 30-day retention
+- **Pro**: 1000 credits/month, with rollover, unlimited retention
+
+**Pro Users:**
+- Unlimited credits (bypass credit check entirely)
+- Credits tracked but never enforced
+
+#### Architecture
+
+**Credit Flow:**
+1. User triggers research (`/api/research`)
+2. Calculate credits needed (1 per attendee)
+3. Check credit balance (`check_credit_balance`)
+4. Perform research (`ResearchOrchestrator`)
+5. Track tokens (`TokenTracker.trackUsage`)
+6. Consume credits (`consume_credits`) - only for person research
+7. Update `token_usage.credits_consumed`
+
+**Monthly Reset:**
+- Cron job calls `reset_monthly_credits()`
+- For each user, calls `allocate_monthly_credits()`
+- Free plan: Replace with 10 credits
+- Pro plan: Add 1000 credits (rollover enabled)
+
+**Stripe Integration:**
+- Webhook receives subscription events
+- Updates `subscriptions` table
+- Creates `transactions` records
+- Allocates credits on activation
+
+#### Migration Strategy
+
+**Backward Compatible:**
+- Old columns (`meetings_used`, `usage_reset_at`) preserved temporarily
+- Allows safe rollback if needed
+- Can be dropped after confirming system works in production
+
+**Data Migration:**
+- Existing users migrated to subscription model
+- Free users initialized with 10 credits
+- Pro users initialized with 1000 credits
+- Subscriptions created based on existing `plan_type`
+
+#### Testing & Verification
+
+**Verification Script:**
+- Run `verify-credit-migration.sql` to check:
+  - Tables created correctly
+  - Plans seeded (free, pro)
+  - User credits initialized
+  - Subscriptions created
+  - Functions working
+  - RLS policies in place
+
+**End-to-End Testing:**
+1. Create test user with free plan (10 credits)
+2. Trigger research for meeting with 2 attendees
+3. Verify credits deducted: `credits_balance = 8`
+4. Attempt research with insufficient credits
+5. Verify error returned with clear message
+6. Upgrade to pro plan
+7. Verify unlimited research works
+
+#### Design System Compliance
+
+✅ **UI Updates** - All credit display uses design tokens
+✅ **Consistent Messaging** - Clear explanation of credit model
+✅ **User Education** - Inline help text in settings
+✅ **Warning States** - Low credits and no credits warnings
+✅ **Responsive** - Progress bar adapts to available space
+
+#### Features Implemented
+
+- ✅ Credit-based usage tracking
+- ✅ Per-attendee pricing (1 credit = person + company)
+- ✅ Plan-based credit allocation
+- ✅ Monthly credit resets with rollover support
+- ✅ Stripe subscription integration
+- ✅ Transaction recording
+- ✅ Pro unlimited credits
+- ✅ UI updates for credit display
+- ✅ Database migrations
+- ✅ Comprehensive documentation
+- ✅ Verification procedures
+- ✅ Rollback plans
+
+---
+
 ## 2026-01-22
 
 ### Phase 6: Dashboard (COMPLETE)

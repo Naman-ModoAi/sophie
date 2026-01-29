@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MeetingCard } from './MeetingCard';
 import { MeetingDetailPanel } from './MeetingDetailPanel';
 import { EmptyState } from './EmptyState';
 import { Button } from '@/components/ui';
 import { SyncIcon } from '@/components/ui/icons/SyncIcon';
 import { useToast } from '@/contexts/ToastContext';
+import { createClient } from '@/lib/supabase/client';
 
 interface Meeting {
   id: string;
@@ -25,14 +26,48 @@ interface DashboardClientProps {
   meetings: Meeting[];
 }
 
-export function DashboardClient({ meetings }: DashboardClientProps) {
+export function DashboardClient({ meetings: initialMeetings }: DashboardClientProps) {
+  const [meetings, setMeetings] = useState<Meeting[]>(initialMeetings);
   const [selectedMeetingId, setSelectedMeetingId] = useState<string | null>(
-    meetings.length > 0 ? meetings[0].id : null
+    initialMeetings.length > 0 ? initialMeetings[0].id : null
   );
   const [isResyncing, setIsResyncing] = useState(false);
   const { showToast } = useToast();
+  const supabase = createClient();
 
   const selectedMeeting = meetings.find(m => m.id === selectedMeetingId);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('meetings-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'meetings'
+        },
+        async (payload) => {
+          // Refetch meetings when any change occurs
+          const { data } = await supabase
+            .from('meetings')
+            .select('*, attendees (*)')
+            .eq('is_cancelled', false)
+            .gte('start_time', new Date().toISOString())
+            .order('start_time', { ascending: true })
+            .limit(50);
+
+          if (data) {
+            setMeetings(data);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
 
   const handleResync = async () => {
     setIsResyncing(true);
@@ -45,11 +80,12 @@ export function DashboardClient({ meetings }: DashboardClientProps) {
         throw new Error('Resync failed');
       }
 
-      // Reload the page to show updated data
-      window.location.reload();
+      const result = await response.json();
+      showToast(`Synced ${result.meetings_synced} meetings`, 'success');
     } catch (error) {
       console.error('Resync error:', error);
       showToast('Failed to resync calendar. Please try again.', 'error');
+    } finally {
       setIsResyncing(false);
     }
   };

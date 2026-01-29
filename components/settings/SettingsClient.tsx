@@ -1,24 +1,105 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { createBrowserClient } from '@supabase/ssr';
 import { Card, Button, Badge, Avatar, Tabs, Toast } from '@/components/ui';
 import type { ToastVariant } from '@/components/ui';
 
 type Props = {
+  userId: string;
   user: {
     email: string;
     plan_type: 'free' | 'pro';
     email_timing: 'immediate' | '1hr' | '30min' | 'digest';
-    meetings_used: number;
+    credits_balance: number;
+    credits_used_this_month: number;
   };
   calendarConnected: boolean;
   tokenExpired: boolean;
+  initialToast?: { message: string; variant: ToastVariant };
 };
 
-export default function SettingsClient({ user, calendarConnected, tokenExpired }: Props) {
+export default function SettingsClient({ userId, user, calendarConnected, tokenExpired, initialToast }: Props) {
+  const router = useRouter();
   const [emailTiming, setEmailTiming] = useState(user.email_timing);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; variant: ToastVariant } | null>(null);
+  const [isWaitingForUpdate, setIsWaitingForUpdate] = useState(false);
+  const hasProcessedToast = useRef(false);
+
+  // Handle Stripe checkout success with realtime subscription
+  useEffect(() => {
+    // Prevent running multiple times
+    if (hasProcessedToast.current) return;
+
+    // Check if we're coming from the success redirect (not the upgraded redirect)
+    const params = new URLSearchParams(window.location.search);
+    const isFromStripe = params.get('success') === 'true';
+    const isAlreadyUpgraded = params.get('upgraded') === 'true';
+
+    if (initialToast?.variant === 'success' && isFromStripe && !isAlreadyUpgraded) {
+      hasProcessedToast.current = true;
+      console.log('[Settings] Starting realtime subscription for user:', userId);
+      setIsWaitingForUpdate(true);
+
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      const channel = supabase
+        .channel('user-plan-updates')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'users',
+            filter: `id=eq.${userId}`
+          },
+          (payload) => {
+            console.log('[Settings] Realtime update received:', payload);
+            if (payload.new.plan_type === 'pro') {
+              console.log('[Settings] Plan upgraded to Pro, redirecting...');
+              channel.unsubscribe();
+              setIsWaitingForUpdate(false);
+              // Force a full page reload to get updated data
+              window.location.href = '/settings?upgraded=true';
+            } else {
+              console.log('[Settings] Plan type is:', payload.new.plan_type);
+            }
+          }
+        )
+        .subscribe();
+
+      // Timeout after 10 seconds if webhook hasn't updated the plan
+      const timeout = setTimeout(() => {
+        console.log('[Settings] Timeout reached - webhook took >10s');
+        channel.unsubscribe();
+        setIsWaitingForUpdate(false);
+        setToast({
+          message: 'Payment successful! Refresh the page if your plan hasn\'t updated.',
+          variant: 'success'
+        });
+        // Clear URL params to prevent re-triggering
+        window.history.replaceState({}, '', '/settings');
+      }, 10000);
+
+      return () => {
+        channel.unsubscribe();
+        clearTimeout(timeout);
+      };
+    } else if (initialToast && !hasProcessedToast.current) {
+      hasProcessedToast.current = true;
+      // For non-success toasts (like canceled or upgraded), show immediately
+      setToast(initialToast);
+      // Clear URL params after showing toast
+      setTimeout(() => {
+        window.history.replaceState({}, '', '/settings');
+      }, 100);
+    }
+  }, [initialToast, userId, router]);
 
   const handleSave = async () => {
     // Validate email timing
@@ -94,41 +175,77 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
       content: (
         <Card className="p-6">
           <div className="space-y-4">
-            {/* Profile with Avatar */}
-            <div className="flex items-center gap-4 pb-4 border-b border-text/10">
-              <Avatar
-                fallback={user.email}
-                alt={user.email}
-                size="lg"
-              />
-              <div className="flex-1">
-                <p className="font-medium text-text">{user.email.split('@')[0]}</p>
-                <p className="text-sm text-text/70">{user.email}</p>
+            {/* Profile and Credit Balance */}
+            <div className="flex items-start justify-between gap-4 pb-4 border-b border-text/10">
+              {/* Left: Avatar and Email */}
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center ring-0.5 ring-accent/20">
+                  <span className="text-xl font-medium text-white">
+                    {user.email.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-text">{user.email.split('@')[0]}</p>
+                  <p className="text-sm text-text/70">{user.email}</p>
+                </div>
               </div>
+
+              {/* Right: Credit Balance (Free users only) */}
+              {user.plan_type === 'free' && (
+                <div className="min-w-[200px]">
+                  <label className="text-xs text-text/70 mb-1.5 block">Credit Balance</label>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-text/10 rounded-full h-2">
+                      <div
+                        className="bg-accent rounded-full h-2 transition-all"
+                        style={{ width: `${Math.min((user.credits_balance / 10) * 100, 100)}%` }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-text whitespace-nowrap">
+                      {user.credits_balance} / 10
+                    </span>
+                  </div>
+                  {user.credits_balance === 0 && (
+                    <p className="text-xs text-warning mt-1">
+                      Out of credits
+                    </p>
+                  )}
+                  {user.credits_balance > 0 && user.credits_balance < 3 && (
+                    <p className="text-xs text-warning mt-1">
+                      Low credits
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Plan Information */}
-            <div>
-              <label className="text-sm text-text/70">Plan</label>
-              <div className="flex items-center gap-2 mt-1">
-                <Badge variant={user.plan_type === 'pro' ? 'accent' : 'default'}>
-                  {user.plan_type.toUpperCase()}
-                </Badge>
-                {user.plan_type === 'free' ? (
-                  <Button variant="primary" onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID!)}>
-                    Upgrade to Pro
-                  </Button>
-                ) : (
-                  <Button variant="secondary" onClick={handleManageSubscription}>
-                    Manage Subscription
-                  </Button>
-                )}
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="text-sm text-text/70 mb-1 block">Current Plan</label>
+                <div className="flex items-center gap-2">
+                  <Badge variant={user.plan_type === 'pro' ? 'accent' : 'default'}>
+                    {user.plan_type === 'free' ? 'Free Plan' : 'Pro Plan'}
+                  </Badge>
+                  <span className="text-sm text-text/60">
+                    {user.plan_type === 'free' ? '10 credits/month' : '1000 credits/month'}
+                  </span>
+                </div>
               </div>
+              {user.plan_type === 'free' ? (
+                <Button variant="primary" onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID!)}>
+                  Upgrade to Pro
+                </Button>
+              ) : (
+                <Button variant="secondary" onClick={handleManageSubscription}>
+                  Manage Subscription
+                </Button>
+              )}
             </div>
 
             {/* Plan Features Comparison */}
-            <div className="mt-4 p-4 bg-text/5 rounded-lg">
-              <div className="grid md:grid-cols-2 gap-4">
+            <div className="p-4 bg-text/5 rounded-lg">
+              <div className="grid md:grid-cols-2 gap-6">
                 {/* Free Plan */}
                 <div>
                   <h3 className="font-medium text-text mb-2 flex items-center gap-2">
@@ -136,9 +253,9 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
                     {user.plan_type === 'free' && <Badge variant="default">Current</Badge>}
                   </h3>
                   <ul className="space-y-1 text-sm text-text/70">
-                    <li>✓ 5 meetings/month</li>
+                    <li>✓ 10 credits/month</li>
                     <li>✓ Basic prep notes</li>
-                    <li>✓ 30min/1hr/digest emails</li>
+                    <li>✓ Email delivery</li>
                     <li>✓ Calendar sync</li>
                   </ul>
                 </div>
@@ -150,37 +267,14 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
                     {user.plan_type === 'pro' && <Badge variant="accent">Current</Badge>}
                   </h3>
                   <ul className="space-y-1 text-sm text-text/70">
-                    <li>✓ Unlimited meetings</li>
+                    <li>✓ 1000 credits/month</li>
                     <li>✓ Advanced prep notes</li>
-                    <li>✓ Immediate email delivery</li>
+                    <li>✓ Immediate email</li>
                     <li>✓ Priority support</li>
                   </ul>
                 </div>
               </div>
             </div>
-
-            {/* Usage for Free Plan */}
-            {user.plan_type === 'free' && (
-              <div>
-                <label className="text-sm text-text/70">Monthly Usage</label>
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="flex-1 bg-text/10 rounded-full h-2">
-                    <div
-                      className="bg-accent rounded-full h-2 transition-all"
-                      style={{ width: `${Math.min((user.meetings_used / 5) * 100, 100)}%` }}
-                    />
-                  </div>
-                  <span className="text-sm text-text">
-                    {user.meetings_used} / 5 meetings
-                  </span>
-                </div>
-                {user.meetings_used >= 5 && (
-                  <p className="text-sm text-warning mt-2">
-                    You&apos;ve reached your free plan limit. Upgrade to Pro for unlimited meetings.
-                  </p>
-                )}
-              </div>
-            )}
           </div>
         </Card>
       ),
@@ -272,6 +366,19 @@ export default function SettingsClient({ user, calendarConnected, tokenExpired }
 
   return (
     <>
+      {isWaitingForUpdate && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-surface p-6 rounded-lg shadow-lg max-w-md mx-4">
+            <div className="flex items-center gap-4">
+              <div className="animate-spin h-8 w-8 border-4 border-accent border-t-transparent rounded-full"></div>
+              <div>
+                <p className="font-medium text-text">Processing your subscription...</p>
+                <p className="text-sm text-text/70 mt-1">This will only take a moment</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <Tabs tabs={tabs} defaultTab="account" />
       {toast && (
         <Toast

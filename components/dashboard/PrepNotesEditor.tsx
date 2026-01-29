@@ -361,7 +361,19 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate prep note');
+        // Parse error response for user-friendly message
+        const errorData = await response.json().catch(() => ({}));
+
+        if (response.status === 403) {
+          // Credit-related error
+          const message = errorData.message ||
+                         errorData.error ||
+                         'Insufficient credits. Please upgrade your plan.';
+          showToast(message, 'error');
+          throw new Error(message);
+        }
+
+        throw new Error(errorData.error || 'Failed to generate prep note');
       }
 
       const result = await response.json();
@@ -385,7 +397,10 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       showToast('Prep note generated successfully!', 'success');
     } catch (error) {
       console.error('Error generating prep note:', error);
-      showToast('Failed to generate prep note. Please try again.', 'error');
+      // Don't show toast again if we already showed it for 403
+      if (error instanceof Error && !error.message.includes('credits')) {
+        showToast('Failed to generate prep note. Please try again.', 'error');
+      }
     } finally {
       setIsGenerating(false);
     }
