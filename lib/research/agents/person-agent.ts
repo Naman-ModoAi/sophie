@@ -7,7 +7,6 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { PersonResearch, PersonResearchSchema } from '../types';
 import { SYSTEM_PROMPT, buildResearchPrompt } from './prompts/person';
 import { TokenTracker } from '../token-tracker';
-import { webSearch, formatSearchResults } from '../serper';
 
 export class PersonResearchAgent {
   private client: GoogleGenerativeAI;
@@ -22,13 +21,13 @@ export class PersonResearchAgent {
     }
 
     this.client = new GoogleGenerativeAI(apiKey);
-    this.modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp';
+    this.modelName = process.env.GEMINI_MODEL || 'gemini-3-flash-preview'; // Use grounding-compatible model
     this.systemInstruction = SYSTEM_PROMPT;
     this.tokenTracker = TokenTracker;
   }
 
   /**
-   * Research a person using Serper API for web search + Gemini for analysis
+   * Research a person using Gemini with Google Search grounding
    */
   async researchPerson(params: {
     name: string;
@@ -68,34 +67,22 @@ export class PersonResearchAgent {
 
     console.log(`[PersonAgent] Search query: "${searchQuery}"`);
 
-    // Step 2: Perform web search via Serper
-    const searchResults = await webSearch({
-      query: searchQuery,
-      numResults: 5,
-      userId,
-      meetingId,
-    });
-
-    // Step 3: Format search results for context
-    const searchContext = formatSearchResults(searchResults);
-
-    // Step 4: Build prompt with search context
+    // Step 2: Build prompt with search instruction
     const prompt = buildResearchPrompt(name, email, companyFromEmail);
     const fullPrompt = [
       prompt,
-      '\n## Web Search Results:\n',
-      searchContext,
-      '\n\nBased on the above information, provide your research in JSON format.',
+      `\n\nSearch the web for: "${searchQuery}" and use those results for your research.`,
+      '\n\nProvide your research in JSON format.',
     ].join('');
 
-    console.log(`[PersonAgent] Using Serper search + Gemini analysis`);
+    console.log(`[PersonAgent] Using Gemini with Google Search grounding`);
 
     try {
-      // Step 5: Generate content with Gemini (NO grounding - we already have search results)
+      // Step 3: Generate content with Gemini using Google Search grounding
       const model = this.client.getGenerativeModel({
         model: this.modelName,
         systemInstruction: this.systemInstruction,
-        // No tools config - grounding removed, using Serper instead
+        tools: [{ googleSearch: {} }], // Enable Google Search grounding
       });
 
       const result = await model.generateContent(fullPrompt);

@@ -38,14 +38,63 @@ export async function POST(request: Request) {
   const supabase = await createServiceClient();
 
   try {
+    console.log('[Stripe Webhook] Received event:', event.type, event.id);
+
     switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        console.log('[Stripe Webhook] Checkout session completed:', session.id);
+
+        const userId = session.metadata?.userId;
+        if (!userId) {
+          console.error('[Stripe Webhook] No userId in checkout session metadata');
+          break;
+        }
+
+        // For subscription checkouts, immediately update user plan
+        if (session.mode === 'subscription' && session.subscription) {
+          console.log(`[Stripe Webhook] Updating user ${userId} to pro plan immediately`);
+
+          const { error: userError } = await supabase
+            .from('users')
+            .update({
+              stripe_customer_id: session.customer as string,
+              plan_type: 'pro',
+            })
+            .eq('id', userId);
+
+          if (userError) {
+            console.error('[Stripe Webhook] Error updating user on checkout completion:', userError);
+          } else {
+            console.log('[Stripe Webhook] User plan updated to pro immediately after checkout');
+          }
+        }
+        break;
+      }
+
       case 'customer.subscription.created':
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
-        const userId = subscription.metadata?.userId;
+        console.log('[Stripe Webhook] Subscription ID:', subscription.id);
+        console.log('[Stripe Webhook] Customer ID:', subscription.customer);
+        console.log('[Stripe Webhook] Metadata:', subscription.metadata);
+
+        let userId = subscription.metadata?.userId;
+
+        // Fallback: lookup user by customer_id if metadata missing
+        if (!userId) {
+          console.warn('[Stripe Webhook] No userId in subscription metadata, looking up by customer_id');
+          const { data: user } = await supabase
+            .from('users')
+            .select('id')
+            .eq('stripe_customer_id', subscription.customer as string)
+            .single();
+
+          userId = user?.id;
+        }
 
         if (!userId) {
-          console.warn('[Stripe Webhook] No userId in subscription metadata');
+          console.error('[Stripe Webhook] Cannot determine userId for subscription');
           break;
         }
 
@@ -61,6 +110,19 @@ export async function POST(request: Request) {
 
         if (!plan) {
           console.error(`[Stripe Webhook] No plan found for price_id: ${priceId}`);
+          // Still update user to pro if subscription is active, even if plan lookup fails
+          if (subscription.status === 'active') {
+            await supabase
+              .from('users')
+              .update({
+                stripe_subscription_id: subscription.id,
+                stripe_subscription_status: subscription.status,
+                stripe_customer_id: subscription.customer as string,
+                plan_type: 'pro',
+              })
+              .eq('id', userId);
+            console.log('[Stripe Webhook] Updated user to pro plan (fallback)');
+          }
           break;
         }
 
@@ -127,10 +189,22 @@ export async function POST(request: Request) {
 
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription;
-        const userId = subscription.metadata.userId;
+        let userId = subscription.metadata?.userId;
+
+        // Fallback: lookup user by customer_id if metadata missing
+        if (!userId) {
+          console.warn('[Stripe Webhook] No userId in subscription metadata, looking up by customer_id');
+          const { data: user } = await supabase
+            .from('users')
+            .select('id')
+            .eq('stripe_customer_id', subscription.customer as string)
+            .single();
+
+          userId = user?.id;
+        }
 
         if (!userId) {
-          console.warn('[Stripe Webhook] No userId in subscription metadata');
+          console.error('[Stripe Webhook] Cannot determine userId for subscription');
           break;
         }
 
@@ -188,10 +262,10 @@ export async function POST(request: Request) {
           .eq('stripe_subscription_id', invoiceData.subscription as string)
           .single();
 
-        // Create transaction record
+        // Upsert transaction record (use upsert to handle duplicate webhooks)
         const { error: txError } = await supabase
           .from('transactions')
-          .insert({
+          .upsert({
             user_id: user.id,
             subscription_id: subscription?.id || null,
             stripe_transaction_id: invoiceData.charge || invoice.id,
@@ -206,6 +280,8 @@ export async function POST(request: Request) {
               period_start: invoiceData.period_start,
               period_end: invoiceData.period_end,
             }
+          }, {
+            onConflict: 'stripe_transaction_id'
           });
 
         if (txError) {

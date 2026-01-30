@@ -138,12 +138,13 @@ export class TokenTracker {
   }
 
   /**
-   * Track external API usage (Serper, Resend, etc.)
+   * Track external API usage (Resend, etc.)
+   * Note: Serper API tracking removed - now using Gemini grounding instead
    */
   static async trackApiUsage(params: {
     userId: string;
     meetingId: string;
-    apiName: 'serper' | 'resend' | 'other';
+    apiName: 'resend' | 'other';
     operationType: string;
     requestCount?: number;
     metadata?: Record<string, any>;
