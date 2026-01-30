@@ -40,12 +40,14 @@ export class CompanyResearchAgent {
 
     console.log(`[CompanyAgent] Researching ${domain}`);
 
-    // Step 1: Build search query
-    const searchQuery = [
-      companyName || domain,
-      domain,
-      'company overview products news',
-    ].filter(Boolean).join(' ');
+    // Step 1: Build comprehensive search query
+    const searchParts = [companyName || domain];
+    if (domain && companyName) {
+      searchParts.push(`(${domain})`);
+    }
+    searchParts.push('company overview products services news funding');
+
+    const searchQuery = searchParts.filter(Boolean).join(' ');
 
     console.log(`[CompanyAgent] Search query: "${searchQuery}"`);
 

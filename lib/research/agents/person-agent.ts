@@ -54,13 +54,17 @@ export class PersonResearchAgent {
         .join(' ');
     }
 
-    // Step 1: Build search query
-    const searchQuery = [
-      name,
-      companyFromEmail || '',
-      domain,
-      'LinkedIn professional background'
-    ].filter(Boolean).join(' ');
+    // Step 1: Build search query with broader focus
+    const searchParts = [name];
+    if (companyFromEmail) {
+      searchParts.push(companyFromEmail);
+    }
+    if (domain) {
+      searchParts.push(`(${domain})`);
+    }
+    searchParts.push('professional profile background recent activity');
+
+    const searchQuery = searchParts.filter(Boolean).join(' ');
 
     console.log(`[PersonAgent] Search query: "${searchQuery}"`);
 
