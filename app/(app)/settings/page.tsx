@@ -25,6 +25,14 @@ export default async function SettingsPage({
     .eq('id', session.userId)
     .single();
 
+  // Fetch subscription data
+  const { data: subscription } = await supabase
+    .from('subscriptions')
+    .select('status, cancel_at_period_end, current_period_end')
+    .eq('user_id', session.userId)
+    .eq('status', 'active')
+    .single();
+
   // If columns don't exist, fetch basic user data
   let userData: {
     email: string;
@@ -33,6 +41,12 @@ export default async function SettingsPage({
     credits_balance: number;
     credits_used_this_month: number;
   };
+
+  let subscriptionData: {
+    status: string;
+    cancel_at_period_end: boolean;
+    current_period_end: string;
+  } | null = subscription || null;
 
   if (error && error.code === '42703') {
     console.log('Some columns missing, fetching basic user data');
@@ -55,6 +69,7 @@ export default async function SettingsPage({
       credits_balance: 0,
       credits_used_this_month: 0,
     };
+    subscriptionData = null;
   } else if (error || !user) {
     console.error('Failed to fetch user:', error);
     redirect('/dashboard');
@@ -92,6 +107,11 @@ export default async function SettingsPage({
       message: 'Checkout was canceled. Your subscription was not changed.',
       variant: 'info',
     };
+  } else if (searchParams.cancelled === 'true') {
+    initialToast = {
+      message: 'Subscription cancelled. You\'ll retain Pro access until the end of your billing period.',
+      variant: 'success',
+    };
   }
 
   return (
@@ -102,6 +122,7 @@ export default async function SettingsPage({
       <SettingsClient
         userId={session.userId}
         user={userData}
+        subscription={subscriptionData}
         calendarConnected={calendarConnected}
         tokenExpired={tokenExpired}
         initialToast={initialToast}

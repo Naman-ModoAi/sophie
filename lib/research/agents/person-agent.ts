@@ -3,13 +3,13 @@
  * Ported from backend/src/research_agent/subagents/person/agent.py
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { PersonResearch, PersonResearchSchema } from '../types';
 import { SYSTEM_PROMPT, buildResearchPrompt } from './prompts/person';
 import { TokenTracker } from '../token-tracker';
 
 export class PersonResearchAgent {
-  private client: GoogleGenerativeAI;
+  private client: GoogleGenAI;
   private modelName: string;
   private systemInstruction: string;
   private tokenTracker: typeof TokenTracker;
@@ -20,7 +20,7 @@ export class PersonResearchAgent {
       throw new Error('GOOGLE_GEMINI_API_KEY environment variable is required');
     }
 
-    this.client = new GoogleGenerativeAI(apiKey);
+    this.client = new GoogleGenAI({ apiKey });
     this.modelName = process.env.GEMINI_MODEL || 'gemini-3-flash-preview'; // Use grounding-compatible model
     this.systemInstruction = SYSTEM_PROMPT;
     this.tokenTracker = TokenTracker;
@@ -79,13 +79,20 @@ export class PersonResearchAgent {
 
     try {
       // Step 3: Generate content with Gemini using Google Search grounding
-      const model = this.client.getGenerativeModel({
-        model: this.modelName,
-        systemInstruction: this.systemInstruction,
-        tools: [{ googleSearch: {} }], // Enable Google Search grounding
-      });
+      const groundingTool = {
+        googleSearch: {},
+      };
 
-      const result = await model.generateContent(fullPrompt);
+      const config = {
+        tools: [groundingTool],
+        systemInstruction: this.systemInstruction,
+      };
+
+      const result = await this.client.models.generateContent({
+        model: this.modelName,
+        contents: fullPrompt,
+        config,
+      });
 
       const response = result.response;
 

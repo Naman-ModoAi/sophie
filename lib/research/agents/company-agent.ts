@@ -3,13 +3,13 @@
  * Ported from backend/src/research_agent/subagents/company/agent.py
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { CompanyResearch, CompanyResearchSchema } from '../types';
 import { SYSTEM_PROMPT, buildResearchPrompt } from './prompts/company';
 import { TokenTracker } from '../token-tracker';
 
 export class CompanyResearchAgent {
-  private client: GoogleGenerativeAI;
+  private client: GoogleGenAI;
   private modelName: string;
   private systemInstruction: string;
   private tokenTracker: typeof TokenTracker;
@@ -20,7 +20,7 @@ export class CompanyResearchAgent {
       throw new Error('GOOGLE_GEMINI_API_KEY environment variable is required');
     }
 
-    this.client = new GoogleGenerativeAI(apiKey);
+    this.client = new GoogleGenAI({ apiKey });
     this.modelName = process.env.GEMINI_MODEL || 'gemini-3-flash-preview'; // Use grounding-compatible model
     this.systemInstruction = SYSTEM_PROMPT;
     this.tokenTracker = TokenTracker;
