@@ -53,27 +53,21 @@ export class PersonResearchAgent {
         .join(' ');
     }
 
-    // Step 1: Build search query with broader focus
+    // Step 1: Build search query
     const searchParts = [name];
     if (companyFromEmail) {
       searchParts.push(companyFromEmail);
     }
     if (domain) {
-      searchParts.push(`(${domain})`);
+      searchParts.push(domain);
     }
-    searchParts.push('professional profile background recent activity');
-
     const searchQuery = searchParts.filter(Boolean).join(' ');
 
     console.log(`[PersonAgent] Search query: "${searchQuery}"`);
 
-    // Step 2: Build prompt with search instruction
-    const prompt = buildResearchPrompt(name, email, companyFromEmail);
-    const fullPrompt = [
-      prompt,
-      `\n\nSearch the web for: "${searchQuery}" and use those results for your research.`,
-      '\n\nProvide your research in JSON format.',
-    ].join('');
+    // Step 2: Build full prompt: "Do the research about, {searchQuery} {prompt}"
+    const promptTemplate = buildResearchPrompt();
+    const fullPrompt = `Do the research about, ${searchQuery} professional profile background, recent activity. ${promptTemplate}`;
 
     console.log(`[PersonAgent] Using Gemini with Google Search grounding`);
 
@@ -123,52 +117,25 @@ export class PersonResearchAgent {
         }
       }
 
-      // Parse and return
-      const text = response.text || '';
-      if (!text) {
+      // Get markdown content
+      const markdownContent = response.text || '';
+      if (!markdownContent) {
         throw new Error('No response text from Gemini');
       }
-      return this.parseResponse(text, name, companyFromEmail);
+
+      return {
+        name,
+        email,
+        markdown_content: markdownContent.trim(),
+      };
     } catch (error) {
       console.error(`[PersonAgent] Error researching ${name}:`, error);
-      throw error;
+      // Return fallback markdown
+      return {
+        name,
+        email,
+        markdown_content: `# ${name}\n\n**Error:** Research failed - ${error instanceof Error ? error.message : String(error)}`,
+      };
     }
-  }
-
-  /**
-   * Parse model response into PersonResearch object
-   */
-  private parseResponse(
-    responseText: string,
-    name: string,
-    company?: string
-  ): PersonResearch {
-    try {
-      // Find JSON in response
-      const jsonStart = responseText.indexOf('{');
-      const jsonEnd = responseText.lastIndexOf('}') + 1;
-
-      if (jsonStart >= 0 && jsonEnd > jsonStart) {
-        const jsonStr = responseText.substring(jsonStart, jsonEnd);
-        const data = JSON.parse(jsonStr);
-
-        // Validate with Zod
-        return PersonResearchSchema.parse(data);
-      }
-    } catch (error) {
-      console.error('[PersonAgent] JSON parse failed:', error);
-    }
-
-    // Fallback
-    return {
-      name,
-      company: company || null,
-      current_role: null,
-      tenure: null,
-      background: responseText.substring(0, 500) || null,
-      recent_activity: null,
-      linkedin_url: null,
-      talking_points: [],
-    };
   }
 }

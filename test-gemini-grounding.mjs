@@ -26,7 +26,15 @@ try {
 
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
-    contents: "Naman Kumar Sahu Icecreamlabs getmodo.in professional profile background recent activity",
+    contents: `Do the research about, Naman Kumar Sahu Icecreamlabs getmodo.in professional profile background, recent activity. Extract and summarize the info for a business meeting in the following format:
+    1. Current role and company
+    2. Professional background and expertise areas
+    3. Recent professional activities (posts, articles, speaking, achievements)
+    4. LinkedIn profile URL if available
+    5. 3-5 specific talking points for building rapport in a business meeting
+    
+    - Don't mess up with the personal detail of the attendee, as name and company should be what has been passed.
+    - summarize the info upto 500 words, and in markdown format.`,
     config,
   });
 

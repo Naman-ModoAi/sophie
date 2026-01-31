@@ -50,13 +50,9 @@ export class CompanyResearchAgent {
 
     console.log(`[CompanyAgent] Search query: "${searchQuery}"`);
 
-    // Step 2: Build prompt with search instruction
-    const prompt = buildResearchPrompt(domain, companyName);
-    const fullPrompt = [
-      prompt,
-      `\n\nSearch the web for: "${searchQuery}" and use those results for your research.`,
-      '\n\nProvide your research in JSON format.',
-    ].join('');
+    // Step 2: Build full prompt
+    const promptTemplate = buildResearchPrompt();
+    const fullPrompt = `Do the research about, ${searchQuery} ${promptTemplate}`;
 
     console.log(`[CompanyAgent] Using Gemini with Google Search grounding`);
 
@@ -106,52 +102,25 @@ export class CompanyResearchAgent {
         }
       }
 
-      // Parse and return
-      const text = response.text || '';
-      if (!text) {
+      // Get markdown content
+      const markdownContent = response.text || '';
+      if (!markdownContent) {
         throw new Error('No response text from Gemini');
       }
-      return this.parseResponse(text, domain, companyName);
+
+      return {
+        name: companyName || domain,
+        domain,
+        markdown_content: markdownContent.trim(),
+      };
     } catch (error) {
       console.error(`[CompanyAgent] Error researching ${domain}:`, error);
-      throw error;
+      // Return fallback markdown
+      return {
+        name: companyName || domain,
+        domain,
+        markdown_content: `# ${companyName || domain}\n\n**Error:** Research failed - ${error instanceof Error ? error.message : String(error)}`,
+      };
     }
-  }
-
-  /**
-   * Parse model response into CompanyResearch object
-   */
-  private parseResponse(
-    responseText: string,
-    domain: string,
-    companyName?: string
-  ): CompanyResearch {
-    try {
-      // Find JSON in response
-      const jsonStart = responseText.indexOf('{');
-      const jsonEnd = responseText.lastIndexOf('}') + 1;
-
-      if (jsonStart >= 0 && jsonEnd > jsonStart) {
-        const jsonStr = responseText.substring(jsonStart, jsonEnd);
-        const data = JSON.parse(jsonStr);
-
-        // Validate with Zod
-        return CompanyResearchSchema.parse(data);
-      }
-    } catch (error) {
-      console.error('[CompanyAgent] JSON parse failed:', error);
-    }
-
-    // Fallback
-    return {
-      name: companyName || domain,
-      domain,
-      overview: responseText.substring(0, 500) || null,
-      size: null,
-      industry: null,
-      recent_news: [],
-      funding: null,
-      products: [],
-    };
   }
 }

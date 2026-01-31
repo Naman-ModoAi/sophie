@@ -122,13 +122,8 @@ export class ResearchOrchestrator {
         console.error(`[Orchestrator] Error researching ${name}:`, error);
         results.push({
           name,
-          current_role: null,
-          company: null,
-          tenure: null,
-          background: `Research failed: ${error instanceof Error ? error.message : String(error)}`,
-          recent_activity: null,
-          linkedin_url: null,
-          talking_points: [],
+          email,
+          markdown_content: `# ${name}\n\n**Error:** Research failed - ${error instanceof Error ? error.message : String(error)}`,
         });
       }
     }
@@ -174,12 +169,7 @@ export class ResearchOrchestrator {
         results.push({
           name: domain,
           domain,
-          overview: `Research failed: ${error instanceof Error ? error.message : String(error)}`,
-          size: null,
-          industry: null,
-          recent_news: [],
-          funding: null,
-          products: [],
+          markdown_content: `# ${domain}\n\n**Error:** Research failed - ${error instanceof Error ? error.message : String(error)}`,
         });
       }
     }
@@ -240,19 +230,29 @@ export class ResearchOrchestrator {
   ): string[] {
     const points: string[] = [];
 
-    // From people
+    // Extract talking points from markdown content
     for (const person of people) {
-      points.push(...person.talking_points);
-    }
-
-    // From companies
-    for (const company of companies) {
-      if (company.recent_news && company.recent_news.length > 0) {
-        points.push(`Ask about: ${company.recent_news[0].substring(0, 100)}`);
+      const talkingPointsMatch = person.markdown_content.match(/(?:5\.|talking points)[:\s]*\n([\s\S]*?)(?:\n\n|$)/i);
+      if (talkingPointsMatch) {
+        const matches = talkingPointsMatch[1].match(/[-*]\s*([^\n]+)/g);
+        if (matches) {
+          points.push(...matches.map(p => p.replace(/^[-*]\s*/, '').trim()));
+        }
       }
     }
 
-    return points.slice(0, 5); // Top 5
+    // Extract insights from company markdown
+    for (const company of companies) {
+      const insightsMatch = company.markdown_content.match(/(?:5\.|business insights|conversation opportunities)[:\s]*\n([\s\S]*?)(?:\n\n|$)/i);
+      if (insightsMatch) {
+        const matches = insightsMatch[1].match(/[-*]\s*([^\n]+)/g);
+        if (matches) {
+          points.push(...matches.map(p => p.replace(/^[-*]\s*/, '').trim()));
+        }
+      }
+    }
+
+    return points.slice(0, 10); // Top 10
   }
 
   /**

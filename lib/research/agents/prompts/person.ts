@@ -15,39 +15,19 @@ Focus on providing:
 Be concise, professional, and meeting-focused. Prioritize recent information and business relevance over exhaustive details.`;
 
 export function buildResearchPrompt(
-  name: string,
-  email: string,
-  company?: string
+  // name: string,
+  // email: string,
+  // company?: string
 ): string {
-  let prompt = `Analyze search results to prepare for a business meeting with:
-
-Name: ${name}
-Email: ${email}`;
-
-  if (company) {
-    prompt += `\nCompany: ${company}`;
-  }
-
-  prompt += `
-
-Extract and summarize the following information from the search results:
-1. Current role and company
-2. Professional background and expertise areas
-3. Recent professional activities (posts, articles, speaking, achievements)
-4. LinkedIn profile URL if available
-5. 3-5 specific talking points for building rapport in a business meeting
-
-Provide your analysis in this JSON format:
-{
-  "name": "full name",
-  "current_role": "job title",
-  "company": "company name",
-  "tenure": "how long at current role/company",
-  "background": "2-3 sentences on career background and expertise",
-  "recent_activity": "recent professional activities and achievements",
-  "linkedin_url": "LinkedIn profile URL or null",
-  "talking_points": ["specific, actionable talking point 1", "talking point 2", "..."]
-}`;
+  let prompt = `Extract and summarize the info for a business meeting in the following format:
+    1. Current role and company
+    2. Professional background and expertise areas
+    3. Recent professional activities (posts, articles, speaking, achievements)
+    4. LinkedIn profile URL if available
+    5. 3-5 specific talking points for building rapport in a business meeting
+    
+    - Don't mess up with the personal detail of the attendee, as name and company should be what has been passed.
+    - summarize the info upto 500 words, and in markdown format.`;
 
   return prompt;
 }

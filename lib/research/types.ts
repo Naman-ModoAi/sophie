@@ -36,24 +36,14 @@ export const MeetingInfoSchema = z.object({
 
 export const PersonResearchSchema = z.object({
   name: z.string(),
-  current_role: z.string().nullable().optional(),
-  company: z.string().nullable().optional(),
-  tenure: z.string().nullable().optional(),
-  background: z.string().nullable().optional(),
-  recent_activity: z.string().nullable().optional(),
-  linkedin_url: z.string().url().nullable().optional(),
-  talking_points: z.array(z.string()).default([]),
+  email: z.string(),
+  markdown_content: z.string(), // Full markdown research document
 });
 
 export const CompanyResearchSchema = z.object({
   name: z.string(),
   domain: z.string(),
-  overview: z.string().nullable().optional(),
-  size: z.string().nullable().optional(),
-  industry: z.string().nullable().optional(),
-  recent_news: z.array(z.string()).default([]),
-  funding: z.string().nullable().optional(),
-  products: z.array(z.string()).default([]),
+  markdown_content: z.string(), // Full markdown research document
 });
 
 export const PrepNoteSchema = z.object({

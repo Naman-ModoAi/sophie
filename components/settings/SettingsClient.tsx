@@ -330,7 +330,7 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
                   </Badge>
                   {subscription?.cancel_at_period_end && (
                     <Badge variant="warning">
-                      Cancels {new Date(subscription.current_period_end).toLocaleDateString()}
+                      Cancels {new Date(subscription.current_period_end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                     </Badge>
                   )}
                   <span className="text-sm text-text/60">
@@ -339,7 +339,7 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
                 </div>
                 {subscription?.cancel_at_period_end && (
                   <p className="text-xs text-text/60 mt-1">
-                    Your Pro access and credits remain until {new Date(subscription.current_period_end).toLocaleDateString()}
+                    Your Pro access and credits remain until {new Date(subscription.current_period_end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                   </p>
                 )}
               </div>

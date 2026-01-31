@@ -8,42 +8,12 @@ import { PeopleResearchTab } from './tabs/PeopleResearchTab';
 import { CompanyIntelTab } from './tabs/CompanyIntelTab';
 import { DiscussionPointsTab } from './tabs/DiscussionPointsTab';
 import { useToast } from '@/contexts/ToastContext';
+import { PrepNote } from '@/lib/research/types';
 
 interface PrepNotesEditorProps {
   meetingId: string;
   initialNotes?: string;
   onSave?: (notes: string) => void;
-}
-
-interface PrepNote {
-  meeting_id: string;
-  meeting_title: string;
-  meeting_time: string;
-  generated_at: string;
-  summary: string;
-  suggested_talking_points: string[];
-
-  attendees: Array<{
-    name: string;
-    current_role?: string;
-    company?: string;
-    background?: string;
-    tenure?: string;
-    linkedin_url?: string;
-    talking_points: string[];
-    recent_activity?: string;
-  }>;
-
-  companies: Array<{
-    name: string;
-    domain: string;
-    overview?: string;
-    industry?: string;
-    size?: string;
-    funding?: string;
-    products: string[];
-    recent_news: string[];
-  }>;
 }
 
 export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNotesEditorProps) {
@@ -133,25 +103,11 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
   };
 
   const expandAll = () => {
-    if (!aiPrepNote) return;
-
-    const allIds = [
-      ...aiPrepNote.attendees.flatMap((_, i) => [
-        `attendee-${i}-background`,
-        `attendee-${i}-talking`,
-        `attendee-${i}-activity`,
-      ]),
-      ...aiPrepNote.companies.flatMap((_, i) => [
-        `company-${i}-overview`,
-        `company-${i}-products`,
-        `company-${i}-news`,
-      ]),
-    ];
-    setExpandedSections(new Set(allIds));
+    // No longer needed with markdown cards - always expanded
   };
 
   const collapseAll = () => {
-    setExpandedSections(new Set());
+    // No longer needed with markdown cards - always expanded
   };
 
   const exportToPDF = async () => {
@@ -252,43 +208,17 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
 
         for (const attendee of aiPrepNote.attendees) {
           addSubsectionHeader(attendee.name);
+          addText(`Email: ${attendee.email}`, 9, 'normal', [100, 100, 100]);
+          addSpace(2);
 
-          if (attendee.current_role || attendee.company) {
-            const roleText = [attendee.current_role, attendee.company].filter(Boolean).join(' at ');
-            addText(roleText, 10, 'italic', [80, 80, 80]);
-            addSpace(2);
-          }
+          // Convert markdown to plain text for PDF
+          const plainText = attendee.markdown_content
+            .replace(/#{1,6}\s/g, '') // Remove markdown headers
+            .replace(/\*\*/g, '') // Remove bold
+            .replace(/\*/g, '') // Remove italic
+            .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1'); // Convert links to text
 
-          if (attendee.tenure) {
-            addText(`Tenure: ${attendee.tenure}`, 9, 'normal', [100, 100, 100]);
-            addSpace(2);
-          }
-
-          if (attendee.linkedin_url) {
-            addText(`LinkedIn: ${attendee.linkedin_url}`, 9, 'normal', [41, 128, 185]);
-            addSpace(2);
-          }
-
-          if (attendee.background) {
-            addText('Background:', 10, 'bold');
-            addSpace(2);
-            addText(attendee.background, 10, 'normal');
-            addSpace(2);
-          }
-
-          if (attendee.talking_points?.length > 0) {
-            addText('Talking Points:', 10, 'bold');
-            addSpace(2);
-            addBulletList(attendee.talking_points);
-          }
-
-          if (attendee.recent_activity) {
-            addText('Recent Activity:', 10, 'bold');
-            addSpace(2);
-            addText(attendee.recent_activity, 10, 'normal');
-            addSpace(2);
-          }
-
+          addText(plainText, 10, 'normal');
           addSpace(3);
         }
       }
@@ -299,42 +229,17 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
 
         for (const company of aiPrepNote.companies) {
           addSubsectionHeader(company.name);
+          addText(company.domain, 9, 'normal', [41, 128, 185]);
+          addSpace(2);
 
-          if (company.domain) {
-            addText(company.domain, 9, 'normal', [41, 128, 185]);
-            addSpace(2);
-          }
+          // Convert markdown to plain text for PDF
+          const plainText = company.markdown_content
+            .replace(/#{1,6}\s/g, '') // Remove markdown headers
+            .replace(/\*\*/g, '') // Remove bold
+            .replace(/\*/g, '') // Remove italic
+            .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1'); // Convert links to text
 
-          if (company.industry || company.size) {
-            const details = [company.industry, company.size].filter(Boolean).join(' • ');
-            addText(details, 9, 'normal', [100, 100, 100]);
-            addSpace(2);
-          }
-
-          if (company.funding) {
-            addText(`Funding: ${company.funding}`, 9, 'normal', [100, 100, 100]);
-            addSpace(2);
-          }
-
-          if (company.overview) {
-            addText('Overview:', 10, 'bold');
-            addSpace(2);
-            addText(company.overview, 10, 'normal');
-            addSpace(2);
-          }
-
-          if (company.products?.length > 0) {
-            addText('Products & Services:', 10, 'bold');
-            addSpace(2);
-            addBulletList(company.products);
-          }
-
-          if (company.recent_news?.length > 0) {
-            addText('Recent News:', 10, 'bold');
-            addSpace(2);
-            addBulletList(company.recent_news);
-          }
-
+          addText(plainText, 10, 'normal');
           addSpace(3);
         }
       }
@@ -440,15 +345,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       {aiPrepNote && (
         <div className="space-y-6">
           {/* Actions Bar */}
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2">
-              <Button variant="secondary" onClick={expandAll} className="text-sm">
-                Expand All
-              </Button>
-              <Button variant="secondary" onClick={collapseAll} className="text-sm">
-                Collapse All
-              </Button>
-            </div>
+          <div className="flex justify-end items-center">
             <Button variant="secondary" onClick={exportToPDF} className="text-sm">
               📄 Export PDF
             </Button>

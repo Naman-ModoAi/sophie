@@ -76,6 +76,11 @@ export async function POST(request: Request) {
           ? new Date(subData.current_period_end * 1000).toISOString()
           : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days default
 
+        // Determine if subscription is cancelled - check both cancel_at_period_end AND cancel_at
+        // When user cancels via Customer Portal, Stripe sets cancel_at (timestamp) but may keep cancel_at_period_end as false
+        const cancelAtPeriodEnd = subData.cancel_at_period_end || (subData.cancel_at !== null && subData.cancel_at !== undefined);
+        console.log(`[Stripe Webhook] cancel_at:`, subData.cancel_at, `cancel_at_period_end:`, subData.cancel_at_period_end, `=> Writing:`, cancelAtPeriodEnd);
+
         const { error: subError } = await supabase
           .from('subscriptions')
           .upsert({
@@ -86,7 +91,7 @@ export async function POST(request: Request) {
             status: subscription.status,
             current_period_start: currentPeriodStart,
             current_period_end: currentPeriodEnd,
-            cancel_at_period_end: subData.cancel_at_period_end || false,
+            cancel_at_period_end: cancelAtPeriodEnd,
           }, {
             onConflict: 'stripe_subscription_id'
           });

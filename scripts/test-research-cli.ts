@@ -131,33 +131,9 @@ class ResearchAgentCLI {
     console.log(chalk.cyan('\n' + '='.repeat(80)));
     console.log(chalk.bold.white(`  Person Research: ${result.name}`));
     console.log(chalk.cyan('='.repeat(80)));
-
-    if (result.current_role) {
-      console.log(chalk.yellow('Role:'), result.current_role);
-    }
-    if (result.company) {
-      console.log(chalk.yellow('Company:'), result.company);
-    }
-    if (result.tenure) {
-      console.log(chalk.yellow('Tenure:'), result.tenure);
-    }
-    if (result.background) {
-      console.log(chalk.yellow('\nBackground:'));
-      console.log(result.background);
-    }
-    if (result.recent_activity) {
-      console.log(chalk.yellow('\nRecent Activity:'));
-      console.log(result.recent_activity);
-    }
-    if (result.linkedin_url) {
-      console.log(chalk.yellow('\nLinkedIn:'), chalk.blue.underline(result.linkedin_url));
-    }
-    if (result.talking_points && result.talking_points.length > 0) {
-      console.log(chalk.yellow('\nTalking Points:'));
-      result.talking_points.forEach((point, i) => {
-        console.log(chalk.green(`  ${i + 1}.`), point);
-      });
-    }
+    console.log(chalk.yellow('Email:'), result.email);
+    console.log(chalk.yellow('\nMarkdown Content:'));
+    console.log(result.markdown_content);
   }
 
   /**
@@ -167,31 +143,9 @@ class ResearchAgentCLI {
     console.log(chalk.cyan('\n' + '='.repeat(80)));
     console.log(chalk.bold.white(`  Company Research: ${result.name}`));
     console.log(chalk.cyan('='.repeat(80)));
-
     console.log(chalk.yellow('Domain:'), result.domain);
-
-    if (result.overview) {
-      console.log(chalk.yellow('\nOverview:'));
-      console.log(result.overview);
-    }
-    if (result.size) {
-      console.log(chalk.yellow('\nSize:'), result.size);
-    }
-    if (result.industry) {
-      console.log(chalk.yellow('Industry:'), result.industry);
-    }
-    if (result.funding) {
-      console.log(chalk.yellow('Funding:'), result.funding);
-    }
-    if (result.recent_news && result.recent_news.length > 0) {
-      console.log(chalk.yellow('\nRecent News:'));
-      result.recent_news.forEach((news, i) => {
-        console.log(chalk.green(`  ${i + 1}.`), news);
-      });
-    }
-    if (result.products && result.products.length > 0) {
-      console.log(chalk.yellow('\nProducts:'), result.products.join(', '));
-    }
+    console.log(chalk.yellow('\nMarkdown Content:'));
+    console.log(result.markdown_content);
   }
 
   /**

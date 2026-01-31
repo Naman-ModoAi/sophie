@@ -1,5 +1,7 @@
 'use client';
 
+import { PrepNote } from '@/lib/research/types';
+
 /**
  * OverviewTab Component
  *
@@ -8,35 +10,6 @@
  *
  * @param prepNote - The complete PrepNote object
  */
-
-interface PrepNote {
-  meeting_id: string;
-  meeting_title: string;
-  meeting_time: string;
-  generated_at: string;
-  summary: string;
-  suggested_talking_points: string[];
-  attendees: Array<{
-    name: string;
-    current_role?: string;
-    company?: string;
-    background?: string;
-    tenure?: string;
-    linkedin_url?: string;
-    talking_points: string[];
-    recent_activity?: string;
-  }>;
-  companies: Array<{
-    name: string;
-    domain: string;
-    overview?: string;
-    industry?: string;
-    size?: string;
-    funding?: string;
-    products: string[];
-    recent_news: string[];
-  }>;
-}
 
 interface OverviewTabProps {
   prepNote: PrepNote;
