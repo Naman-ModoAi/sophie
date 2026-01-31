@@ -22,6 +22,8 @@ export class TokenTracker {
     inputTokens: number;
     outputTokens: number;
     cachedTokens?: number;
+    thoughtsTokens?: number;
+    webSearchQueries?: string[];
   }): Promise<string | null> {
     const {
       userId,
@@ -31,6 +33,8 @@ export class TokenTracker {
       inputTokens,
       outputTokens,
       cachedTokens = 0,
+      thoughtsTokens = 0,
+      webSearchQueries = [],
     } = params;
 
     try {
@@ -45,6 +49,8 @@ export class TokenTracker {
         p_input_tokens: inputTokens,
         p_output_tokens: outputTokens,
         p_cached_tokens: cachedTokens,
+        p_thoughts_tokens: thoughtsTokens,
+        p_web_search_queries: webSearchQueries.length > 0 ? webSearchQueries : null,
       });
 
       if (error) {
@@ -53,10 +59,12 @@ export class TokenTracker {
       }
 
       if (tokenUsageId) {
-        const total = inputTokens + outputTokens;
+        const total = inputTokens + outputTokens + thoughtsTokens;
         const cacheInfo = cachedTokens > 0 ? ` (cached: ${cachedTokens})` : '';
+        const thoughtsInfo = thoughtsTokens > 0 ? ` (thoughts: ${thoughtsTokens})` : '';
+        const searchInfo = webSearchQueries.length > 0 ? ` (searches: ${webSearchQueries.length})` : '';
         console.log(
-          `[TokenTracker] Tracked ${total} tokens${cacheInfo} for user ${userId}, ` +
+          `[TokenTracker] Tracked ${total} tokens${cacheInfo}${thoughtsInfo}${searchInfo} for user ${userId}, ` +
           `meeting ${meetingId}, agent ${agentType}`
         );
 

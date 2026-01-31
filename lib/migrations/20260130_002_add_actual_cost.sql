@@ -1,9 +1,9 @@
 -- Migration 2: Add Actual Cost Tracking
--- Add effective_tokens and actual_cost_usd columns to token_usage
+-- Add actual_cost_usd column to token_usage
 
--- Add actual cost columns to token_usage
+-- Add actual cost column to token_usage
+-- Note: total_tokens already exists from migration 001
 ALTER TABLE token_usage
-ADD COLUMN IF NOT EXISTS effective_tokens DECIMAL(10, 2),
 ADD COLUMN IF NOT EXISTS actual_cost_usd DECIMAL(10, 6);
 
 -- Gemini 3 Flash Preview pricing (per 1M tokens)

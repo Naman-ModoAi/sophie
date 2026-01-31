@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: { success?: string; canceled?: string; upgraded?: string };
+  searchParams: { success?: string; canceled?: string; cancelled?: string; upgraded?: string };
 }) {
   const session = await getSession();
 

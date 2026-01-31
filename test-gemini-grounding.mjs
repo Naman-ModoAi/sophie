@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
 // Load environment variables
@@ -11,25 +11,27 @@ if (!apiKey) {
   process.exit(1);
 }
 
-const genAI = new GoogleGenerativeAI(apiKey);
+const ai = new GoogleGenAI({ apiKey });
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-3-flash-preview",
-  tools: [
-    {
-      googleSearch: {},
-    },
-  ],
-});
+const groundingTool = {
+  googleSearch: {},
+};
+
+const config = {
+  tools: [groundingTool],
+};
 
 try {
   console.log("Testing Gemini with Google Search grounding...\n");
 
-  const result = await model.generateContent("Naman Kumar Sahu Icecreamlabs getmodo.in professional profile background recent activity");
-  const response = result.response;
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: "Naman Kumar Sahu Icecreamlabs getmodo.in professional profile background recent activity",
+    config,
+  });
 
   console.log("Response:");
-  console.log(response.text());
+  console.log(response.text);
 
   // Check for grounding metadata
   if (response.groundingMetadata) {
