@@ -6,6 +6,7 @@ import { fetchCalendarEvents, refreshGoogleToken } from '@/lib/google/calendar'
 
 export async function syncCalendar(userId: string, daysAhead: number = 7) {
   try {
+    console.log('[syncCalendar] Starting sync for userId:', userId);
     const supabase = await createServiceClient()
 
     // Get user
@@ -16,8 +17,11 @@ export async function syncCalendar(userId: string, daysAhead: number = 7) {
       .single()
 
     if (userError || !user) {
+      console.error('[syncCalendar] User not found for userId:', userId, userError);
       throw new Error('User not found')
     }
+
+    console.log('[syncCalendar] Found user:', user.email);
 
     // Get tokens
     const { data: tokenData, error: tokenError } = await supabase

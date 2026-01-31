@@ -24,9 +24,10 @@ interface Meeting {
 
 interface DashboardClientProps {
   meetings: Meeting[];
+  userId: string;
 }
 
-export function DashboardClient({ meetings: initialMeetings }: DashboardClientProps) {
+export function DashboardClient({ meetings: initialMeetings, userId }: DashboardClientProps) {
   const [meetings, setMeetings] = useState<Meeting[]>(initialMeetings);
   const [selectedMeetingId, setSelectedMeetingId] = useState<string | null>(
     initialMeetings.length > 0 ? initialMeetings[0].id : null
@@ -52,6 +53,7 @@ export function DashboardClient({ meetings: initialMeetings }: DashboardClientPr
           const { data } = await supabase
             .from('meetings')
             .select('*, attendees (*)')
+            .eq('user_id', userId)
             .eq('is_cancelled', false)
             .gte('start_time', new Date().toISOString())
             .order('start_time', { ascending: true })
@@ -67,7 +69,7 @@ export function DashboardClient({ meetings: initialMeetings }: DashboardClientPr
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase]);
+  }, [supabase, userId]);
 
   const handleResync = async () => {
     setIsResyncing(true);

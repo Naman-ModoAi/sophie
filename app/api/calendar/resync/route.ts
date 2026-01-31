@@ -7,11 +7,14 @@ export async function POST() {
   try {
     const session = await getSession();
 
+    console.log('[Resync] Session data:', { isLoggedIn: session.isLoggedIn, userId: session.userId });
+
     if (!session.isLoggedIn || !session.userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const userId = session.userId;
+    console.log('[Resync] Syncing calendar for userId:', userId);
     const supabase = await createServiceClient();
 
     // Get user
@@ -84,6 +87,7 @@ export async function POST() {
       );
 
       // Upsert meeting
+      console.log('[Resync] Upserting meeting for user_id:', userId, 'event:', event.summary);
       const { data: meeting } = await supabase
         .from('meetings')
         .upsert(

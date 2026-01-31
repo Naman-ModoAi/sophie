@@ -51,6 +51,12 @@ async function getMeetings(userId: string) {
 export default async function Dashboard() {
   const session = await getSession();
 
+  console.log('[Dashboard] Session data:', {
+    isLoggedIn: session.isLoggedIn,
+    userId: session.userId,
+    email: session.email
+  });
+
   // Auto-sync calendar on page load
   try {
     await syncCalendar(session.userId, 7);
@@ -71,7 +77,7 @@ export default async function Dashboard() {
         </p>
       </div>
 
-      <DashboardClient meetings={meetings} />
+      <DashboardClient meetings={meetings} userId={session.userId} />
     </div>
   );
 }
