@@ -3,14 +3,13 @@
  * Ported from backend/src/research_agent/subagents/company/agent.py
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { CompanyResearch, CompanyResearchSchema } from '../types';
 import { SYSTEM_PROMPT, buildResearchPrompt } from './prompts/company';
 import { TokenTracker } from '../token-tracker';
-import { webSearch, formatSearchResults } from '../serper';
 
 export class CompanyResearchAgent {
-  private client: GoogleGenerativeAI;
+  private client: GoogleGenAI;
   private modelName: string;
   private systemInstruction: string;
   private tokenTracker: typeof TokenTracker;
@@ -21,14 +20,14 @@ export class CompanyResearchAgent {
       throw new Error('GOOGLE_GEMINI_API_KEY environment variable is required');
     }
 
-    this.client = new GoogleGenerativeAI(apiKey);
-    this.modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp';
+    this.client = new GoogleGenAI({ apiKey });
+    this.modelName = process.env.GEMINI_MODEL || 'gemini-3-flash-preview'; // Use grounding-compatible model
     this.systemInstruction = SYSTEM_PROMPT;
     this.tokenTracker = TokenTracker;
   }
 
   /**
-   * Research a company using Serper API for web search + Gemini for analysis
+   * Research a company using Gemini with Google Search grounding
    */
   async researchCompany(params: {
     domain: string;
@@ -51,45 +50,46 @@ export class CompanyResearchAgent {
 
     console.log(`[CompanyAgent] Search query: "${searchQuery}"`);
 
-    // Step 2: Perform web search via Serper
-    const searchResults = await webSearch({
-      query: searchQuery,
-      numResults: 5,
-      userId,
-      meetingId,
-    });
-
-    // Step 3: Format search results for context
-    const searchContext = formatSearchResults(searchResults);
-
-    // Step 4: Build prompt with search context
+    // Step 2: Build prompt with search instruction
     const prompt = buildResearchPrompt(domain, companyName);
     const fullPrompt = [
       prompt,
-      '\n## Web Search Results:\n',
-      searchContext,
-      '\n\nBased on the above information, provide your research in JSON format.',
+      `\n\nSearch the web for: "${searchQuery}" and use those results for your research.`,
+      '\n\nProvide your research in JSON format.',
     ].join('');
 
-    console.log(`[CompanyAgent] Using Serper search + Gemini analysis`);
+    console.log(`[CompanyAgent] Using Gemini with Google Search grounding`);
 
     try {
-      // Step 5: Generate content with Gemini (NO grounding - we already have search results)
-      const model = this.client.getGenerativeModel({
-        model: this.modelName,
+      // Step 3: Generate content with Gemini using Google Search grounding
+      const groundingTool = {
+        googleSearch: {},
+      };
+
+      const config = {
+        tools: [groundingTool],
         systemInstruction: this.systemInstruction,
-        // No tools config - grounding removed, using Serper instead
+      };
+
+      const response = await this.client.models.generateContent({
+        model: this.modelName,
+        contents: fullPrompt,
+        config,
       });
-
-      const result = await model.generateContent(fullPrompt);
-
-      const response = result.response;
 
       // Track token usage
       if (userId && meetingId && response.usageMetadata) {
         try {
           const usage = response.usageMetadata;
           const cachedTokens = usage.cachedContentTokenCount || 0;
+          const thoughtsTokens = usage.thoughtsTokenCount || 0;
+
+          // Extract web search queries from grounding metadata
+          const webSearchQueries: string[] = [];
+          if (response.candidates?.[0]?.groundingMetadata?.webSearchQueries) {
+            webSearchQueries.push(...response.candidates[0].groundingMetadata.webSearchQueries);
+          }
+
           await this.tokenTracker.trackUsage({
             userId,
             meetingId,
@@ -98,6 +98,8 @@ export class CompanyResearchAgent {
             inputTokens: usage.promptTokenCount || 0,
             outputTokens: usage.candidatesTokenCount || 0,
             cachedTokens,
+            thoughtsTokens,
+            webSearchQueries,
           });
         } catch (error) {
           console.warn('[CompanyAgent] Failed to track token usage:', error);
@@ -105,7 +107,10 @@ export class CompanyResearchAgent {
       }
 
       // Parse and return
-      const text = response.text();
+      const text = response.text || '';
+      if (!text) {
+        throw new Error('No response text from Gemini');
+      }
       return this.parseResponse(text, domain, companyName);
     } catch (error) {
       console.error(`[CompanyAgent] Error researching ${domain}:`, error);

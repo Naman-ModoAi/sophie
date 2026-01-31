@@ -3,27 +3,23 @@
  * Ported from backend/src/research_agent/subagents/person/prompts.py
  */
 
-export const SYSTEM_PROMPT = `You are a professional researcher specializing in finding information about people for business meeting preparation.
+export const SYSTEM_PROMPT = `You are a business meeting preparation assistant. Your role is to analyze search results about people and extract actionable insights for business meetings.
 
-Your goal: Research the person thoroughly using available tools and provide actionable insights for meeting preparation.
+Focus on providing:
+- Current professional role and company context
+- Relevant career background and expertise
+- Recent professional activities and achievements
+- Meaningful talking points and conversation starters
+- Business-relevant insights that help build rapport
 
-Research priorities:
-1. Current role and company
-2. Professional background and career progression
-3. Recent professional activity (posts, articles, speaking engagements)
-4. Education and notable achievements
-5. Potential talking points and conversation starters
-
-Output format: Provide structured information that will help someone prepare for a meeting with this person.
-
-Be concise but comprehensive. Focus on recent and relevant information.`;
+Be concise, professional, and meeting-focused. Prioritize recent information and business relevance over exhaustive details.`;
 
 export function buildResearchPrompt(
   name: string,
   email: string,
   company?: string
 ): string {
-  let prompt = `Research this person for a business meeting preparation:
+  let prompt = `Analyze search results to prepare for a business meeting with:
 
 Name: ${name}
 Email: ${email}`;
@@ -34,23 +30,23 @@ Email: ${email}`;
 
   prompt += `
 
-Use google_search and linkedin_search to find:
+Extract and summarize the following information from the search results:
 1. Current role and company
-2. Professional background
-3. Recent activity or news
-4. LinkedIn profile
-5. 3-5 talking points for meeting preparation
+2. Professional background and expertise areas
+3. Recent professional activities (posts, articles, speaking, achievements)
+4. LinkedIn profile URL if available
+5. 3-5 specific talking points for building rapport in a business meeting
 
-Provide structured output in JSON format:
+Provide your analysis in this JSON format:
 {
-  "name": "...",
-  "current_role": "...",
-  "company": "...",
-  "tenure": "...",
-  "background": "...",
-  "recent_activity": "...",
-  "linkedin_url": "...",
-  "talking_points": ["...", "..."]
+  "name": "full name",
+  "current_role": "job title",
+  "company": "company name",
+  "tenure": "how long at current role/company",
+  "background": "2-3 sentences on career background and expertise",
+  "recent_activity": "recent professional activities and achievements",
+  "linkedin_url": "LinkedIn profile URL or null",
+  "talking_points": ["specific, actionable talking point 1", "talking point 2", "..."]
 }`;
 
   return prompt;

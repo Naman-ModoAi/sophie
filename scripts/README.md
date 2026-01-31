@@ -198,6 +198,7 @@ npm install
 
 ### New Files
 - `scripts/test-research-cli.ts`: Main CLI script (~450 lines)
+- `scripts/verify-credit-system.sql`: Credit system verification script
 - `scripts/README.md`: This documentation
 
 ### Modified Files
@@ -207,6 +208,94 @@ npm install
 - `lib/research/agents/person-agent.ts`: PersonResearchAgent implementation
 - `lib/research/agents/company-agent.ts`: CompanyResearchAgent implementation
 - `lib/research/types.ts`: Type definitions and Zod schemas
+
+---
+
+# Database Verification Script
+
+## Overview
+
+The `verify-credit-system.sql` script provides comprehensive verification of the token-based credit system implementation. Run this script after executing the database migrations to ensure everything is configured correctly.
+
+## Usage
+
+### Using Supabase CLI
+
+```bash
+supabase db execute --file scripts/verify-credit-system.sql
+```
+
+### Using psql
+
+```bash
+psql -d your_database_url -f scripts/verify-credit-system.sql
+```
+
+### Using Supabase Dashboard
+
+1. Go to Supabase Dashboard → SQL Editor
+2. Copy and paste the contents of `scripts/verify-credit-system.sql`
+3. Click Run
+
+## What It Verifies
+
+### Section 1: Schema Changes
+- ✓ Old token columns removed from users table
+- ✓ total_tokens column removed from token_usage table
+- ✓ New columns (effective_tokens, actual_cost_usd) added to token_usage
+
+### Section 2: New Tables
+- ✓ credit_baseline table exists with correct structure
+- ✓ Initial baseline data (5000 effective tokens) is present
+
+### Section 3: Database Functions
+- ✓ get_credit_baseline() returns correct value
+- ✓ calculate_actual_cost() produces accurate cost calculations
+- ✓ update_credit_baseline() function exists
+
+### Section 4: Indexes
+- ✓ Index on actual_cost_usd exists for performance
+
+### Section 5: Credit Calculations
+Tests the complete credit formula with multiple scenarios:
+- **Typical attendee**: 2000 input + 500 output → 1.0 credits
+- **Complex research**: 3500 input + 1200 output → 2.25 credits
+- **With caching**: 1500 input + 400 output + 1000 cached → 1.0 credits
+- **Minimal usage**: 400 input + 100 output → 0.25 credits (minimum)
+
+### Section 6: Recent Usage
+- Shows recent token_usage records with new columns populated
+
+## Expected Output
+
+The script uses `\echo` commands to provide clear section headers and explanations. Each test includes expected results in comments.
+
+Example output:
+```
+=== SECTION 1: VERIFY SCHEMA CHANGES ===
+
+1.1: Checking users table (should NOT have old token columns)...
+(0 rows)  ✓ Old columns removed
+
+1.2: Checking token_usage for removed total_tokens column...
+(0 rows)  ✓ Column removed
+
+1.3: Checking token_usage for NEW columns...
+ column_name     | data_type | is_nullable
+-----------------+-----------+-------------
+ actual_cost_usd | numeric   | YES
+ effective_tokens| numeric   | YES
+(2 rows)  ✓ New columns added
+
+...
+```
+
+## Troubleshooting
+
+If any section fails, refer to:
+- `lib/migrations/README.md` for migration instructions
+- `NEXT_STEPS.md` for deployment steps
+- `IMPLEMENTATION_SUMMARY.md` for technical details
 
 ## Future Enhancements
 

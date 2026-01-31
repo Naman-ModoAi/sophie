@@ -4,6 +4,11 @@
  */
 
 import { createServiceClient } from '@/lib/supabase/server';
+import {
+  calculateCreditsForTokens,
+  calculateEffectiveTokens,
+  calculateActualCost
+} from './credit-config';
 
 export class TokenTracker {
   /**
@@ -17,6 +22,8 @@ export class TokenTracker {
     inputTokens: number;
     outputTokens: number;
     cachedTokens?: number;
+    thoughtsTokens?: number;
+    webSearchQueries?: string[];
   }): Promise<string | null> {
     const {
       userId,
@@ -26,6 +33,8 @@ export class TokenTracker {
       inputTokens,
       outputTokens,
       cachedTokens = 0,
+      thoughtsTokens = 0,
+      webSearchQueries = [],
     } = params;
 
     try {
@@ -40,6 +49,8 @@ export class TokenTracker {
         p_input_tokens: inputTokens,
         p_output_tokens: outputTokens,
         p_cached_tokens: cachedTokens,
+        p_thoughts_tokens: thoughtsTokens,
+        p_web_search_queries: webSearchQueries.length > 0 ? webSearchQueries : null,
       });
 
       if (error) {
@@ -48,18 +59,34 @@ export class TokenTracker {
       }
 
       if (tokenUsageId) {
-        const total = inputTokens + outputTokens;
+        const total = inputTokens + outputTokens + thoughtsTokens;
         const cacheInfo = cachedTokens > 0 ? ` (cached: ${cachedTokens})` : '';
+        const thoughtsInfo = thoughtsTokens > 0 ? ` (thoughts: ${thoughtsTokens})` : '';
+        const searchInfo = webSearchQueries.length > 0 ? ` (searches: ${webSearchQueries.length})` : '';
         console.log(
-          `[TokenTracker] Tracked ${total} tokens${cacheInfo} for user ${userId}, ` +
+          `[TokenTracker] Tracked ${total} tokens${cacheInfo}${thoughtsInfo}${searchInfo} for user ${userId}, ` +
           `meeting ${meetingId}, agent ${agentType}`
         );
 
         // Consume credits only for person research (company research is included in person cost)
         if (agentType === 'person') {
-          const creditCost = 1; // 1 credit per attendee (includes their company)
+          const creditCost = await calculateCreditsForTokens(
+            inputTokens,
+            outputTokens,
+            cachedTokens
+          );
 
-          console.log(`[TokenTracker] Attempting to consume ${creditCost} credit for person research...`);
+          const effectiveTokens = calculateEffectiveTokens(inputTokens, outputTokens, cachedTokens);
+          const actualCost = calculateActualCost(inputTokens, outputTokens, cachedTokens);
+
+          console.log(
+            `[TokenTracker] Credit calculation: ` +
+            `effective_tokens=${effectiveTokens.toFixed(2)}, ` +
+            `credits=${creditCost}, ` +
+            `actual_cost=$${actualCost.toFixed(6)}`
+          );
+
+          console.log(`[TokenTracker] Attempting to consume ${creditCost} credit(s) for person research...`);
 
           const { data: consumeSuccess, error: consumeError } = await supabase.rpc('consume_credits', {
             p_user_id: userId,
@@ -78,10 +105,14 @@ export class TokenTracker {
           } else if (consumeSuccess) {
             console.log(`[TokenTracker] ✅ Successfully consumed ${creditCost} credit for person research`);
 
-            // Update the token_usage record with credits consumed
+            // Update the token_usage record with credits consumed and cost data
             const { error: updateError } = await supabase
               .from('token_usage')
-              .update({ credits_consumed: creditCost })
+              .update({
+                credits_consumed: creditCost,
+                effective_tokens: effectiveTokens,
+                actual_cost_usd: actualCost
+              })
               .eq('id', tokenUsageId);
 
             if (updateError) {
@@ -107,43 +138,15 @@ export class TokenTracker {
     }
   }
 
-  /**
-   * Get token usage summary for a user
-   */
-  static async getUserTokenUsage(userId: string): Promise<{
-    tokensUsedThisMonth: number;
-    totalTokensUsed: number;
-  }> {
-    try {
-      const supabase = await createServiceClient();
-
-      const { data, error } = await supabase
-        .from('users')
-        .select('tokens_used_this_month, total_tokens_used')
-        .eq('id', userId)
-        .single();
-
-      if (error || !data) {
-        return { tokensUsedThisMonth: 0, totalTokensUsed: 0 };
-      }
-
-      return {
-        tokensUsedThisMonth: data.tokens_used_this_month || 0,
-        totalTokensUsed: data.total_tokens_used || 0,
-      };
-    } catch (error) {
-      console.error('[TokenTracker] Failed to get user token usage:', error);
-      return { tokensUsedThisMonth: 0, totalTokensUsed: 0 };
-    }
-  }
 
   /**
-   * Track external API usage (Serper, Resend, etc.)
+   * Track external API usage (Resend, etc.)
+   * Note: Serper API tracking removed - now using Gemini grounding instead
    */
   static async trackApiUsage(params: {
     userId: string;
     meetingId: string;
-    apiName: 'serper' | 'resend' | 'other';
+    apiName: 'resend' | 'other';
     operationType: string;
     requestCount?: number;
     metadata?: Record<string, any>;

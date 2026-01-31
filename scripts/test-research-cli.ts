@@ -410,12 +410,7 @@ async function main() {
   if (!process.env.GOOGLE_GEMINI_API_KEY) {
     console.error(chalk.red('[ERROR] GOOGLE_GEMINI_API_KEY not found in environment'));
     console.log(chalk.yellow('Please set it in .env.local'));
-    process.exit(1);
-  }
-
-  if (!process.env.SERPER_API_KEY) {
-    console.error(chalk.red('[ERROR] SERPER_API_KEY not found in environment'));
-    console.log(chalk.yellow('Please set it in .env.local'));
+    console.log(chalk.yellow('Note: Using Gemini 2.0 with Google Search grounding (no Serper API needed)'));
     process.exit(1);
   }
 

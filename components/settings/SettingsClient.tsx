@@ -15,33 +15,42 @@ type Props = {
     credits_balance: number;
     credits_used_this_month: number;
   };
+  subscription: {
+    status: string;
+    cancel_at_period_end: boolean;
+    current_period_end: string;
+  } | null;
   calendarConnected: boolean;
   tokenExpired: boolean;
   initialToast?: { message: string; variant: ToastVariant };
 };
 
-export default function SettingsClient({ userId, user, calendarConnected, tokenExpired, initialToast }: Props) {
+export default function SettingsClient({ userId, user, subscription, calendarConnected, tokenExpired, initialToast }: Props) {
   const router = useRouter();
   const [emailTiming, setEmailTiming] = useState(user.email_timing);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; variant: ToastVariant } | null>(null);
   const [isWaitingForUpdate, setIsWaitingForUpdate] = useState(false);
+  const [updateType, setUpdateType] = useState<'upgrade' | 'cancel' | null>(null);
   const hasProcessedToast = useRef(false);
 
-  // Handle Stripe checkout success with realtime subscription
+  // Handle Stripe checkout success and portal returns with realtime subscription
   useEffect(() => {
     // Prevent running multiple times
     if (hasProcessedToast.current) return;
 
-    // Check if we're coming from the success redirect (not the upgraded redirect)
     const params = new URLSearchParams(window.location.search);
     const isFromStripe = params.get('success') === 'true';
     const isAlreadyUpgraded = params.get('upgraded') === 'true';
+    const isFromPortal = params.get('from') === 'portal';
+    const isCancelled = params.get('cancelled') === 'true';
 
+    // Handle subscription upgrade flow
     if (initialToast?.variant === 'success' && isFromStripe && !isAlreadyUpgraded) {
       hasProcessedToast.current = true;
-      console.log('[Settings] Starting realtime subscription for user:', userId);
+      console.log('[Settings] Starting realtime subscription for upgrade, user:', userId);
       setIsWaitingForUpdate(true);
+      setUpdateType('upgrade');
 
       const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -90,6 +99,58 @@ export default function SettingsClient({ userId, user, calendarConnected, tokenE
         channel.unsubscribe();
         clearTimeout(timeout);
       };
+    }
+
+    // Handle subscription cancellation/portal return flow
+    if ((isFromPortal || isCancelled) && !hasProcessedToast.current) {
+      hasProcessedToast.current = true;
+      console.log('[Settings] Returned from portal');
+
+      // Check if subscription was cancelled by monitoring subscription table
+      setIsWaitingForUpdate(true);
+      setUpdateType('cancel');
+
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      const channel = supabase
+        .channel('subscription-updates')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'subscriptions',
+            filter: `user_id=eq.${userId}`
+          },
+          (payload) => {
+            console.log('[Settings] Subscription update received:', payload);
+            if (payload.new.cancel_at_period_end === true) {
+              console.log('[Settings] Subscription cancelled, refreshing...');
+              channel.unsubscribe();
+              setIsWaitingForUpdate(false);
+              // Force a full page reload to show updated subscription status
+              window.location.href = '/settings?cancelled=true';
+            }
+          }
+        )
+        .subscribe();
+
+      // Timeout after 10 seconds if webhook hasn't updated
+      const timeout = setTimeout(() => {
+        console.log('[Settings] Timeout reached - checking if already updated');
+        channel.unsubscribe();
+        setIsWaitingForUpdate(false);
+        // Reload to show latest state
+        window.location.reload();
+      }, 10000);
+
+      return () => {
+        channel.unsubscribe();
+        clearTimeout(timeout);
+      };
     } else if (initialToast && !hasProcessedToast.current) {
       hasProcessedToast.current = true;
       // For non-success toasts (like canceled or upgraded), show immediately
@@ -99,7 +160,7 @@ export default function SettingsClient({ userId, user, calendarConnected, tokenE
         window.history.replaceState({}, '', '/settings');
       }, 100);
     }
-  }, [initialToast, userId, router]);
+  }, [initialToast, userId, user.plan_type, router]);
 
   const handleSave = async () => {
     // Validate email timing
@@ -190,47 +251,57 @@ export default function SettingsClient({ userId, user, calendarConnected, tokenE
                 </div>
               </div>
 
-              {/* Right: Credit Balance (Free users only) */}
-              {user.plan_type === 'free' && (
-                <div className="min-w-[200px]">
-                  <label className="text-xs text-text/70 mb-1.5 block">Credit Balance</label>
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 bg-text/10 rounded-full h-2">
-                      <div
-                        className="bg-accent rounded-full h-2 transition-all"
-                        style={{ width: `${Math.min((user.credits_balance / 10) * 100, 100)}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium text-text whitespace-nowrap">
-                      {user.credits_balance} / 10
-                    </span>
+              {/* Right: Credit Balance (All users) */}
+              <div className="min-w-[200px]">
+                <label className="text-xs text-text/70 mb-1.5 block">Credit Balance</label>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 bg-text/10 rounded-full h-2">
+                    <div
+                      className="bg-accent rounded-full h-2 transition-all"
+                      style={{
+                        width: `${Math.min((user.credits_balance / (user.plan_type === 'pro' ? 1000 : 10)) * 100, 100)}%`
+                      }}
+                    />
                   </div>
-                  {user.credits_balance === 0 && (
-                    <p className="text-xs text-warning mt-1">
-                      Out of credits
-                    </p>
-                  )}
-                  {user.credits_balance > 0 && user.credits_balance < 3 && (
-                    <p className="text-xs text-warning mt-1">
-                      Low credits
-                    </p>
-                  )}
+                  <span className="text-sm font-medium text-text whitespace-nowrap">
+                    {user.credits_balance} / {user.plan_type === 'pro' ? 1000 : 10}
+                  </span>
                 </div>
-              )}
+                {user.credits_balance === 0 && (
+                  <p className="text-xs text-warning mt-1">
+                    Out of credits
+                  </p>
+                )}
+                {user.credits_balance > 0 && user.credits_balance < (user.plan_type === 'pro' ? 100 : 3) && (
+                  <p className="text-xs text-warning mt-1">
+                    Low credits
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Plan Information */}
             <div className="flex items-center justify-between">
               <div>
                 <label className="text-sm text-text/70 mb-1 block">Current Plan</label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Badge variant={user.plan_type === 'pro' ? 'accent' : 'default'}>
                     {user.plan_type === 'free' ? 'Free Plan' : 'Pro Plan'}
                   </Badge>
+                  {subscription?.cancel_at_period_end && (
+                    <Badge variant="warning">
+                      Cancels {new Date(subscription.current_period_end).toLocaleDateString()}
+                    </Badge>
+                  )}
                   <span className="text-sm text-text/60">
                     {user.plan_type === 'free' ? '10 credits/month' : '1000 credits/month'}
                   </span>
                 </div>
+                {subscription?.cancel_at_period_end && (
+                  <p className="text-xs text-text/60 mt-1">
+                    Your Pro access and credits remain until {new Date(subscription.current_period_end).toLocaleDateString()}
+                  </p>
+                )}
               </div>
               {user.plan_type === 'free' ? (
                 <Button variant="primary" onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID!)}>
@@ -372,7 +443,9 @@ export default function SettingsClient({ userId, user, calendarConnected, tokenE
             <div className="flex items-center gap-4">
               <div className="animate-spin h-8 w-8 border-4 border-accent border-t-transparent rounded-full"></div>
               <div>
-                <p className="font-medium text-text">Processing your subscription...</p>
+                <p className="font-medium text-text">
+                  {updateType === 'cancel' ? 'Processing cancellation...' : 'Processing your subscription...'}
+                </p>
                 <p className="text-sm text-text/70 mt-1">This will only take a moment</p>
               </div>
             </div>

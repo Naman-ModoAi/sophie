@@ -63,6 +63,9 @@ export async function POST(request: Request) {
       success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings?success=true`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings?canceled=true`,
       metadata: { userId: session.userId },
+      subscription_data: {
+        metadata: { userId: session.userId },
+      },
     });
 
     return NextResponse.json({ url: checkoutSession.url });
