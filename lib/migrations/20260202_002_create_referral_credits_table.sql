@@ -22,9 +22,9 @@ CREATE INDEX IF NOT EXISTS idx_referral_credits_user_id ON public.referral_credi
 CREATE INDEX IF NOT EXISTS idx_referral_credits_referral_id ON public.referral_credits(referral_id);
 
 -- Index for finding active (non-expired) credits
-CREATE INDEX IF NOT EXISTS idx_referral_credits_active
-  ON public.referral_credits(user_id, expires_at)
-  WHERE expires_at IS NULL OR expires_at > NOW();
+-- Note: Cannot use NOW() in index predicate, just index expires_at for filtering
+CREATE INDEX IF NOT EXISTS idx_referral_credits_expires_at
+  ON public.referral_credits(user_id, expires_at);
 
 -- Enable RLS
 ALTER TABLE public.referral_credits ENABLE ROW LEVEL SECURITY;
