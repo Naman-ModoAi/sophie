@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { useToast } from '@/components/ui/Toast';
+import { Toast, ToastVariant } from '@/components/ui/Toast';
 
 interface ReferralData {
   code: string;
@@ -46,7 +46,11 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
   const [referralData, setReferralData] = useState<ReferralData | null>(null);
   const [stats, setStats] = useState<ReferralStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const { showToast } = useToast();
+  const [toast, setToast] = useState<{ message: string; variant: ToastVariant } | null>(null);
+
+  const showToast = (message: string, variant: ToastVariant) => {
+    setToast({ message, variant });
+  };
 
   useEffect(() => {
     fetchReferralData();
@@ -130,7 +134,15 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <>
+      {toast && (
+        <Toast
+          message={toast.message}
+          variant={toast.variant}
+          onClose={() => setToast(null)}
+        />
+      )}
+      <div className="p-8 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold text-text mb-2">Invite Friends, Earn Credits</h1>
       <p className="text-text/70 mb-8">
         Share PrepFor with colleagues and earn meeting credits when they sign up
@@ -235,5 +247,6 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
         )}
       </Card>
     </div>
+    </>
   );
 }
