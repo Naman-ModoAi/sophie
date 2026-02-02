@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getIronSession } from 'iron-session';
-import { sessionOptions, SessionData } from '@/lib/session';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
-  const response = NextResponse.redirect(new URL('/', request.url));
-  const session = await getIronSession<SessionData>(request, response, sessionOptions);
+  const supabase = await createClient();
+  const origin = new URL(request.url).origin;
 
-  session.destroy();
+  await supabase.auth.signOut();
 
-  return response;
+  return NextResponse.redirect(`${origin}/`);
 }

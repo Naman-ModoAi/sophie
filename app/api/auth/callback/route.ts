@@ -1,174 +1,93 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { getIronSession } from 'iron-session'
-import { sessionOptions, SessionData } from '@/lib/session'
-import { createServiceClient } from '@/lib/supabase/server'
-import { google } from 'googleapis'
+import { createClient, createServiceClient } from '@/lib/supabase/server'
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const code = searchParams.get('code')
-  const state = searchParams.get('state')
-  const error = searchParams.get('error')
+  const requestUrl = new URL(request.url)
+  const code = requestUrl.searchParams.get('code')
+  const error = requestUrl.searchParams.get('error')
+  const origin = requestUrl.origin
 
   if (error) {
-    return NextResponse.redirect(
-      new URL(`/?error=${encodeURIComponent(error)}`, request.url)
-    )
+    return NextResponse.redirect(`${origin}/?error=${encodeURIComponent(error)}`)
   }
 
-  if (!code || !state) {
-    return NextResponse.redirect(
-      new URL('/?error=missing_parameters', request.url)
-    )
-  }
-
-  const cookieStore = await cookies()
-  const storedState = cookieStore.get('oauth_state')?.value
-
-  if (!storedState || state !== storedState) {
-    return NextResponse.redirect(
-      new URL('/?error=invalid_state', request.url)
-    )
+  if (!code) {
+    return NextResponse.redirect(`${origin}/?error=missing_code`)
   }
 
   try {
-    // Exchange code for tokens
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-      process.env.GOOGLE_CLIENT_SECRET!,
-      process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URI!
-    )
+    const supabase = await createClient()
 
-    const { tokens } = await oauth2Client.getToken(code)
+    // Exchange code for session
+    const { data: { user }, error: authError } = await supabase.auth.exchangeCodeForSession(code)
 
-    if (!tokens.access_token || !tokens.id_token) {
-      throw new Error('Missing tokens')
+    if (authError || !user) {
+      console.error('Auth exchange error:', authError)
+      return NextResponse.redirect(`${origin}/?error=auth_failed`)
     }
 
-    // Verify ID token
-    const ticket = await oauth2Client.verifyIdToken({
-      idToken: tokens.id_token,
-      audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-    })
+    console.log('✅ User authenticated via Supabase:', user.id)
 
-    const payload = ticket.getPayload()
-    if (!payload) throw new Error('Invalid token')
+    // Sync user with custom users table
+    const serviceSupabase = await createServiceClient()
 
-    const { sub: googleUserId, email, name, picture } = payload
-
-    const supabase = await createServiceClient()
-
-    // Check if user exists
-    const { data: existingUser } = await supabase
+    const { error: userError } = await serviceSupabase
       .from('users')
-      .select('*')
-      .eq('google_user_id', googleUserId)
-      .single()
-
-    let userData
-    let userError
-
-    if (existingUser) {
-      // Update existing user
-      const { data, error } = await supabase
-        .from('users')
-        .update({
-          email,
-          name,
-          profile_photo_url: picture,
+      .upsert(
+        {
+          id: user.id, // Use Supabase Auth UUID
+          google_user_id: user.user_metadata.sub,
+          email: user.email,
+          name: user.user_metadata.full_name || user.user_metadata.name,
+          profile_photo_url: user.user_metadata.avatar_url || user.user_metadata.picture,
           last_login_at: new Date().toISOString(),
-        })
-        .eq('id', existingUser.id)
-        .select()
-        .single()
-      userData = data
-      userError = error
+        },
+        {
+          onConflict: 'id', // Use id as primary key
+        }
+      )
+
+    if (userError) {
+      console.error('User sync error:', userError)
+      // Continue anyway - user exists in auth.users
     } else {
-      // Create new user
-      const { data, error } = await supabase
-        .from('users')
-        .insert({
-          google_user_id: googleUserId,
-          email,
-          name,
-          profile_photo_url: picture,
-          last_login_at: new Date().toISOString(),
-        })
-        .select()
-        .single()
-      userData = data
-      userError = error
+      console.log('✅ User synced to custom users table')
     }
 
-    if (userError || !userData) {
-      console.error('User creation error:', userError)
-      throw userError || new Error('Failed to create user')
-    }
+    // Get provider token (for calendar access)
+    const { data: { session } } = await supabase.auth.getSession()
+    const providerToken = session?.provider_token
+    const providerRefreshToken = session?.provider_refresh_token
 
-    // Store tokens
-    const expiresAt = tokens.expiry_date
-      ? new Date(tokens.expiry_date)
-      : new Date(Date.now() + 3600 * 1000)
+    if (providerToken) {
+      // Store Google OAuth tokens in our oauth_tokens table for calendar access
+      const expiresAt = new Date()
+      expiresAt.setHours(expiresAt.getHours() + 1) // Google tokens typically expire in 1 hour
 
-    // Check for existing token
-    const { data: existingToken } = await supabase
-      .from('oauth_tokens')
-      .select('id')
-      .eq('user_id', userData.id)
-      .eq('provider', 'google')
-      .single()
-
-    let tokenError
-    if (existingToken) {
-      const { error } = await supabase
+      const { error: tokenError } = await serviceSupabase
         .from('oauth_tokens')
-        .update({
-          access_token: tokens.access_token,
-          refresh_token: tokens.refresh_token || null,
-          expires_at: expiresAt.toISOString(),
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', existingToken.id)
-      tokenError = error
-    } else {
-      const { error } = await supabase
-        .from('oauth_tokens')
-        .insert({
-          user_id: userData.id,
-          provider: 'google',
-          access_token: tokens.access_token,
-          refresh_token: tokens.refresh_token || null,
-          expires_at: expiresAt.toISOString(),
-        })
-      tokenError = error
+        .upsert(
+          {
+            user_id: user.id,
+            provider: 'google',
+            access_token: providerToken,
+            refresh_token: providerRefreshToken || null,
+            expires_at: expiresAt.toISOString(),
+          },
+          { onConflict: 'user_id,provider' }
+        )
+
+      if (tokenError) {
+        console.error('Token storage error:', tokenError)
+      } else {
+        console.log('✅ Provider tokens stored successfully')
+      }
     }
 
-    if (tokenError) {
-      console.error('Token storage error:', tokenError)
-      throw tokenError
-    }
-
-    console.log('✅ User created:', userData.id)
-    console.log('✅ Tokens stored successfully')
-
-    // Create session
-    const response = NextResponse.redirect(new URL('/dashboard', request.url))
-    const session = await getIronSession<SessionData>(request, response, sessionOptions)
-
-    session.userId = userData.id
-    session.email = userData.email
-    session.isLoggedIn = true
-
-    await session.save()
-
-    cookieStore.delete('oauth_state')
-
-    return response
+    // Redirect to dashboard
+    return NextResponse.redirect(`${origin}/dashboard`)
   } catch (error) {
-    console.error('OAuth error:', error)
-    return NextResponse.redirect(
-      new URL('/?error=authentication_failed', request.url)
-    )
+    console.error('OAuth callback error:', error)
+    return NextResponse.redirect(`${origin}/?error=authentication_failed`)
   }
 }

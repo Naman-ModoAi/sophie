@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
-import { createClient } from '@/lib/supabase/server';
+import { getAuthUser, createClient } from '@/lib/supabase/server';
 import Stripe from 'stripe';
 
 function getStripe() {
@@ -15,25 +14,25 @@ function getStripe() {
 export async function POST() {
   const stripe = getStripe();
   try {
-    const session = await getSession();
+    const user = await getAuthUser();
 
-    if (!session.isLoggedIn || !session.userId) {
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const supabase = await createClient();
-    const { data: user } = await supabase
+    const { data: userData } = await supabase
       .from('users')
       .select('stripe_customer_id')
-      .eq('id', session.userId)
+      .eq('id', user.id)
       .single();
 
-    if (!user?.stripe_customer_id) {
+    if (!userData?.stripe_customer_id) {
       return NextResponse.json({ error: 'No Stripe customer found' }, { status: 404 });
     }
 
     const portalSession = await stripe.billingPortal.sessions.create({
-      customer: user.stripe_customer_id,
+      customer: userData.stripe_customer_id,
       return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings?from=portal`,
     });
 

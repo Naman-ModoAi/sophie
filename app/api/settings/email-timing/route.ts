@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
-import { createClient } from '@/lib/supabase/server';
+import { getAuthUser, createClient } from '@/lib/supabase/server';
 
 export async function POST(request: Request) {
   try {
-    const session = await getSession();
+    const user = await getAuthUser();
 
-    if (!session.isLoggedIn || !session.userId) {
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -20,13 +19,13 @@ export async function POST(request: Request) {
 
     // Check if user is trying to set Pro-only option
     const supabase = await createClient();
-    const { data: user } = await supabase
+    const { data: userData } = await supabase
       .from('users')
       .select('plan_type')
-      .eq('id', session.userId)
+      .eq('id', user.id)
       .single();
 
-    if (email_timing === 'immediate' && user?.plan_type !== 'pro') {
+    if (email_timing === 'immediate' && userData?.plan_type !== 'pro') {
       return NextResponse.json({ error: 'Immediate delivery requires Pro plan' }, { status: 403 });
     }
 
@@ -34,7 +33,7 @@ export async function POST(request: Request) {
     const { error } = await supabase
       .from('users')
       .update({ email_timing })
-      .eq('id', session.userId);
+      .eq('id', user.id);
 
     if (error) {
       console.error('Failed to update email_timing:', error);

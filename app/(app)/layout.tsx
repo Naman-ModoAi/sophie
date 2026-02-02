@@ -1,36 +1,32 @@
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getIronSession } from 'iron-session';
-import { sessionOptions, SessionData } from '@/lib/session';
+import { getAuthUser, createClient } from '@/lib/supabase/server';
 import { AppShell } from '@/components/layout/AppShell';
 import { ToastProvider } from '@/contexts/ToastContext';
-
-async function getSession() {
-  const cookieStore = await cookies();
-  const response = new Response();
-  const session = await getIronSession<SessionData>(
-    { headers: { cookie: cookieStore.toString() } } as any,
-    response,
-    sessionOptions
-  );
-
-  if (!session.isLoggedIn) {
-    redirect('/');
-  }
-
-  return session;
-}
 
 export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
+  const user = await getAuthUser();
+
+  if (!user) {
+    redirect('/');
+  }
+
+  // Get user email from our users table (or use auth email as fallback)
+  const supabase = await createClient();
+  const { data: userData } = await supabase
+    .from('users')
+    .select('email')
+    .eq('id', user.id)
+    .single();
+
+  const userEmail = userData?.email || user.email || '';
 
   return (
     <ToastProvider>
-      <AppShell userEmail={session.email}>{children}</AppShell>
+      <AppShell userEmail={userEmail}>{children}</AppShell>
     </ToastProvider>
   );
 }

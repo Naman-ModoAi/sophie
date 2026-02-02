@@ -27,7 +27,11 @@ export async function createClient() {
 }
 
 // Service role client for server-side operations that bypass RLS
-// Use this for OAuth callbacks, migrations, admin operations
+// ONLY use this for:
+// - Stripe webhooks
+// - Calendar sync action (writes meetings/attendees on behalf of user)
+// - Admin operations
+// For user-scoped queries, use createClient() with auth check
 export async function createServiceClient() {
   const cookieStore = await cookies()
 
@@ -51,4 +55,17 @@ export async function createServiceClient() {
       },
     }
   )
+}
+
+// Helper to get authenticated user from Supabase Auth
+// Use this in API routes and server components to validate sessions
+export async function getAuthUser() {
+  const supabase = await createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+
+  if (error || !user) {
+    return null
+  }
+
+  return user
 }

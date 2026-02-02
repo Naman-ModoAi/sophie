@@ -1,34 +1,31 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { generateState } from '@/lib/oauth';
+import { createClient } from '@/lib/supabase/server';
 
-export async function GET() {
-  const state = generateState();
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
-  const redirectUri = process.env.NEXT_PUBLIC_OAUTH_REDIRECT_URI!;
+export async function GET(request: Request) {
+  const supabase = await createClient();
+  const requestUrl = new URL(request.url);
+  const origin = requestUrl.origin;
 
-  // Store state for CSRF protection
-  const cookieStore = await cookies();
-  cookieStore.set('oauth_state', state, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 600, // 10 minutes
-    path: '/',
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${origin}/api/auth/callback`,
+      scopes: 'openid email profile https://www.googleapis.com/auth/calendar.readonly',
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'select_account',
+      },
+    },
   });
 
-  // Build Google OAuth URL (traditional flow, no PKCE)
-  const params = new URLSearchParams({
-    client_id: clientId,
-    redirect_uri: redirectUri,
-    response_type: 'code',
-    scope: 'openid email profile https://www.googleapis.com/auth/calendar.readonly',
-    access_type: 'offline',
-    prompt: 'consent',
-    state,
-  });
+  if (error) {
+    console.error('OAuth initiation error:', error);
+    return NextResponse.redirect(`${origin}/?error=oauth_failed`);
+  }
 
-  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+  if (data.url) {
+    return NextResponse.redirect(data.url);
+  }
 
-  return NextResponse.redirect(authUrl);
+  return NextResponse.redirect(`${origin}/?error=no_url`);
 }

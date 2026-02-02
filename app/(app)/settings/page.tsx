@@ -1,6 +1,5 @@
-import { getSession } from '@/lib/session';
+import { getAuthUser, createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { createServiceClient } from '@/lib/supabase/server';
 import SettingsClient from '@/components/settings/SettingsClient';
 
 export const dynamic = 'force-dynamic';
@@ -10,31 +9,31 @@ export default async function SettingsPage({
 }: {
   searchParams: { success?: string; canceled?: string; cancelled?: string; upgraded?: string };
 }) {
-  const session = await getSession();
+  const user = await getAuthUser();
 
-  if (!session.isLoggedIn || !session.userId) {
+  if (!user) {
     redirect('/');
   }
 
-  const supabase = await createServiceClient();
+  const supabase = await createClient();
 
   // Fetch user data
-  const { data: user, error } = await supabase
+  const { data: userData, error } = await supabase
     .from('users')
     .select('email, plan_type, email_timing, credits_balance, credits_used_this_month')
-    .eq('id', session.userId)
+    .eq('id', user.id)
     .single();
 
   // Fetch subscription data
   const { data: subscription } = await supabase
     .from('subscriptions')
     .select('status, cancel_at_period_end, current_period_end')
-    .eq('user_id', session.userId)
+    .eq('user_id', user.id)
     .eq('status', 'active')
     .single();
 
   // If columns don't exist, fetch basic user data
-  let userData: {
+  let finalUserData: {
     email: string;
     plan_type: 'free' | 'pro';
     email_timing: 'immediate' | '1hr' | '30min' | 'digest';
@@ -53,7 +52,7 @@ export default async function SettingsPage({
     const { data: basicUser, error: basicError } = await supabase
       .from('users')
       .select('email')
-      .eq('id', session.userId)
+      .eq('id', user.id)
       .single();
 
     if (basicError || !basicUser) {
@@ -62,7 +61,7 @@ export default async function SettingsPage({
     }
 
     // Set defaults for missing columns
-    userData = {
+    finalUserData = {
       email: basicUser.email,
       plan_type: 'free' as const,
       email_timing: 'digest' as const,
@@ -70,18 +69,18 @@ export default async function SettingsPage({
       credits_used_this_month: 0,
     };
     subscriptionData = null;
-  } else if (error || !user) {
+  } else if (error || !userData) {
     console.error('Failed to fetch user:', error);
     redirect('/dashboard');
   } else {
-    userData = user;
+    finalUserData = userData;
   }
 
   // Fetch OAuth token status
   const { data: token } = await supabase
     .from('oauth_tokens')
     .select('expires_at')
-    .eq('user_id', session.userId)
+    .eq('user_id', user.id)
     .single();
 
   const calendarConnected = !!token;
@@ -120,8 +119,8 @@ export default async function SettingsPage({
       <p className="text-text/70 mb-8">Manage your account preferences and subscription</p>
 
       <SettingsClient
-        userId={session.userId}
-        user={userData}
+        userId={user.id}
+        user={finalUserData}
         subscription={subscriptionData}
         calendarConnected={calendarConnected}
         tokenExpired={tokenExpired}

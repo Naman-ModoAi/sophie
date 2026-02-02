@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
-import { createClient } from '@/lib/supabase/server';
+import { getAuthUser, createClient } from '@/lib/supabase/server';
 import Stripe from 'stripe';
 
 function getStripe() {
@@ -15,9 +14,9 @@ function getStripe() {
 export async function POST(request: Request) {
   const stripe = getStripe();
   try {
-    const session = await getSession();
+    const user = await getAuthUser();
 
-    if (!session.isLoggedIn || !session.userId) {
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -28,23 +27,23 @@ export async function POST(request: Request) {
     }
 
     const supabase = await createClient();
-    const { data: user } = await supabase
+    const { data: userData } = await supabase
       .from('users')
       .select('email, stripe_customer_id')
-      .eq('id', session.userId)
+      .eq('id', user.id)
       .single();
 
-    if (!user) {
+    if (!userData) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Create or retrieve Stripe customer
-    let customerId = user.stripe_customer_id;
+    let customerId = userData.stripe_customer_id;
 
     if (!customerId) {
       const customer = await stripe.customers.create({
-        email: user.email,
-        metadata: { userId: session.userId },
+        email: user.email || userData.email,
+        metadata: { userId: user.id },
       });
       customerId = customer.id;
 
@@ -52,7 +51,7 @@ export async function POST(request: Request) {
       await supabase
         .from('users')
         .update({ stripe_customer_id: customerId })
-        .eq('id', session.userId);
+        .eq('id', user.id);
     }
 
     // Create Checkout Session
@@ -62,9 +61,9 @@ export async function POST(request: Request) {
       mode: 'subscription',
       success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings?success=true`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings?canceled=true`,
-      metadata: { userId: session.userId },
+      metadata: { userId: user.id },
       subscription_data: {
-        metadata: { userId: session.userId },
+        metadata: { userId: user.id },
       },
     });
 

@@ -1,30 +1,27 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
-import { createServiceClient } from '@/lib/supabase/server';
+import { getAuthUser, createServiceClient } from '@/lib/supabase/server';
 import { fetchCalendarEvents, refreshGoogleToken } from '@/lib/google/calendar';
 
 export async function POST() {
   try {
-    const session = await getSession();
+    const user = await getAuthUser();
 
-    console.log('[Resync] Session data:', { isLoggedIn: session.isLoggedIn, userId: session.userId });
-
-    if (!session.isLoggedIn || !session.userId) {
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const userId = session.userId;
+    const userId = user.id;
     console.log('[Resync] Syncing calendar for userId:', userId);
     const supabase = await createServiceClient();
 
     // Get user
-    const { data: user } = await supabase
+    const { data: userData } = await supabase
       .from('users')
       .select('*')
       .eq('id', userId)
       .single();
 
-    if (!user) {
+    if (!userData) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
@@ -70,7 +67,7 @@ export async function POST() {
 
     let meetingsSynced = 0;
     let attendeesSynced = 0;
-    const userDomain = user.email.split('@')[1];
+    const userDomain = userData.email.split('@')[1];
 
     // Process events (same logic as sync route)
     for (const event of events) {

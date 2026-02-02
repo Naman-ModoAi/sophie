@@ -4,6 +4,41 @@ All notable changes to the PrepFor.app frontend will be documented in this file.
 
 ---
 
+## 2026-02-02
+
+### Supabase Auth Migration - User Sync Fix
+
+#### Fixed
+
+- **OAuth Callback User Sync** (`app/api/auth/callback/route.ts`)
+  - Added critical user sync logic to create/update custom users table after Supabase Auth
+  - Fixes issue where users were created in `auth.users` but not in custom `users` table
+  - Resolves dashboard query failures, calendar sync foreign key errors, and settings page failures
+
+**Implementation:**
+- After successful OAuth authentication, user data is now synced to custom `users` table
+- Uses service role client to bypass RLS and write user records
+- Upserts user with data from Supabase Auth user metadata:
+  - `id` = Supabase Auth user.id (matches `auth.uid()` for RLS policies)
+  - `google_user_id` = from `user_metadata.sub`
+  - `email` = user's email
+  - `name` = from `user_metadata.full_name` or `user_metadata.name`
+  - `profile_photo_url` = from `user_metadata.avatar_url` or `user_metadata.picture`
+  - `last_login_at` = current timestamp
+- Uses upsert with `onConflict: 'id'` to update existing users on subsequent logins
+- Graceful error handling - continues authentication even if user sync fails
+
+**Impact:**
+- ✅ Dashboard now loads user meetings correctly
+- ✅ Calendar sync no longer fails on foreign key constraints
+- ✅ Settings page loads user data properly
+- ✅ RLS policies work correctly with matching user IDs
+
+**Migration Context:**
+This fix completes the Supabase Auth migration started on 2026-01-31. The OAuth callback now properly maintains both Supabase Auth (`auth.users`) and custom application tables (`users`) in sync.
+
+---
+
 ## 2026-01-29
 
 ### Credit-Based Usage System (COMPLETE)

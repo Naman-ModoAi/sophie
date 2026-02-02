@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/session';
-import { createClient } from '@/lib/supabase/server';
+import { getAuthUser, createClient } from '@/lib/supabase/server';
 
 export async function GET() {
   try {
-    const session = await getSession();
+    const user = await getAuthUser();
 
-    if (!session.isLoggedIn || !session.userId) {
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -16,7 +15,7 @@ export async function GET() {
     const { data: subscription, error } = await supabase
       .from('subscriptions')
       .select('status, cancel_at_period_end, current_period_end')
-      .eq('user_id', session.userId)
+      .eq('user_id', user.id)
       .maybeSingle();
 
     if (error) {

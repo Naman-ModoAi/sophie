@@ -1,25 +1,11 @@
-import { cookies } from 'next/headers';
-import { getIronSession } from 'iron-session';
-import { sessionOptions, SessionData } from '@/lib/session';
-import { createServiceClient } from '@/lib/supabase/server';
+import { getAuthUser, createClient } from '@/lib/supabase/server';
 import { syncCalendar } from './actions';
 import { DashboardClient } from '@/components/dashboard/DashboardClient';
-
-async function getSession() {
-  const cookieStore = await cookies();
-  const response = new Response();
-  const session = await getIronSession<SessionData>(
-    { headers: { cookie: cookieStore.toString() } } as any,
-    response,
-    sessionOptions
-  );
-
-  return session;
-}
+import { redirect } from 'next/navigation';
 
 async function getMeetings(userId: string) {
   try {
-    const supabase = await createServiceClient();
+    const supabase = await createClient();
 
     console.log('Fetching meetings for user:', userId);
 
@@ -49,22 +35,22 @@ async function getMeetings(userId: string) {
 }
 
 export default async function Dashboard() {
-  const session = await getSession();
+  const user = await getAuthUser();
 
-  console.log('[Dashboard] Session data:', {
-    isLoggedIn: session.isLoggedIn,
-    userId: session.userId,
-    email: session.email
-  });
+  if (!user) {
+    redirect('/');
+  }
+
+  console.log('[Dashboard] User authenticated:', user.id);
 
   // Auto-sync calendar on page load
   try {
-    await syncCalendar(session.userId, 7);
+    await syncCalendar(user.id, 7);
   } catch (error: any) {
     console.error('Auto-sync failed:', error.message);
   }
 
-  const meetings = await getMeetings(session.userId);
+  const meetings = await getMeetings(user.id);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -77,7 +63,7 @@ export default async function Dashboard() {
         </p>
       </div>
 
-      <DashboardClient meetings={meetings} userId={session.userId} />
+      <DashboardClient meetings={meetings} userId={user.id} />
     </div>
   );
 }
