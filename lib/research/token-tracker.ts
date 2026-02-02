@@ -23,6 +23,7 @@ export class TokenTracker {
     outputTokens: number;
     cachedTokens?: number;
     thoughtsTokens?: number;
+    toolUsePromptTokens?: number;
     webSearchQueries?: string[];
   }): Promise<string | null> {
     const {
@@ -34,6 +35,7 @@ export class TokenTracker {
       outputTokens,
       cachedTokens = 0,
       thoughtsTokens = 0,
+      toolUsePromptTokens = 0,
       webSearchQueries = [],
     } = params;
 
@@ -50,6 +52,7 @@ export class TokenTracker {
         p_output_tokens: outputTokens,
         p_cached_tokens: cachedTokens,
         p_thoughts_tokens: thoughtsTokens,
+        p_tool_use_prompt_tokens: toolUsePromptTokens,
         p_web_search_queries: webSearchQueries.length > 0 ? webSearchQueries : null,
       });
 
@@ -59,12 +62,13 @@ export class TokenTracker {
       }
 
       if (tokenUsageId) {
-        const total = inputTokens + outputTokens + thoughtsTokens;
+        const total = inputTokens + outputTokens + thoughtsTokens + toolUsePromptTokens;
         const cacheInfo = cachedTokens > 0 ? ` (cached: ${cachedTokens})` : '';
         const thoughtsInfo = thoughtsTokens > 0 ? ` (thoughts: ${thoughtsTokens})` : '';
+        const toolUseInfo = toolUsePromptTokens > 0 ? ` (tool-use: ${toolUsePromptTokens})` : '';
         const searchInfo = webSearchQueries.length > 0 ? ` (searches: ${webSearchQueries.length})` : '';
         console.log(
-          `[TokenTracker] Tracked ${total} tokens${cacheInfo}${thoughtsInfo}${searchInfo} for user ${userId}, ` +
+          `[TokenTracker] Tracked ${total} tokens${cacheInfo}${thoughtsInfo}${toolUseInfo}${searchInfo} for user ${userId}, ` +
           `meeting ${meetingId}, agent ${agentType}`
         );
 

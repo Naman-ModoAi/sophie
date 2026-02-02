@@ -94,6 +94,7 @@ export class PersonResearchAgent {
           const usage = response.usageMetadata;
           const cachedTokens = usage.cachedContentTokenCount || 0;
           const thoughtsTokens = usage.thoughtsTokenCount || 0;
+          const toolUsePromptTokens = usage.toolUsePromptTokenCount || 0;
 
           // Extract web search queries from grounding metadata
           const webSearchQueries: string[] = [];
@@ -110,6 +111,7 @@ export class PersonResearchAgent {
             outputTokens: usage.candidatesTokenCount || 0,
             cachedTokens,
             thoughtsTokens,
+            toolUsePromptTokens,
             webSearchQueries,
           });
         } catch (error) {
