@@ -19,7 +19,7 @@ export function buildResearchPrompt(
   // email: string,
   // company?: string
 ): string {
-  let prompt = `Extract and summarize the info for a business meeting in the following format:
+  const prompt = `Extract and summarize the info for a business meeting in the following format:
     1. Current role and company
     2. Professional background and expertise areas
     3. Recent professional activities (posts, articles, speaking, achievements)
