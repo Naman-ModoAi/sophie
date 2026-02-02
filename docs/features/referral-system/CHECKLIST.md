@@ -29,7 +29,9 @@
 - [ ] Milestone achievement email (Pro users)
 
 ## Phase 5: Testing & Launch
-- [ ] End-to-end referral flow test
-- [ ] Credit distribution test (Free & Pro)
-- [ ] Edge case testing
+- [x] Test plan created (tests/referral-system-test.md)
+- [ ] Run migrations (user will do manually)
+- [ ] Execute end-to-end referral flow test
+- [ ] Verify credit distribution (Free & Pro)
+- [ ] Test edge cases
 - [ ] Security review
