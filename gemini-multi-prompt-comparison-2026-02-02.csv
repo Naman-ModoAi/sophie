@@ -1,0 +1,26 @@
+Model,PromptId,PromptName,Success,Duration(ms),PromptTokens,ResponseTokens,ThinkingTokens,CachedTokens,TotalTokens,InputCost($),OutputCost($),ThinkingCost($),SearchCost($),TotalCost($),SearchCount,ChunkCount,SourceCount,WordCount,QualityScore,Completeness,GroundingQuality,StructureScore,LengthScore,SearchEfficiency
+gemini-3-pro-preview,1,"Person 1: Naman Kumar Sahu (Icecreamlabs)",true,51452,440,706,175,408,6125,0.000880,0.008472,0.002100,0.140000,0.151452,10,2,10,456,0,100,60,100,100,0
+gemini-3-flash-preview,1,"Person 1: Naman Kumar Sahu (Icecreamlabs)",true,13634,160,745,864,0,1769,0.000080,0.002235,0.002592,0.000000,0.004907,0,0,0,462,0,100,0,100,100,0
+gemini-2.5-pro,1,"Person 1: Naman Kumar Sahu (Icecreamlabs)",true,23014,160,730,957,90,3755,0.000200,0.007300,0.009570,0.035000,0.052070,13,1,2,381,0,100,55,100,100,0
+gemini-2.5-flash,1,"Person 1: Naman Kumar Sahu (Icecreamlabs)",true,12052,160,529,1074,26,3790,0.000048,0.001322,0.002685,0.035000,0.039056,8,1,3,283,0,100,45,100,95,0
+gemini-2.5-flash-lite,1,"Person 1: Naman Kumar Sahu (Icecreamlabs)",true,2307,160,152,0,0,536,0.000016,0.000061,0.000000,0.035000,0.035077,4,0,0,70,0,60,20,0,25,0
+gemini-3-pro-preview,2,"Person 2: Ravikesh Kumar (Icecreamlabs)",true,85607,507,888,640,329,12750,0.001014,0.010656,0.007680,0.210000,0.229350,15,2,4,545,0,100,60,100,100,0
+gemini-3-flash-preview,2,"Person 2: Ravikesh Kumar (Icecreamlabs)",true,82284,278,0,0,252,81964,0.000139,0.000000,0.000000,0.000000,0.000139,0,0,0,0,0,0,0,0,0,0
+gemini-2.5-pro,2,"Person 2: Ravikesh Kumar (Icecreamlabs)",true,5687,160,40,240,0,880,0.000200,0.000400,0.002400,0.035000,0.038000,4,0,0,0,0,0,20,0,0,0
+gemini-2.5-flash,2,"Person 2: Ravikesh Kumar (Icecreamlabs)",true,7262,160,436,485,0,1454,0.000048,0.001090,0.001213,0.035000,0.037351,7,9,6,237,0,60,80,25,81,0
+gemini-2.5-flash-lite,2,"Person 2: Ravikesh Kumar (Icecreamlabs)",true,5316,160,573,0,0,947,0.000016,0.000229,0.000000,0.035000,0.035245,5,8,7,357,0,100,65,100,100,0
+gemini-3-pro-preview,3,"Person 3: Adithya Bapu (Icecreamlabs)",true,98432,429,949,586,221,13033,0.000858,0.011388,0.007032,0.238000,0.257278,17,1,1,608,0,100,55,100,99,0
+gemini-3-flash-preview,3,"Person 3: Adithya Bapu (Icecreamlabs)",false,70361,0,0,0,0,0,0.000000,0.000000,0.000000,0.000000,0.000000,0,0,0,0,0,0,0,0,0,0
+gemini-2.5-pro,3,"Person 3: Adithya Bapu (Icecreamlabs)",true,19050,163,220,308,0,1074,0.000204,0.002200,0.003080,0.035000,0.040484,5,0,0,116,0,100,25,50,41,0
+gemini-2.5-flash,3,"Person 3: Adithya Bapu (Icecreamlabs)",true,14549,163,1043,974,91,3466,0.000049,0.002608,0.002435,0.035000,0.040091,9,5,10,662,0,100,70,100,91,0
+gemini-2.5-flash-lite,3,"Person 3: Adithya Bapu (Icecreamlabs)",true,16731,163,788,0,0,1420,0.000016,0.000315,0.000000,0.035000,0.035332,8,2,15,455,0,100,50,100,100,0
+gemini-3-pro-preview,4,"Person 4: Ravindra (icecreamlabs)",true,65069,539,918,762,416,7096,0.001078,0.011016,0.009144,0.196000,0.217238,14,2,4,546,0,100,60,100,100,0
+gemini-3-flash-preview,4,"Person 4: Ravindra (icecreamlabs)",true,41548,932,731,506,607,10984,0.000466,0.002193,0.001518,0.182000,0.186177,13,4,1,447,0,100,70,100,100,0
+gemini-2.5-pro,4,"Person 4: Ravindra (icecreamlabs)",true,28224,160,1001,1150,112,4792,0.000200,0.010010,0.011500,0.035000,0.056710,11,4,13,613,0,100,70,100,98,0
+gemini-2.5-flash,4,"Person 4: Ravindra (icecreamlabs)",true,9494,160,685,928,0,2186,0.000048,0.001712,0.002320,0.035000,0.039081,6,5,12,405,0,100,55,75,100,0
+gemini-2.5-flash-lite,4,"Person 4: Ravindra (icecreamlabs)",true,4963,160,1400,0,0,1754,0.000016,0.000560,0.000000,0.035000,0.035576,3,0,0,940,0,100,15,100,46,0
+gemini-3-pro-preview,5,"Person 5: Madhu Konety (Icecreamlabs)",true,41284,321,796,501,153,3488,0.000642,0.009552,0.006012,0.154000,0.170206,11,3,5,510,0,100,65,100,100,0
+gemini-3-flash-preview,5,"Person 5: Madhu Konety (Icecreamlabs)",true,16155,283,744,527,0,1933,0.000141,0.002232,0.001581,0.098000,0.101955,7,3,5,455,0,100,50,100,100,0
+gemini-2.5-pro,5,"Person 5: Madhu Konety (Icecreamlabs)",true,17456,162,750,555,111,3169,0.000203,0.007500,0.005550,0.035000,0.048253,6,0,7,461,0,100,30,100,100,0
+gemini-2.5-flash,5,"Person 5: Madhu Konety (Icecreamlabs)",true,14941,162,1041,1225,0,5221,0.000049,0.002603,0.003063,0.035000,0.040714,9,2,19,621,0,100,55,100,97,0
+gemini-2.5-flash-lite,5,"Person 5: Madhu Konety (Icecreamlabs)",true,5351,162,649,0,0,1017,0.000016,0.000260,0.000000,0.035000,0.035276,4,7,13,437,0,100,55,100,100,0
