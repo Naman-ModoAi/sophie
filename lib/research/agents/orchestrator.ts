@@ -51,6 +51,9 @@ export class ResearchOrchestrator {
     // Step 5: Save to database
     await this.savePrepNote(prepNote);
 
+    // Step 6: Check for first prep note and complete referral if applicable
+    await this.checkFirstPrepNote(userId);
+
     console.log(`[Orchestrator] Research complete for meeting ${meetingId}`);
     return prepNote;
   }
@@ -285,5 +288,33 @@ export class ResearchOrchestrator {
     }
 
     console.log(`[Orchestrator] Saved prep note to database`);
+  }
+
+  /**
+   * Check if this is user's first prep note and trigger referral completion
+   */
+  private async checkFirstPrepNote(userId: string): Promise<void> {
+    const supabase = await createServiceClient();
+
+    // Count completed prep notes for this user
+    const { count } = await supabase
+      .from('prep_notes')
+      .select('*', { count: 'exact', head: true })
+      .eq('meeting_id', supabase.from('meetings').select('id').eq('user_id', userId));
+
+    // If this is the first prep note, trigger referral completion
+    if (count === 1) {
+      console.log('[Orchestrator] First prep note detected, checking referral');
+
+      const { error } = await supabase.rpc('check_and_complete_referral', {
+        p_user_id: userId,
+      });
+
+      if (error) {
+        console.error('[Orchestrator] Referral completion error:', error);
+      } else {
+        console.log('[Orchestrator] Referral check completed');
+      }
+    }
   }
 }

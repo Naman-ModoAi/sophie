@@ -28,6 +28,9 @@ export async function GET(request: NextRequest) {
 
     console.log('✅ User authenticated via Supabase:', user.id)
 
+    // Check for referral cookie
+    const referralCode = request.cookies.get('referral_code')?.value
+
     // Sync user with custom users table
     const serviceSupabase = await createServiceClient()
 
@@ -52,6 +55,39 @@ export async function GET(request: NextRequest) {
       // Continue anyway - user exists in auth.users
     } else {
       console.log('✅ User synced to custom users table')
+    }
+
+    // Handle referral tracking if referral code exists
+    if (referralCode) {
+      console.log('📎 Processing referral code:', referralCode)
+
+      // Find referrer by code
+      const { data: referrerData } = await serviceSupabase
+        .from('users')
+        .select('id')
+        .eq('referral_code', referralCode)
+        .single()
+
+      if (referrerData) {
+        // Create referral record with status='signed_up'
+        const { error: referralError } = await serviceSupabase
+          .from('referrals')
+          .insert({
+            referrer_user_id: referrerData.id,
+            referred_user_id: user.id,
+            referral_code: referralCode,
+            status: 'signed_up',
+            signed_up_at: new Date().toISOString(),
+          })
+
+        if (referralError) {
+          console.error('Referral creation error:', referralError)
+        } else {
+          console.log('✅ Referral tracked successfully')
+        }
+      } else {
+        console.warn('⚠️ Referral code not found:', referralCode)
+      }
     }
 
     // Get provider token (for calendar access)
