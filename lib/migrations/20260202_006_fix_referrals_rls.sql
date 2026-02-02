@@ -2,23 +2,24 @@
 -- Date: 2026-02-02
 -- Description: Add INSERT policy and fix service role policy
 
--- Drop existing policies
+-- Drop existing service role policy
 DROP POLICY IF EXISTS "Service can manage referrals" ON public.referrals;
 
--- Service role can do everything
+-- Recreate service role policy with correct syntax
 CREATE POLICY "Service role full access"
-  ON public.referrals
-  FOR ALL
-  TO service_role
-  USING (true)
-  WITH CHECK (true);
+ON public.referrals
+FOR ALL
+TO service_role
+USING (true)
+WITH CHECK (true);
 
--- Users can insert their own referrals (for webhook/signup flow)
+-- Allow authenticated users to insert referrals
 CREATE POLICY "Users can create referrals"
-  ON public.referrals
-  FOR INSERT
-  WITH CHECK (true);
+ON public.referrals
+FOR INSERT
+TO authenticated
+WITH CHECK (true);
 
--- Grant necessary permissions
+-- Grant table permissions
 GRANT SELECT, INSERT, UPDATE ON public.referrals TO authenticated;
 GRANT ALL ON public.referrals TO service_role;
