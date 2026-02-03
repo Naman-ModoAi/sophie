@@ -3,6 +3,8 @@ import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import ReferralLanding from '@/components/referrals/ReferralLanding';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ReferralPage({ params }: { params: { code: string } }) {
   const { code } = params;
 
