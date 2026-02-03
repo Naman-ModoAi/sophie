@@ -209,26 +209,55 @@ Reusable components following design system:
 
 ### Pricing Model
 
-**1 credit = 1 attendee** (person + company research included)
+**Cost-based system: 1 credit = $0.01 (1 cent)**
+
+Credits are calculated based on actual API costs (tokens + search/grounding queries):
+- **Token costs**: Gemini input/output/cached/thinking tokens
+- **Gemini 3.x**: Search costs ($14 per 1,000 queries)
+- **Gemini 2.x**: Grounding costs ($35 per 1,000 grounded prompts)
+
+**Typical cost per person**: ~1-2 credits (varies based on token usage and API features)
 
 **Plans**:
-- **Free**: 10 credits/month, no rollover
-- **Pro**: 1000 credits/month, with rollover (effectively unlimited)
+- **Free**: 10 credits/month, no rollover (~5-10 people researched)
+- **Pro**: 1000 credits/month, with rollover (effectively unlimited, ~500-1000 people)
 
 ### Credit Flow
 
 1. User triggers research for a meeting
-2. Calculate credits needed: 1 per external attendee
-3. Check balance: `checkResearchAllowed(userId)`
+2. **Pre-research**: Estimate credits needed using `estimateCreditsNeeded()` (database-driven average)
+3. Check balance: `checkResearchAllowed(userId, estimatedCredits)`
 4. Perform research (if sufficient credits)
-5. Consume credits: `TokenTracker.trackUsage()`
+5. **Post-research**: Consume actual credits based on real API costs via `TokenTracker.trackUsage()`
 6. Pro users bypass credit consumption entirely
+
+### Gemini Pricing Models
+
+The system supports both Gemini 2.x and 3.x pricing models via database configuration:
+
+**Gemini 3.x (Current Default)**:
+- Per-query search billing: $14 per 1,000 queries
+- Set `gemini_search_price_per_1000 = 14.0`, `gemini_grounding_price_per_1000 = 0`
+
+**Gemini 2.x**:
+- Per-prompt grounding billing: $35 per 1,000 grounded prompts
+- Set `gemini_search_price_per_1000 = 0`, `gemini_grounding_price_per_1000 = 35.0`
+
+See `GEMINI_PRICING_CONFIG.md` for detailed configuration instructions.
 
 ### Database Functions
 
 - `check_credit_balance(user_id, credits_needed)` - Verify sufficient credits
 - `consume_credits(user_id, credits)` - Atomically deduct credits
 - `allocate_monthly_credits(user_id)` - Monthly reset (cron job)
+- `track_token_usage(...)` - Records token usage with grounding metadata
+
+### Key Files
+
+- `lib/research/credit-config.ts` - Cost calculation and database config management
+- `lib/research/token-tracker.ts` - Track usage and consume credits
+- `lib/research/check-usage.ts` - Pre-research credit checks and estimation
+- `GEMINI_PRICING_CONFIG.md` - Configuration guide for Gemini 2.x/3.x switching
 
 ---
 

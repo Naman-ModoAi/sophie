@@ -167,7 +167,8 @@ CREATE OR REPLACE FUNCTION public.track_token_usage(
   p_cached_tokens INTEGER DEFAULT 0,
   p_thoughts_tokens INTEGER DEFAULT 0,
   p_tool_use_prompt_tokens INTEGER DEFAULT 0,
-  p_web_search_queries TEXT[] DEFAULT NULL
+  p_web_search_queries TEXT[] DEFAULT NULL,
+  p_grounded_prompt_count INTEGER DEFAULT 0
 )
 RETURNS UUID
 LANGUAGE plpgsql
@@ -192,7 +193,8 @@ BEGIN
     thoughts_tokens,
     tool_use_prompt_tokens,
     total_tokens,
-    web_search_queries
+    web_search_queries,
+    grounded_prompt_count
   ) VALUES (
     p_user_id,
     p_meeting_id,
@@ -204,7 +206,8 @@ BEGIN
     p_thoughts_tokens,
     p_tool_use_prompt_tokens,
     v_total_tokens,
-    p_web_search_queries
+    p_web_search_queries,
+    p_grounded_prompt_count
   ) RETURNING id INTO v_usage_id;
 
   -- No user aggregate updates (credits are tracked separately)
@@ -213,7 +216,7 @@ BEGIN
 END;
 $$;
 
-COMMENT ON FUNCTION public.track_token_usage IS 'Records token usage with grounding metadata, thoughts tokens, tool use tokens, and search queries';
+COMMENT ON FUNCTION public.track_token_usage IS 'Records token usage with grounding metadata, thoughts tokens, tool use tokens, search queries, and grounded prompt count';
 
 -- ============================================================================
 

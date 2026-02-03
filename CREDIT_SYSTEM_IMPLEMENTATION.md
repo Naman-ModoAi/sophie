@@ -611,5 +611,86 @@ The new cost-based credit system provides:
 
 ---
 
+## Update: Gemini 2.x/3.x Flexible Pricing (2026-02-04)
+
+### New Features Added
+
+✅ **Gemini 2.x per-prompt grounding support**: $35 per 1,000 grounded prompts
+✅ **Flexible zero-weight model**: Support both Gemini 2.x and 3.x via database config
+✅ **Database-driven cost estimation**: Replace hardcoded "1 credit = 1 attendee" logic
+✅ **Grounded prompt count tracking**: New column in `token_usage` table
+
+### New Configuration
+
+Added to `credit_config` table:
+```sql
+gemini_grounding_price_per_1000 = 0     -- $35 per 1000 prompts for Gemini 2.x
+credit_estimate_per_person = 0.015      -- Average cost for pre-research estimation
+```
+
+### Cost Formula Update
+
+The total cost formula now includes grounding:
+
+```
+Total Cost = Token Cost + Search Cost + Grounding Cost
+```
+
+Where:
+- **Search Cost**: `(searchQueryCount / 1000) * gemini_search_price_per_1000`
+- **Grounding Cost**: `(groundedPromptCount / 1000) * gemini_grounding_price_per_1000`
+
+**Switching models**: Set unused pricing to 0
+- Gemini 3.x: `gemini_grounding_price_per_1000 = 0`
+- Gemini 2.x: `gemini_search_price_per_1000 = 0`
+
+### Pre-Research Estimation
+
+Replaced hardcoded `calculateCreditsNeeded()` with database-driven `estimateCreditsNeeded()`:
+
+**Old Logic** (deprecated):
+```typescript
+// Fixed: 1 credit per attendee
+return attendeeCount;
+```
+
+**New Logic**:
+```typescript
+// Database-driven: Uses actual average cost
+const avgCostPerPerson = await getCreditConfig('credit_estimate_per_person');
+const costBaseline = await getCreditConfig('credit_baseline_usd');
+const estimatedCredits = attendeeCount * (avgCostPerPerson / costBaseline);
+return Math.ceil(estimatedCredits / roundingStep) * roundingStep;
+```
+
+### Files Modified
+
+1. **Database Migrations**:
+   - `16_add_grounding_config.sql` - Add grounding and estimation config
+   - `17_add_grounding_prompt_count.sql` - Add `grounded_prompt_count` column
+   - `05_functions.sql` - Update `track_token_usage` RPC
+
+2. **Code Updates**:
+   - `lib/research/credit-config.ts` - Add grounding cost calculation
+   - `lib/research/token-tracker.ts` - Track grounded prompt count
+   - `lib/research/check-usage.ts` - Replace hardcoded logic with estimation
+   - `app/api/research/route.ts` - Use new estimation function
+   - `lib/research/agents/person-agent.ts` - Detect grounding usage
+   - `lib/research/agents/company-agent.ts` - Detect grounding usage
+
+3. **Documentation**:
+   - `GEMINI_PRICING_CONFIG.md` - NEW: Configuration guide
+   - `CLAUDE.md` - Updated credit system section
+
+### Configuration Guide
+
+See `GEMINI_PRICING_CONFIG.md` for detailed instructions on:
+- Switching between Gemini 2.x and 3.x pricing
+- Adjusting pre-research cost estimates
+- Monitoring actual vs. estimated costs
+- Troubleshooting configuration issues
+
+---
+
 **Questions or Issues?**
-Check the database logs, review `token_usage` records, and verify pricing configuration.
+Check the database logs, review `token_usage` records, verify pricing configuration, or see `GEMINI_PRICING_CONFIG.md`.

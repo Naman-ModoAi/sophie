@@ -21,6 +21,7 @@ export const GEMINI_PRICING = {
   THINKING_TOKENS: 3.00,   // Billed at output rate
   TOOL_USE_TOKENS: 0.50,   // Billed at input rate
   SEARCH_COST_PER_1000: 14.0, // Per-query billing for Gemini 3.x
+  GROUNDING_COST_PER_1000: 35.0, // Per-prompt grounding for Gemini 2.x
 } as const;
 
 // ============================================================================
@@ -68,8 +69,10 @@ function getDefaultConfig(key: string): number {
     'gemini_thinking_price_per_1m': 3.00,
     'gemini_tool_use_price_per_1m': 0.50,
     'gemini_search_price_per_1000': 14.0,
+    'gemini_grounding_price_per_1000': 0, // Default to 0 for Gemini 3.x
     'credit_baseline_usd': 0.01,
     'credit_rounding_step': 0.05,
+    'credit_estimate_per_person': 0.015,
   };
   return defaults[key] ?? 0;
 }
@@ -99,16 +102,18 @@ export async function calculateActualCost(
   cachedTokens: number = 0,
   thinkingTokens: number = 0,
   toolUseTokens: number = 0,
-  searchQueryCount: number = 0
+  searchQueryCount: number = 0,
+  groundedPromptCount: number = 0
 ): Promise<number> {
   // Load pricing from database
-  const [inputPrice, outputPrice, cachedPrice, thinkingPrice, toolUsePrice, searchPrice] = await Promise.all([
+  const [inputPrice, outputPrice, cachedPrice, thinkingPrice, toolUsePrice, searchPrice, groundingPrice] = await Promise.all([
     getCreditConfig('gemini_input_price_per_1m'),
     getCreditConfig('gemini_output_price_per_1m'),
     getCreditConfig('gemini_cached_price_per_1m'),
     getCreditConfig('gemini_thinking_price_per_1m'),
     getCreditConfig('gemini_tool_use_price_per_1m'),
     getCreditConfig('gemini_search_price_per_1000'),
+    getCreditConfig('gemini_grounding_price_per_1000'),
   ]);
 
   // Calculate token costs (per 1M tokens)
@@ -124,7 +129,10 @@ export async function calculateActualCost(
   // Calculate search costs (per 1000 queries for Gemini 3.x)
   const searchCost = (searchQueryCount / 1000) * searchPrice;
 
-  return tokenCost + searchCost;
+  // Calculate grounding costs (per 1000 prompts for Gemini 2.x)
+  const groundingCost = (groundedPromptCount / 1000) * groundingPrice;
+
+  return tokenCost + searchCost + groundingCost;
 }
 
 // Get current credit baseline from database
@@ -147,7 +155,8 @@ export async function calculateCreditsForTokens(
   cachedTokens: number = 0,
   thinkingTokens: number = 0,
   toolUseTokens: number = 0,
-  searchQueryCount: number = 0
+  searchQueryCount: number = 0,
+  groundedPromptCount: number = 0
 ): Promise<number> {
   // Calculate total effective cost (not tokens!)
   const effectiveCost = await calculateActualCost(
@@ -156,7 +165,8 @@ export async function calculateCreditsForTokens(
     cachedTokens,
     thinkingTokens,
     toolUseTokens,
-    searchQueryCount
+    searchQueryCount,
+    groundedPromptCount
   );
 
   // Get baseline and rounding step from database

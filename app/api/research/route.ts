@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 import { createServiceClient } from '@/lib/supabase/server';
 import { ResearchOrchestrator } from '@/lib/research/agents/orchestrator';
-import { checkResearchAllowed, calculateCreditsNeeded } from '@/lib/research/check-usage';
+import { checkResearchAllowed, estimateCreditsNeeded } from '@/lib/research/check-usage';
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,13 +41,13 @@ export async function POST(request: NextRequest) {
       )
     );
 
-    const creditsNeeded = calculateCreditsNeeded(
+    const creditsNeeded = await estimateCreditsNeeded(
       externalAttendees.length,
       uniqueDomains.length
     );
 
     console.log(
-      `[Research API] Credits needed: ${creditsNeeded} ` +
+      `[Research API] Estimated credits needed: ${creditsNeeded} ` +
       `(${externalAttendees.length} people + ${uniqueDomains.length} companies)`
     );
 

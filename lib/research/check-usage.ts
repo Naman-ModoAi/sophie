@@ -5,6 +5,28 @@
 
 import { createServiceClient } from "@/lib/supabase/server";
 
+// Import credit config utilities for cost estimation
+async function getCreditConfig(key: string): Promise<number> {
+  const supabase = await createServiceClient();
+  const { data, error } = await supabase
+    .from('credit_config')
+    .select('config_value')
+    .eq('config_key', key)
+    .single();
+
+  if (error || !data) {
+    // Fallback defaults
+    const defaults: Record<string, number> = {
+      'credit_estimate_per_person': 0.015,
+      'credit_baseline_usd': 0.01,
+      'credit_rounding_step': 0.05,
+    };
+    return defaults[key] ?? 0;
+  }
+
+  return Number(data.config_value);
+}
+
 /**
  * Result of credit availability check
  */
@@ -145,7 +167,36 @@ export async function getUserCredits(userId: string): Promise<{
 }
 
 /**
- * Calculate credits needed for a meeting's research
+ * Estimate credits needed for research based on database-driven average cost
+ * Replaces the old "1 credit = 1 attendee" hardcoded logic
+ *
+ * @param attendeeCount - Number of people to research
+ * @param companyCount - Number of companies to research (included in attendee cost)
+ * @returns Estimated credits needed (rounded to nearest rounding step)
+ */
+export async function estimateCreditsNeeded(
+  attendeeCount: number,
+  _companyCount: number
+): Promise<number> {
+  // Fetch average cost per person from database
+  const avgCostPerPerson = await getCreditConfig('credit_estimate_per_person');
+  const costBaseline = await getCreditConfig('credit_baseline_usd');
+
+  // Calculate estimated credits
+  const estimatedCredits = attendeeCount * (avgCostPerPerson / costBaseline);
+
+  // Round up to nearest rounding step
+  const roundingStep = await getCreditConfig('credit_rounding_step');
+  return Math.ceil(estimatedCredits / roundingStep) * roundingStep;
+}
+
+/**
+ * @deprecated Use estimateCreditsNeeded() instead for accurate cost-based estimation
+ *
+ * Calculate credits needed for a meeting's research (DEPRECATED)
+ * Fixed cost model: 1 credit per attendee (includes company research)
+ * This function uses hardcoded "1 credit = 1 attendee" logic which does not
+ * reflect actual API costs. Kept for backwards compatibility only.
  *
  * @param attendeeCount - Number of people to research
  * @param companyCount - Number of companies to research (included in attendee cost)
