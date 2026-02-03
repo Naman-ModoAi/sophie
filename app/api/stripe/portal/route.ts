@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { getAuthUser, createClient } from '@/lib/supabase/server';
 import Stripe from 'stripe';
 

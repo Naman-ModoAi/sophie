@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { getAuthUser, createServiceClient } from '@/lib/supabase/server';
 import { fetchCalendarEvents, refreshGoogleToken } from '@/lib/google/calendar';
 

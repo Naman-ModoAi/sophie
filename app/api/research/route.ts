@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { createServiceClient } from '@/lib/supabase/server';
 import { ResearchOrchestrator } from '@/lib/research/agents/orchestrator';
 import { checkResearchAllowed, calculateCreditsNeeded } from '@/lib/research/check-usage';
