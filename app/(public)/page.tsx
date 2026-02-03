@@ -13,18 +13,12 @@ export default function Home() {
               <Link href="#features" className="text-sm text-text/70 hover:text-text transition-colors">
                 How it works
               </Link>
-              {/* <Link
-                href="/api/auth/login"
-                className="text-sm font-medium text-text/70 hover:text-text transition-colors"
-              >
-                Log in
-              </Link> */}
-              <Link
+              <a
                 href="/api/auth/login"
                 className="inline-flex items-center px-4 py-2 bg-accent text-surface rounded-md text-sm font-medium hover:bg-accent/90 transition-colors"
               >
                 Try for free →
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -54,7 +48,7 @@ export default function Home() {
             </p>
 
             {/* CTA Button */}
-            <Link
+            <a
               href="/api/auth/login"
               className="inline-flex items-center gap-3 bg-accent text-surface px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent/90 transition-all shadow-lg hover:shadow-xl mb-4"
             >
@@ -67,7 +61,7 @@ export default function Home() {
                 </g>
               </svg>
               Start with Google Calendar →
-            </Link>
+            </a>
             <p className="text-sm text-text/50">
               Syncs with Google Calendar • Free to get started
             </p>

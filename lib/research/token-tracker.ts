@@ -74,19 +74,41 @@ export class TokenTracker {
 
         // Consume credits only for person research (company research is included in person cost)
         if (agentType === 'person') {
+          // Calculate search query count from grounding metadata
+          const searchQueryCount = webSearchQueries.length;
+
           const creditCost = await calculateCreditsForTokens(
             inputTokens,
             outputTokens,
-            cachedTokens
+            cachedTokens,
+            thoughtsTokens,
+            toolUsePromptTokens,
+            searchQueryCount
           );
 
-          const effectiveTokens = calculateEffectiveTokens(inputTokens, outputTokens, cachedTokens);
-          const actualCost = calculateActualCost(inputTokens, outputTokens, cachedTokens);
+          const effectiveTokens = calculateEffectiveTokens(
+            inputTokens,
+            outputTokens,
+            cachedTokens,
+            thoughtsTokens,
+            toolUsePromptTokens
+          );
+          const actualCost = await calculateActualCost(
+            inputTokens,
+            outputTokens,
+            cachedTokens,
+            thoughtsTokens,
+            toolUsePromptTokens,
+            searchQueryCount
+          );
 
           console.log(
             `[TokenTracker] Credit calculation: ` +
+            `input=${inputTokens}, output=${outputTokens}, cached=${cachedTokens}, ` +
+            `thinking=${thoughtsTokens}, tool_use=${toolUsePromptTokens}, ` +
+            `searches=${searchQueryCount}, ` +
             `effective_tokens=${effectiveTokens.toFixed(2)}, ` +
-            `credits=${creditCost}, ` +
+            `credits=${creditCost.toFixed(2)}, ` +
             `actual_cost=$${actualCost.toFixed(6)}`
           );
 

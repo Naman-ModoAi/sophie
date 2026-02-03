@@ -8,6 +8,21 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  // Handle referral links - set cookie in middleware
+  if (request.nextUrl.pathname.startsWith('/ref/')) {
+    const code = request.nextUrl.pathname.split('/ref/')[1];
+    if (code) {
+      response.cookies.set('referral_code', code, {
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      });
+    }
+    return response;
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -45,5 +60,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/dashboard/:path*', '/settings/:path*'],
+  matcher: ['/', '/dashboard/:path*', '/settings/:path*', '/ref/:path*'],
 };
