@@ -39,13 +39,14 @@ export default function ReferralLanding({ referrerName }: { referrerName: string
           </ul>
         </div>
 
-        <a
-          href="/api/auth/login"
-          className="block w-full px-4 py-2 rounded-md font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 bg-accent text-surface hover:bg-accent/90 active:bg-accent/80 text-center"
-          data-next-router="false"
-        >
-          Sign in with Google
-        </a>
+        <form action="/api/auth/login" method="GET">
+          <button
+            type="submit"
+            className="w-full px-4 py-2 rounded-md font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 bg-accent text-surface hover:bg-accent/90 active:bg-accent/80"
+          >
+            Sign in with Google
+          </button>
+        </form>
 
         <p className="text-xs text-text/50 text-center mt-4">
           By signing up, you agree to our Terms of Service and Privacy Policy
