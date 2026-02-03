@@ -21,7 +21,7 @@ export class CompanyResearchAgent {
     }
 
     this.client = new GoogleGenAI({ apiKey });
-    this.modelName = process.env.GEMINI_MODEL || 'gemini-3-flash-preview'; // Use grounding-compatible model
+    this.modelName = process.env.GEMINI_MODEL || 'gemini-2.5-pro'; // Use grounding-compatible model
     this.systemInstruction = SYSTEM_PROMPT;
     this.tokenTracker = TokenTracker;
   }

@@ -23,5 +23,5 @@ export function buildResearchPrompt(): string {
     5. 3-5 business insights or conversation opportunities for the meeting
 
     - Provide accurate and up-to-date information
-    - Summarize the info up to 500 words, in markdown format.`;
+    - Summarize the info up to 400 words, in markdown format.`;
 }

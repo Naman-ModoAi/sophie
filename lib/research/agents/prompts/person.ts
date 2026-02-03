@@ -27,7 +27,7 @@ export function buildResearchPrompt(
     5. 3-5 specific talking points for building rapport in a business meeting
     
     - Don't mess up with the personal detail of the attendee, as name and company should be what has been passed.
-    - summarize the info upto 500 words, and in markdown format.`;
+    - summarize the info upto 400 words, and in markdown format.`;
 
   return prompt;
 }
