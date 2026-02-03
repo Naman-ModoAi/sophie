@@ -42,6 +42,7 @@ export default function ReferralLanding({ referrerName }: { referrerName: string
         <a
           href="/api/auth/login"
           className="block w-full px-4 py-2 rounded-md font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 bg-accent text-surface hover:bg-accent/90 active:bg-accent/80 text-center"
+          data-next-router="false"
         >
           Sign in with Google
         </a>
