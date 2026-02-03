@@ -21,12 +21,13 @@ if (!supabaseUrl || !supabaseKey) {
 
 // Migration files in order (from supabase/migrations)
 const migrations = [
-  '01_users_and_oauth.sql',
-  '02_meetings_and_attendees.sql',
-  '03_subscription_and_credits.sql',
-  '04_rls_policies.sql',
-  '20260131_enable_rls.sql',
-  '20260202_fix_oauth_callback.sql',
+  '01_users_and_auth.sql',
+  '02_meetings.sql',
+  '03_subscriptions.sql',
+  '04_token_tracking.sql',
+  '05_functions.sql',
+  '06_rls_policies.sql',
+  '07_seed_data.sql',
 ]
 
 async function runMigration(migrationFile) {
@@ -96,14 +97,17 @@ async function runAllMigrations() {
     console.log('✅ All migrations completed successfully!')
     console.log('')
     console.log('Created tables:')
-    console.log('  - users')
-    console.log('  - oauth_tokens')
-    console.log('  - meetings')
-    console.log('  - attendees')
+    console.log('  - users, oauth_tokens')
+    console.log('  - meetings, attendees, companies, prep_notes, email_queue')
+    console.log('  - plans, subscriptions, transactions')
+    console.log('  - referrals, referral_credits')
+    console.log('  - token_usage, api_usage')
     console.log('')
     console.log('Applied:')
+    console.log('  - Database functions (credit management, token tracking, referrals)')
     console.log('  - RLS policies for data isolation')
     console.log('  - Table permissions for authenticated role')
+    console.log('  - Seed data (Free and Pro plans)')
     console.log('')
     console.log('Next steps:')
     console.log('  1. Run: npm run dev')
