@@ -104,93 +104,54 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
     // Handle subscription cancellation/portal return flow
     if ((isFromPortal || isCancelled) && !hasProcessedToast.current) {
       hasProcessedToast.current = true;
-      console.log('[Settings] Returned from portal');
+      console.log('[Settings] Returned from portal, setting up realtime listener');
       setIsWaitingForUpdate(true);
       setUpdateType('cancel');
 
-      // Wait 500ms for database replication, then check status
-      setTimeout(async () => {
-        console.log('[Settings] Refetching subscription status after delay...');
-        try {
-          const response = await fetch('/api/settings/subscription-status');
-          const { subscription: freshSub } = await response.json();
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
 
-          // If already cancelled, redirect immediately
-          if (freshSub?.cancel_at_period_end === true) {
-            console.log('[Settings] Subscription already cancelled, redirecting immediately');
-            setIsWaitingForUpdate(false);
-            window.location.href = '/settings?cancelled=true';
-            return;
-          }
-
-          // Not cancelled yet, set up realtime listener
-          console.log('[Settings] Setting up realtime listener...');
-          const supabase = createBrowserClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-          );
-
-          const channel = supabase
-            .channel('subscription-updates')
-            .on(
-              'postgres_changes',
-              {
-                event: 'UPDATE',
-                schema: 'public',
-                table: 'subscriptions',
-                filter: `user_id=eq.${userId}`
-              },
-              (payload) => {
-                console.log('[Settings] Subscription update received:', payload);
-                if (payload.new.cancel_at_period_end === true) {
-                  console.log('[Settings] Subscription cancelled, redirecting...');
-                  channel.unsubscribe();
-                  setIsWaitingForUpdate(false);
-                  window.location.href = '/settings?cancelled=true';
-                }
-              }
-            )
-            .subscribe();
-
-          // Timeout after 3s with final recheck
-          const timeout = setTimeout(async () => {
-            console.log('[Settings] Timeout reached - final recheck');
-            try {
-              const recheckResponse = await fetch('/api/settings/subscription-status');
-              const { subscription: latestSub } = await recheckResponse.json();
-
+      const channel = supabase
+        .channel('subscription-updates')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'subscriptions',
+            filter: `user_id=eq.${userId}`
+          },
+          (payload) => {
+            console.log('[Settings] Subscription update received:', payload);
+            if (payload.new.cancel_at_period_end === true) {
+              console.log('[Settings] Subscription cancelled, redirecting...');
               channel.unsubscribe();
               setIsWaitingForUpdate(false);
-
-              if (latestSub?.cancel_at_period_end === true) {
-                console.log('[Settings] Cancellation confirmed, redirecting to success page');
-                window.location.href = '/settings?cancelled=true';
-              } else {
-                console.log('[Settings] No cancellation detected, reloading to show current state');
-                window.location.reload();
-              }
-            } catch (error) {
-              console.error('[Settings] Error checking subscription status:', error);
-              channel.unsubscribe();
-              setIsWaitingForUpdate(false);
-              window.location.reload();
+              window.location.href = '/settings?cancelled=true';
             }
-          }, 3000);
+          }
+        )
+        .subscribe();
 
-          // Cleanup function
-          return () => {
-            channel.unsubscribe();
-            clearTimeout(timeout);
-          };
-        } catch (error) {
-          console.error('[Settings] Error fetching subscription status:', error);
-          setIsWaitingForUpdate(false);
-          window.location.reload();
-        }
-      }, 500);
+      // Timeout after 10 seconds if webhook hasn't updated
+      const timeout = setTimeout(() => {
+        console.log('[Settings] Timeout reached - webhook took >10s');
+        channel.unsubscribe();
+        setIsWaitingForUpdate(false);
+        setToast({
+          message: 'Changes saved! Refresh the page if your subscription hasn\'t updated.',
+          variant: 'success'
+        });
+        // Clear URL params to prevent re-triggering
+        window.history.replaceState({}, '', '/settings');
+      }, 10000);
 
-      // No cleanup needed for the initial setTimeout
-      return;
+      return () => {
+        channel.unsubscribe();
+        clearTimeout(timeout);
+      };
     } else if (initialToast && !hasProcessedToast.current) {
       hasProcessedToast.current = true;
       // For non-success toasts (like canceled or upgraded), show immediately

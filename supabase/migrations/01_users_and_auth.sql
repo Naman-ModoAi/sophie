@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS public.users (
   plan_type TEXT DEFAULT 'free' CHECK (plan_type IN ('free', 'pro')),
 
   -- Credit tracking
-  credits_balance INTEGER DEFAULT 0,
+  credits_balance INTEGER DEFAULT 10,
   credits_used_this_month INTEGER DEFAULT 0,
   last_credit_reset_at TIMESTAMPTZ DEFAULT DATE_TRUNC('month', NOW()),
 
