@@ -25,6 +25,7 @@ export class TokenTracker {
     thoughtsTokens?: number;
     toolUsePromptTokens?: number;
     webSearchQueries?: string[];
+    groundedPromptCount?: number;
   }): Promise<string | null> {
     const {
       userId,
@@ -37,6 +38,7 @@ export class TokenTracker {
       thoughtsTokens = 0,
       toolUsePromptTokens = 0,
       webSearchQueries = [],
+      groundedPromptCount = 0,
     } = params;
 
     try {
@@ -54,6 +56,7 @@ export class TokenTracker {
         p_thoughts_tokens: thoughtsTokens,
         p_tool_use_prompt_tokens: toolUsePromptTokens,
         p_web_search_queries: webSearchQueries.length > 0 ? webSearchQueries : null,
+        p_grounded_prompt_count: groundedPromptCount,
       });
 
       if (error) {
@@ -67,26 +70,51 @@ export class TokenTracker {
         const thoughtsInfo = thoughtsTokens > 0 ? ` (thoughts: ${thoughtsTokens})` : '';
         const toolUseInfo = toolUsePromptTokens > 0 ? ` (tool-use: ${toolUsePromptTokens})` : '';
         const searchInfo = webSearchQueries.length > 0 ? ` (searches: ${webSearchQueries.length})` : '';
+        const groundingInfo = groundedPromptCount > 0 ? ` (grounded: ${groundedPromptCount})` : '';
         console.log(
-          `[TokenTracker] Tracked ${total} tokens${cacheInfo}${thoughtsInfo}${toolUseInfo}${searchInfo} for user ${userId}, ` +
+          `[TokenTracker] Tracked ${total} tokens${cacheInfo}${thoughtsInfo}${toolUseInfo}${searchInfo}${groundingInfo} for user ${userId}, ` +
           `meeting ${meetingId}, agent ${agentType}`
         );
 
         // Consume credits only for person research (company research is included in person cost)
         if (agentType === 'person') {
+          // Calculate search query count from grounding metadata
+          const searchQueryCount = webSearchQueries.length;
+
           const creditCost = await calculateCreditsForTokens(
             inputTokens,
             outputTokens,
-            cachedTokens
+            cachedTokens,
+            thoughtsTokens,
+            toolUsePromptTokens,
+            searchQueryCount,
+            groundedPromptCount
           );
 
-          const effectiveTokens = calculateEffectiveTokens(inputTokens, outputTokens, cachedTokens);
-          const actualCost = calculateActualCost(inputTokens, outputTokens, cachedTokens);
+          const effectiveTokens = calculateEffectiveTokens(
+            inputTokens,
+            outputTokens,
+            cachedTokens,
+            thoughtsTokens,
+            toolUsePromptTokens
+          );
+          const actualCost = await calculateActualCost(
+            inputTokens,
+            outputTokens,
+            cachedTokens,
+            thoughtsTokens,
+            toolUsePromptTokens,
+            searchQueryCount,
+            groundedPromptCount
+          );
 
           console.log(
             `[TokenTracker] Credit calculation: ` +
+            `input=${inputTokens}, output=${outputTokens}, cached=${cachedTokens}, ` +
+            `thinking=${thoughtsTokens}, tool_use=${toolUsePromptTokens}, ` +
+            `searches=${searchQueryCount}, grounded=${groundedPromptCount}, ` +
             `effective_tokens=${effectiveTokens.toFixed(2)}, ` +
-            `credits=${creditCost}, ` +
+            `credits=${creditCost.toFixed(2)}, ` +
             `actual_cost=$${actualCost.toFixed(6)}`
           );
 

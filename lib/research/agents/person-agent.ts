@@ -102,6 +102,9 @@ export class PersonResearchAgent {
             webSearchQueries.push(...response.candidates[0].groundingMetadata.webSearchQueries);
           }
 
+          // Detect if grounding was used (for Gemini 2.x per-prompt billing)
+          const groundedPromptCount = response.candidates?.[0]?.groundingMetadata ? 1 : 0;
+
           await this.tokenTracker.trackUsage({
             userId,
             meetingId,
@@ -113,6 +116,7 @@ export class PersonResearchAgent {
             thoughtsTokens,
             toolUsePromptTokens,
             webSearchQueries,
+            groundedPromptCount,
           });
         } catch (error) {
           console.warn('[PersonAgent] Failed to track token usage:', error);
