@@ -1,123 +1,132 @@
 #!/usr/bin/env node
 
+const { execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
-const https = require('https')
+const readline = require('readline')
 
-// Load .env.local
-require('dotenv').config({ path: path.join(__dirname, '../.env.local') })
+const migrationsDir = path.join(__dirname, '../supabase/migrations')
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error('❌ Missing environment variables:')
-  console.error('   - NEXT_PUBLIC_SUPABASE_URL')
-  console.error('   - SUPABASE_SERVICE_ROLE_KEY')
-  console.error('')
-  console.error('Make sure .env.local is properly configured.')
-  process.exit(1)
-}
-
-// Migration files in order (from supabase/migrations)
-const migrations = [
-  '01_users_and_auth.sql',
-  '02_meetings.sql',
-  '03_subscriptions.sql',
-  '04_token_tracking.sql',
-  '05_functions.sql',
-  '06_rls_policies.sql',
-  '07_seed_data.sql',
-]
-
-async function runMigration(migrationFile) {
-  return new Promise((resolve, reject) => {
-    const migrationPath = path.join(__dirname, '../supabase/migrations', migrationFile)
-
-    if (!fs.existsSync(migrationPath)) {
-      console.log(`⚠️  Skipping ${migrationFile} (file not found)`)
-      resolve()
-      return
-    }
-
-    const sql = fs.readFileSync(migrationPath, 'utf-8')
-
-    console.log(`🔄 Running: ${migrationFile}`)
-
-    // Use Supabase SQL API endpoint
-    const url = new URL(supabaseUrl)
-    const options = {
-      hostname: url.hostname,
-      port: 443,
-      path: '/rest/v1/rpc/exec_sql',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabaseKey}`,
-        'apikey': supabaseKey,
-        'Prefer': 'return=minimal'
-      },
-    }
-
-    const req = https.request(options, (res) => {
-      let data = ''
-
-      res.on('data', (chunk) => {
-        data += chunk
-      })
-
-      res.on('end', () => {
-        if (res.statusCode >= 400) {
-          reject(new Error(`${migrationFile} failed (Status: ${res.statusCode}): ${data}`))
-        } else {
-          console.log(`✅ ${migrationFile} completed`)
-          resolve()
-        }
-      })
+// Get all SQL migration files sorted by numeric prefix
+function getMigrationFiles() {
+  return fs.readdirSync(migrationsDir)
+    .filter(f => f.endsWith('.sql'))
+    .sort((a, b) => {
+      const numA = parseInt(a.match(/^(\d+)/)?.[1] || '0', 10)
+      const numB = parseInt(b.match(/^(\d+)/)?.[1] || '0', 10)
+      return numA - numB
     })
-
-    req.on('error', reject)
-
-    const body = JSON.stringify({ query: sql })
-    req.write(body)
-    req.end()
-  })
 }
 
-async function runAllMigrations() {
-  console.log('🚀 Running PrepFor.app database migrations...')
-  console.log('')
+// Combine all migrations into a single SQL file
+function combineMigrations() {
+  const migrations = getMigrationFiles()
+  let combined = `-- Combined migrations generated on ${new Date().toISOString()}\n`
+  combined += `-- Total migrations: ${migrations.length}\n\n`
+
+  for (const file of migrations) {
+    const filePath = path.join(migrationsDir, file)
+    const content = fs.readFileSync(filePath, 'utf-8')
+    combined += `-- ============================================\n`
+    combined += `-- Migration: ${file}\n`
+    combined += `-- ============================================\n\n`
+    combined += content
+    combined += `\n\n`
+  }
+
+  return { combined, migrations }
+}
+
+// Run using Supabase CLI
+async function runWithSupabaseCLI() {
+  console.log('🔗 Checking Supabase CLI link status...\n')
 
   try {
-    for (const migration of migrations) {
-      await runMigration(migration)
-    }
-
-    console.log('')
-    console.log('✅ All migrations completed successfully!')
-    console.log('')
-    console.log('Created tables:')
-    console.log('  - users, oauth_tokens')
-    console.log('  - meetings, attendees, companies, prep_notes, email_queue')
-    console.log('  - plans, subscriptions, transactions')
-    console.log('  - referrals, referral_credits')
-    console.log('  - token_usage, api_usage')
-    console.log('')
-    console.log('Applied:')
-    console.log('  - Database functions (credit management, token tracking, referrals)')
-    console.log('  - RLS policies for data isolation')
-    console.log('  - Table permissions for authenticated role')
-    console.log('  - Seed data (Free and Pro plans)')
-    console.log('')
-    console.log('Next steps:')
-    console.log('  1. Run: npm run dev')
-    console.log('  2. Visit: http://localhost:3000')
-    console.log('  3. Sign in with Google')
-    console.log('  4. Click "Sync Calendar" on dashboard')
+    // Check if project is linked
+    execSync('supabase projects list', { stdio: 'pipe' })
   } catch (error) {
-    console.error('❌ Migration failed:', error.message)
+    console.error('❌ Supabase CLI not authenticated or linked.')
+    console.error('')
+    console.error('To set up:')
+    console.error('  1. Run: supabase login')
+    console.error('  2. Run: supabase link --project-ref <your-project-ref>')
+    console.error('')
+    console.error('Find your project ref in the Supabase dashboard URL:')
+    console.error('  https://supabase.com/dashboard/project/<project-ref>')
+    process.exit(1)
+  }
+
+  console.log('🚀 Pushing migrations to remote Supabase...\n')
+
+  try {
+    execSync('supabase db push', {
+      stdio: 'inherit',
+      cwd: path.join(__dirname, '..')
+    })
+    console.log('\n✅ Migrations pushed successfully!')
+  } catch (error) {
+    console.error('\n❌ Migration push failed')
     process.exit(1)
   }
 }
 
-runAllMigrations()
+// Generate combined SQL file for manual execution
+function generateCombinedFile() {
+  const { combined, migrations } = combineMigrations()
+  const outputPath = path.join(__dirname, '../supabase/combined_migrations.sql')
+
+  fs.writeFileSync(outputPath, combined)
+
+  console.log(`✅ Generated combined migration file with ${migrations.length} migrations`)
+  console.log(`📄 File: supabase/combined_migrations.sql`)
+  console.log('')
+  console.log('To apply:')
+  console.log('  1. Open Supabase Dashboard → SQL Editor')
+  console.log('  2. Paste the contents of combined_migrations.sql')
+  console.log('  3. Click "Run"')
+  console.log('')
+  console.log('Included migrations:')
+  migrations.forEach(m => console.log(`  - ${m}`))
+}
+
+// Main
+async function main() {
+  const args = process.argv.slice(2)
+  const command = args[0]
+
+  console.log('📂 PrepFor.app Database Migration Tool')
+  console.log('======================================\n')
+
+  const migrations = getMigrationFiles()
+  console.log(`Found ${migrations.length} migration files in supabase/migrations/\n`)
+
+  if (command === 'push' || command === 'cli') {
+    // Use Supabase CLI to push to remote
+    await runWithSupabaseCLI()
+  } else if (command === 'generate' || command === 'combine') {
+    // Generate combined SQL file
+    generateCombinedFile()
+  } else if (command === 'list') {
+    // Just list migrations
+    console.log('Migration files (in order):')
+    migrations.forEach((m, i) => console.log(`  ${i + 1}. ${m}`))
+  } else {
+    // Show help
+    console.log('Usage: npm run migrate <command>\n')
+    console.log('Commands:')
+    console.log('  push      Push migrations to remote Supabase using CLI')
+    console.log('  generate  Generate combined SQL file for manual execution')
+    console.log('  list      List all migration files')
+    console.log('')
+    console.log('Examples:')
+    console.log('  npm run migrate push      # Push to hosted Supabase')
+    console.log('  npm run migrate generate  # Create combined SQL file')
+    console.log('')
+    console.log('Setup for "push" command:')
+    console.log('  1. supabase login')
+    console.log('  2. supabase link --project-ref <your-project-ref>')
+    console.log('  3. npm run migrate push')
+  }
+}
+
+main().catch(console.error)

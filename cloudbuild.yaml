@@ -1,5 +1,6 @@
 # Google Cloud Build configuration for automatic deployment
 # This file enables CI/CD for Cloud Run deployments
+# Triggered on push to main branch from IceCream-Labs/meetready
 
 steps:
   # Build the Docker image
@@ -7,9 +8,9 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/meetready-frontend:$COMMIT_SHA'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/meet-ready/meetready-frontend:$COMMIT_SHA'
       - '-t'
-      - 'gcr.io/$PROJECT_ID/meetready-frontend:latest'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/meet-ready/meetready-frontend:latest'
       - '--build-arg'
       - 'NEXT_PUBLIC_SUPABASE_URL=$$NEXT_PUBLIC_SUPABASE_URL'
       - '--build-arg'
@@ -28,16 +29,16 @@ steps:
       - 'NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID'
       - 'NEXT_PUBLIC_GA_MEASUREMENT_ID'
 
-  # Push the Docker image to Google Container Registry
+  # Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/meetready-frontend:$COMMIT_SHA'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/meet-ready/meetready-frontend:$COMMIT_SHA'
 
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'gcr.io/$PROJECT_ID/meetready-frontend:latest'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/meet-ready/meetready-frontend:latest'
 
   # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -47,7 +48,7 @@ steps:
       - 'deploy'
       - 'meetready-frontend'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/meetready-frontend:$COMMIT_SHA'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/meet-ready/meetready-frontend:$COMMIT_SHA'
       - '--region'
       - 'us-central1'
       - '--platform'
@@ -64,10 +65,10 @@ steps:
       - '--timeout'
       - '60s'
 
-# Store images in Google Container Registry
+# Store images in Artifact Registry
 images:
-  - 'gcr.io/$PROJECT_ID/meetready-frontend:$COMMIT_SHA'
-  - 'gcr.io/$PROJECT_ID/meetready-frontend:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/meet-ready/meetready-frontend:$COMMIT_SHA'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/meet-ready/meetready-frontend:latest'
 
 # Build timeout
 timeout: '1200s'

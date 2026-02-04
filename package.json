@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "node scripts/migrate.js",
+    "migrate:push": "node scripts/migrate.js push",
+    "migrate:generate": "node scripts/migrate.js generate",
     "test:research": "tsx scripts/test-research-cli.ts"
   },
   "dependencies": {
