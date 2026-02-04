@@ -30,7 +30,7 @@ export function DiscussionPointsTab({ prepNote }: DiscussionPointsTabProps) {
       setCopyStatus('Copied all points!');
       setTimeout(() => setCopyStatus(null), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      // Failed to copy
       setCopyStatus('Failed to copy');
       setTimeout(() => setCopyStatus(null), 2000);
     }
@@ -42,7 +42,7 @@ export function DiscussionPointsTab({ prepNote }: DiscussionPointsTabProps) {
       setCopyStatus(`Copied ${label}!`);
       setTimeout(() => setCopyStatus(null), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      // Failed to copy
       setCopyStatus('Failed to copy');
       setTimeout(() => setCopyStatus(null), 2000);
     }

@@ -48,7 +48,6 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
     // Handle subscription upgrade flow
     if (initialToast?.variant === 'success' && isFromStripe && !isAlreadyUpgraded) {
       hasProcessedToast.current = true;
-      console.log('[Settings] Starting realtime subscription for upgrade, user:', userId);
       setIsWaitingForUpdate(true);
       setUpdateType('upgrade');
 
@@ -68,15 +67,11 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
             filter: `id=eq.${userId}`
           },
           (payload) => {
-            console.log('[Settings] Realtime update received:', payload);
             if (payload.new.plan_type === 'pro') {
-              console.log('[Settings] Plan upgraded to Pro, redirecting...');
               channel.unsubscribe();
               setIsWaitingForUpdate(false);
               // Force a full page reload to get updated data
               window.location.href = '/settings?upgraded=true';
-            } else {
-              console.log('[Settings] Plan type is:', payload.new.plan_type);
             }
           }
         )
@@ -84,7 +79,6 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
 
       // Timeout after 10 seconds if webhook hasn't updated the plan
       const timeout = setTimeout(() => {
-        console.log('[Settings] Timeout reached - webhook took >10s');
         channel.unsubscribe();
         setIsWaitingForUpdate(false);
         setToast({
@@ -104,7 +98,6 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
     // Handle subscription cancellation/portal return flow
     if ((isFromPortal || isCancelled) && !hasProcessedToast.current) {
       hasProcessedToast.current = true;
-      console.log('[Settings] Returned from portal, setting up realtime listener');
       setIsWaitingForUpdate(true);
       setUpdateType('cancel');
 
@@ -124,9 +117,7 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
             filter: `user_id=eq.${userId}`
           },
           (payload) => {
-            console.log('[Settings] Subscription update received:', payload);
             if (payload.new.cancel_at_period_end === true) {
-              console.log('[Settings] Subscription cancelled, redirecting...');
               channel.unsubscribe();
               setIsWaitingForUpdate(false);
               window.location.href = '/settings?cancelled=true';
@@ -137,7 +128,6 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
 
       // Timeout after 10 seconds if webhook hasn't updated
       const timeout = setTimeout(() => {
-        console.log('[Settings] Timeout reached - webhook took >10s');
         channel.unsubscribe();
         setIsWaitingForUpdate(false);
         setToast({
@@ -260,12 +250,12 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
                     <div
                       className="bg-accent rounded-full h-2 transition-all"
                       style={{
-                        width: `${Math.min((user.credits_balance / (user.plan_type === 'pro' ? 1000 : 10)) * 100, 100)}%`
+                        width: `${Math.min((user.credits_balance / (user.plan_type === 'pro' ? 200 : 20)) * 100, 100)}%`
                       }}
                     />
                   </div>
                   <span className="text-sm font-medium text-text whitespace-nowrap">
-                    {user.credits_balance} / {user.plan_type === 'pro' ? 1000 : 10}
+                    {user.credits_balance} / {user.plan_type === 'pro' ? 200 : 20}
                   </span>
                 </div>
                 {user.credits_balance === 0 && (
@@ -273,7 +263,7 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
                     Out of credits
                   </p>
                 )}
-                {user.credits_balance > 0 && user.credits_balance < (user.plan_type === 'pro' ? 100 : 3) && (
+                {user.credits_balance > 0 && user.credits_balance < (user.plan_type === 'pro' ? 20 : 3) && (
                   <p className="text-xs text-warning mt-1">
                     Low credits
                   </p>

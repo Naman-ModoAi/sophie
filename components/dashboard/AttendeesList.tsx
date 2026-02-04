@@ -96,7 +96,6 @@ export function AttendeesList({ attendees: initialAttendees, meetingId }: Attend
 
       setEditingId(null);
     } catch (error) {
-      console.error('Error saving attendee:', error);
       alert('Failed to save attendee information.');
     } finally {
       setIsSaving(false);

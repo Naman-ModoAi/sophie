@@ -65,7 +65,7 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
         setReferralData(data);
       }
     } catch (error) {
-      console.error('Failed to fetch referral data:', error);
+      // Failed to fetch referral data
     }
   };
 
@@ -77,7 +77,7 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
         setStats(data);
       }
     } catch (error) {
-      console.error('Failed to fetch stats:', error);
+      // Failed to fetch stats
     } finally {
       setLoading(false);
     }

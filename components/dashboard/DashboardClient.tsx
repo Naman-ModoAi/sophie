@@ -85,7 +85,6 @@ export function DashboardClient({ meetings: initialMeetings, userId }: Dashboard
       const result = await response.json();
       showToast(`Synced ${result.meetings_synced} meetings`, 'success');
     } catch (error) {
-      console.error('Resync error:', error);
       showToast('Failed to resync calendar. Please try again.', 'error');
     } finally {
       setIsResyncing(false);

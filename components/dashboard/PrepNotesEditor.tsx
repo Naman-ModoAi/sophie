@@ -60,7 +60,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
           setAiPrepNote(prepNote.content as PrepNote);
         }
       } catch (error) {
-        console.error('Error fetching prep note:', error);
+        // Error fetching prep note
       } finally {
         setIsLoading(false);
       }
@@ -84,7 +84,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       }
       setHasChanges(false);
     } catch (error) {
-      console.error('Failed to save notes:', error);
+      // Failed to save notes
     } finally {
       setIsSaving(false);
     }
@@ -250,7 +250,6 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       }.pdf`;
       pdf.save(filename);
     } catch (error) {
-      console.error('Error generating PDF:', error);
       showToast('Failed to generate PDF. Please try again.', 'error');
     }
   };
@@ -282,7 +281,6 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       }
 
       const result = await response.json();
-      console.log('Research completed:', result);
 
       // Refresh prep note
       const supabase = createClient();
@@ -295,13 +293,10 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       if (prepNote?.content) {
         setAiPrepNote(prepNote.content as PrepNote);
         setMeetingStatus('ready');
-      } else if (fetchError) {
-        console.error('Error fetching prep note after generation:', fetchError);
       }
 
       showToast('Prep note generated successfully!', 'success');
     } catch (error) {
-      console.error('Error generating prep note:', error);
       // Don't show toast again if we already showed it for 403
       if (error instanceof Error && !error.message.includes('credits')) {
         showToast('Failed to generate prep note. Please try again.', 'error');
