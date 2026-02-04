@@ -12,9 +12,9 @@ $FULL_IMAGE = "$REGION-docker.pkg.dev/$PROJECT_ID/$REPO/${IMAGE}:latest"
 
 # Build args
 $BUILD_ARGS = @(
-    "--build-arg", "NEXT_PUBLIC_SUPABASE_URL=https://zyxmwdajvzitsxxxhfow.supabase.co",
-    "--build-arg", "NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5eG13ZGFqdnppdHN4eHhoZm93Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5NjE3MzcsImV4cCI6MjA3NTUzNzczN30.vmWmCE5lob3WBorREsXlti_ezlyl1A1b1gY6gDRIzps",
-    "--build-arg", "NEXT_PUBLIC_APP_URL=https://prepfor.app",
+    "--build-arg", "NEXT_PUBLIC_SUPABASE_URL=https://yxhzykoxktufcziekykt.supabase.co",
+    "--build-arg", "NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4aHp5a294a3R1ZmN6aWVreWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzYwOTcsImV4cCI6MjA4NTc1MjA5N30.wtlCmJ8ANwMPIdwkvS69F1HfG3cpf-SsnWpg-SeaNt8",
+    "--build-arg", "NEXT_PUBLIC_APP_URL=https://meetready-frontend-57662967827.us-central1.run.app",
     "--build-arg", "NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID=price_1Sut9sL102TlIknQePiqKB0s",
     "--build-arg", "NEXT_PUBLIC_GA_MEASUREMENT_ID=G-RQN52025ZS"
 )
