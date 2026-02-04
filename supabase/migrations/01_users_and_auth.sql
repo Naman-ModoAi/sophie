@@ -1,5 +1,5 @@
 -- ============================================================================
--- PrepFor.app - Users and Authentication
+-- MeetReady - Users and Authentication
 -- Migration: 01_users_and_auth
 -- Description: User profiles, OAuth tokens, and referral tracking
 -- ============================================================================

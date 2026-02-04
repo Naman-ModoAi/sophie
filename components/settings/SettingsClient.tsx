@@ -295,7 +295,7 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
                     </Badge>
                   )}
                   <span className="text-sm text-text/60">
-                    {user.plan_type === 'free' ? '10 credits/month' : '1000 credits/month'}
+                    {user.plan_type === 'free' ? '20 credits/month' : '200 credits/month'}
                   </span>
                 </div>
                 {subscription?.cancel_at_period_end && (
@@ -325,7 +325,7 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
                     {user.plan_type === 'free' && <Badge variant="default">Current</Badge>}
                   </h3>
                   <ul className="space-y-1 text-sm text-text/70">
-                    <li>✓ 10 credits/month</li>
+                    <li>✓ 20 credits/month</li>
                     <li>✓ Basic prep notes</li>
                     <li>✓ Email delivery</li>
                     <li>✓ Calendar sync</li>
@@ -339,7 +339,7 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
                     {user.plan_type === 'pro' && <Badge variant="accent">Current</Badge>}
                   </h3>
                   <ul className="space-y-1 text-sm text-text/70">
-                    <li>✓ 1000 credits/month</li>
+                    <li>✓ 200 credits/month</li>
                     <li>✓ Advanced prep notes</li>
                     <li>✓ Immediate email</li>
                     <li>✓ Priority support</li>

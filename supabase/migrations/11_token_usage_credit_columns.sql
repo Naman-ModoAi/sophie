@@ -1,5 +1,5 @@
 -- ============================================================================
--- PrepFor.app - Add Credit Calculation Columns to Token Usage
+-- MeetReady - Add Credit Calculation Columns to Token Usage
 -- Migration: 11_token_usage_credit_columns
 -- Description: Add columns to store calculated credit costs
 -- ============================================================================

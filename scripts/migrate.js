@@ -94,7 +94,7 @@ async function main() {
   const args = process.argv.slice(2)
   const command = args[0]
 
-  console.log('📂 PrepFor.app Database Migration Tool')
+  console.log('📂 MeetReady Database Migration Tool')
   console.log('======================================\n')
 
   const migrations = getMigrationFiles()

@@ -1,5 +1,5 @@
 -- ============================================================================
--- PrepFor.app - Complete Database Schema
+-- MeetReady - Complete Database Schema
 -- Phase 1: OAuth + Calendar Sync
 -- ============================================================================
 

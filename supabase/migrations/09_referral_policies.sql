@@ -1,11 +1,23 @@
 -- Migration: Referral System RLS Policies
 -- Description: Row Level Security policies and grants for referral system
+-- Note: This file adds additional referral policies beyond those in 06_rls_policies.sql
+
+-- ============================================================================
+-- DROP EXISTING POLICIES (for idempotency)
+-- ============================================================================
+
+DROP POLICY IF EXISTS "Users can view their own referrals" ON public.referrals;
+DROP POLICY IF EXISTS "Service role full access on referrals" ON public.referrals;
+DROP POLICY IF EXISTS "Users can create referrals" ON public.referrals;
+DROP POLICY IF EXISTS "Users can view their own referral credits" ON public.referral_credits;
+DROP POLICY IF EXISTS "Service role full access on referral_credits" ON public.referral_credits;
+DROP POLICY IF EXISTS "Anyone can validate referral codes" ON public.users;
 
 -- ============================================================================
 -- RLS POLICIES
 -- ============================================================================
 
--- Enable RLS on referrals table
+-- Enable RLS on referrals table (idempotent)
 ALTER TABLE public.referrals ENABLE ROW LEVEL SECURITY;
 
 -- Users can view their own referrals (as referrer)
@@ -29,7 +41,7 @@ FOR INSERT
 TO authenticated
 WITH CHECK (true);
 
--- Enable RLS on referral_credits table
+-- Enable RLS on referral_credits table (idempotent)
 ALTER TABLE public.referral_credits ENABLE ROW LEVEL SECURITY;
 
 -- Users can view their own referral credits

@@ -1,6 +1,6 @@
-# PrepFor.app - Frontend
+# MeetReady - Frontend
 
-Next.js 14 frontend for PrepFor.app with Google OAuth authentication and calendar integration.
+Next.js 14 frontend for MeetReady with Google OAuth authentication and calendar integration.
 
 ## Setup
 

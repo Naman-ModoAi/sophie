@@ -1,5 +1,5 @@
 -- ============================================================================
--- PrepFor.app - Subscription System
+-- MeetReady - Subscription System
 -- Migration: 03_subscriptions
 -- Description: Plans, subscriptions, transactions, and referral system
 -- ============================================================================

@@ -14,9 +14,9 @@ export default async function HowToUsePage() {
     <div className="max-w-4xl mx-auto px-6 py-12">
       {/* Page Header */}
       <div className="mb-12">
-        <h1 className="text-4xl font-bold text-text mb-4">How to Use PrepFor.app</h1>
+        <h1 className="text-4xl font-bold text-text mb-4">How to Use MeetReady</h1>
         <p className="text-lg text-text/70 leading-relaxed">
-          PrepFor.app helps you prepare for meetings by automatically researching attendees and companies.
+          MeetReady helps you prepare for meetings by automatically researching attendees and companies.
           Follow this guide to get the most out of the platform.
         </p>
       </div>
@@ -202,7 +202,7 @@ export default async function HowToUsePage() {
 
           <div className="mt-6 p-4 bg-accent/10 border border-accent/20 rounded-lg">
             <p className="text-sm text-text/80">
-              <strong>Free Plan:</strong> 10 credits/month • <strong>Pro Plan:</strong> 1000 credits/month with rollover
+              <strong>Free Plan:</strong> 20 credits/month • <strong>Pro Plan:</strong> 200 credits/month with rollover
             </p>
           </div>
         </section>
@@ -215,7 +215,7 @@ export default async function HowToUsePage() {
           </div>
 
           <p className="text-text/70 leading-relaxed mb-6">
-            PrepFor.app automatically detects attendee names and companies from calendar invites, but sometimes
+            MeetReady automatically detects attendee names and companies from calendar invites, but sometimes
             this information is incomplete. You can edit attendee details to ensure accurate AI research.
           </p>
 

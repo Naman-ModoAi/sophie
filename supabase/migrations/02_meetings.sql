@@ -1,5 +1,5 @@
 -- ============================================================================
--- PrepFor.app - Meetings and Attendees
+-- MeetReady - Meetings and Attendees
 -- Migration: 02_meetings
 -- Description: Calendar meetings, attendees, companies, and prep notes
 -- ============================================================================

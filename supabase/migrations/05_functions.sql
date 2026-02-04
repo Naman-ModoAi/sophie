@@ -1,5 +1,5 @@
 -- ============================================================================
--- PrepFor.app - Database Functions
+-- MeetReady - Database Functions
 -- Migration: 05_functions
 -- Description: Credit management, token tracking, and referral functions
 -- ============================================================================
@@ -216,7 +216,7 @@ BEGIN
 END;
 $$;
 
-COMMENT ON FUNCTION public.track_token_usage IS 'Records token usage with grounding metadata, thoughts tokens, tool use tokens, search queries, and grounded prompt count';
+COMMENT ON FUNCTION public.track_token_usage(UUID, UUID, TEXT, TEXT, INTEGER, INTEGER, INTEGER, INTEGER, INTEGER, TEXT[], INTEGER) IS 'Records token usage with grounding metadata, thoughts tokens, tool use tokens, search queries, and grounded prompt count';
 
 -- ============================================================================
 

@@ -1,5 +1,5 @@
 -- ============================================================================
--- PrepFor.app - Credit Cost Baseline System
+-- MeetReady - Credit Cost Baseline System
 -- Migration: 12_credit_cost_baseline
 -- Description: Cost-based baseline for credit calculation (replaces token-based baseline)
 -- ============================================================================
@@ -15,9 +15,10 @@ CREATE TABLE IF NOT EXISTS public.credit_cost_baseline (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Insert initial baseline ($0.01 = 1 credit)
+-- Insert initial baseline ($0.01 = 1 credit) - only if table is empty
 INSERT INTO public.credit_cost_baseline (avg_cost_per_attendee, sample_size)
-VALUES (0.01, 0);
+SELECT 0.01, 0
+WHERE NOT EXISTS (SELECT 1 FROM public.credit_cost_baseline);
 
 -- Add index for latest baseline lookup
 CREATE INDEX IF NOT EXISTS idx_credit_cost_baseline_created_at
@@ -110,6 +111,10 @@ COMMENT ON FUNCTION update_credit_baseline IS 'Update cost baseline from actual 
 -- ============================================================================
 
 ALTER TABLE public.credit_cost_baseline ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies for idempotency
+DROP POLICY IF EXISTS "Service role can manage baseline" ON public.credit_cost_baseline;
+DROP POLICY IF EXISTS "Authenticated users can read baseline" ON public.credit_cost_baseline;
 
 -- Service role can manage baseline
 CREATE POLICY "Service role can manage baseline"

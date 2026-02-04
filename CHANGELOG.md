@@ -1,6 +1,6 @@
 # Changelog - Frontend
 
-All notable changes to the PrepFor.app frontend will be documented in this file.
+All notable changes to the MeetReady frontend will be documented in this file.
 
 ---
 
@@ -520,7 +520,7 @@ Dashboard Page (Server)
 
 - **Enhanced Landing Page** (`app/(public)/page.tsx`)
   - **Hero Section**
-    - Large, prominent headline (PrepFor.app)
+    - Large, prominent headline (MeetReady)
     - Improved typography hierarchy (4xl/5xl responsive heading)
     - Better spacing and padding
     - Centered layout with max-width constraint
@@ -774,7 +774,7 @@ Dashboard Page (Server)
 - **Font Loading** (`app/layout.tsx`)
   - Configured Geist Sans as single font family
   - Removed Geist Mono (spec requires single font family)
-  - Updated metadata with PrepFor.app branding
+  - Updated metadata with MeetReady branding
   - Applied font-sans class to body
 
 #### Changed

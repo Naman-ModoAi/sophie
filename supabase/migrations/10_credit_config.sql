@@ -1,5 +1,5 @@
 -- ============================================================================
--- PrepFor.app - Credit Configuration System
+-- MeetReady - Credit Configuration System
 -- Migration: 10_credit_config
 -- Description: Store credit pricing parameters in database for easy updates
 -- ============================================================================
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS public.credit_config (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Insert initial pricing configuration
+-- Insert initial pricing configuration (use ON CONFLICT for idempotency)
 INSERT INTO public.credit_config (config_key, config_value, config_description) VALUES
   -- Gemini API Pricing (per 1M tokens) - Gemini 3 Flash Preview
   ('gemini_input_price_per_1m', 0.50, 'Gemini input token price per 1M tokens (USD)'),
@@ -29,7 +29,8 @@ INSERT INTO public.credit_config (config_key, config_value, config_description) 
 
   -- Credit Calculation Parameters
   ('credit_baseline_usd', 0.01, 'Cost baseline for credit calculation ($0.01 = 1 credit)'),
-  ('credit_rounding_step', 0.05, 'Credit rounding granularity (round to nearest 0.05)');
+  ('credit_rounding_step', 0.05, 'Credit rounding granularity (round to nearest 0.05)')
+ON CONFLICT (config_key) DO NOTHING;
 
 -- Add index for fast lookups
 CREATE INDEX IF NOT EXISTS idx_credit_config_key ON public.credit_config(config_key);
@@ -69,6 +70,10 @@ COMMENT ON FUNCTION update_credit_config IS 'Update a credit config value (requi
 -- ============================================================================
 
 ALTER TABLE public.credit_config ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies for idempotency
+DROP POLICY IF EXISTS "Service role can manage credit config" ON public.credit_config;
+DROP POLICY IF EXISTS "Authenticated users can read credit config" ON public.credit_config;
 
 -- Service role can manage config
 CREATE POLICY "Service role can manage credit config"

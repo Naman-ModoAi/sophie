@@ -1,12 +1,12 @@
 # Gemini Pricing Configuration Guide
 
-This document explains how to configure the PrepFor.app credit system to support both Gemini 2.x and Gemini 3.x pricing models.
+This document explains how to configure the MeetReady credit system to support both Gemini 2.x and Gemini 3.x pricing models.
 
 ---
 
 ## Overview
 
-PrepFor.app uses a flexible, database-driven credit system that can adapt to different Gemini API pricing models:
+MeetReady uses a flexible, database-driven credit system that can adapt to different Gemini API pricing models:
 
 - **Gemini 3.x**: Uses **per-query search billing** ($14 per 1,000 queries)
 - **Gemini 2.x**: Uses **per-prompt grounding billing** ($35 per 1,000 grounded prompts)

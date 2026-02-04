@@ -1,18 +1,18 @@
-# Claude Context - PrepFor.app Frontend
+# Claude Context - MeetReady Frontend
 
-This document provides context for AI assistants (like Claude) working on the PrepFor.app frontend codebase.
+This document provides context for AI assistants (like Claude) working on the MeetReady frontend codebase.
 
 ---
 
 ## Project Overview
 
-**PrepFor.app** is a meeting preparation tool that automatically researches meeting attendees and generates prep notes using AI.
+**MeetReady** is a meeting preparation tool that automatically researches meeting attendees and generates prep notes using AI.
 
 ### Core Features
 - Google Calendar integration with automatic meeting sync
 - AI-powered research on external meeting attendees (people + companies)
 - Automated prep note generation and email delivery
-- Credit-based usage system (Free: 10 credits/month, Pro: 1000 credits/month)
+- Credit-based usage system (Free: 20 credits/month, Pro: 200 credits/month)
 - Stripe subscription management
 
 ---
@@ -219,8 +219,8 @@ Credits are calculated based on actual API costs (tokens + search/grounding quer
 **Typical cost per person**: ~1-2 credits (varies based on token usage and API features)
 
 **Plans**:
-- **Free**: 10 credits/month, no rollover (~5-10 people researched)
-- **Pro**: 1000 credits/month, with rollover (effectively unlimited, ~500-1000 people)
+- **Free**: 20 credits/month, no rollover (~10-20 people researched)
+- **Pro**: 200 credits/month, with rollover (~100-200 people researched)
 
 ### Credit Flow
 

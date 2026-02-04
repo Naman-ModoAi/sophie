@@ -1,5 +1,5 @@
 -- ============================================================================
--- PrepFor.app - Seed Data
+-- MeetReady - Seed Data
 -- Migration: 07_seed_data
 -- Description: Insert initial plan data and generate referral codes
 -- ============================================================================

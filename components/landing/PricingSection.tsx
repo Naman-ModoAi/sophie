@@ -6,7 +6,7 @@ export function PricingSection() {
       name: 'Free',
       price: 0,
       features: [
-        '20 credits (one-time)',
+        '20 credits every month',
         'Core meeting briefs',
         'Standard models',
         'Community support',

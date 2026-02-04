@@ -1,6 +1,6 @@
 # Database Migrations
 
-This directory contains all database schema and configuration migrations for PrepFor.app.
+This directory contains all database schema and configuration migrations for MeetReady.
 
 ## Migrations Overview
 
