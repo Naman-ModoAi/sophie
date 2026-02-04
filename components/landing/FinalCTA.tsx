@@ -15,7 +15,7 @@ export function FinalCTA() {
         </p>
 
         {/* CTA Button */}
-        <Link
+        <a
           href="/api/auth/login"
           className="inline-flex items-center gap-3 bg-accent text-surface px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent/90 transition-all shadow-lg hover:shadow-xl mb-4"
         >
@@ -28,7 +28,7 @@ export function FinalCTA() {
             </g>
           </svg>
           Connect Google Calendar — Free
-        </Link>
+        </a>
 
         {/* Trust Indicator */}
         <p className="text-sm text-text/50">

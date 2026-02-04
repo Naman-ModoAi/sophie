@@ -116,7 +116,7 @@ export function PricingSection() {
               </ul>
 
               {/* CTA Button */}
-              <Link
+              <a
                 href={plan.cta.href}
                 className={`block w-full text-center py-3 rounded-lg font-semibold transition-colors ${
                   plan.isPopular
@@ -125,7 +125,7 @@ export function PricingSection() {
                 }`}
               >
                 {plan.cta.text}
-              </Link>
+              </a>
             </div>
           ))}
         </div>

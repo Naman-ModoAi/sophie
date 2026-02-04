@@ -35,22 +35,22 @@ export function Navigation({ className = '' }: NavigationProps) {
             >
               Contact
             </Link>
-            <Link
+            <a
               href="/api/auth/login"
               className="inline-flex items-center px-4 py-2 bg-accent text-surface rounded-md text-sm font-medium hover:bg-accent/90 transition-colors"
             >
               Connect Google Calendar — Free →
-            </Link>
+            </a>
           </div>
 
           {/* Mobile CTA Only */}
           <div className="md:hidden">
-            <Link
+            <a
               href="/api/auth/login"
               className="inline-flex items-center px-4 py-2 bg-accent text-surface rounded-md text-sm font-medium hover:bg-accent/90 transition-colors"
             >
               Get Started →
-            </Link>
+            </a>
           </div>
         </div>
       </div>

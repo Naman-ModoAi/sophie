@@ -30,7 +30,7 @@ export function Hero() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-            <Link
+            <a
               href="/api/auth/login"
               className="inline-flex items-center gap-3 bg-accent text-surface px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent/90 transition-all shadow-lg hover:shadow-xl w-full sm:w-auto justify-center"
             >
@@ -43,7 +43,7 @@ export function Hero() {
                 </g>
               </svg>
               Connect Google Calendar — Free
-            </Link>
+            </a>
             <Link
               href="#how-it-works"
               className="text-accent hover:text-accent/80 font-medium text-lg transition-colors"

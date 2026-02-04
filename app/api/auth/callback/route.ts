@@ -15,15 +15,23 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/?error=missing_code`)
   }
 
+  // Create response object to set cookies on
+  const response = NextResponse.redirect(`${origin}/dashboard`)
+
   try {
     const supabase = await createClient()
 
     // Exchange code for session
-    const { data: { user }, error: authError } = await supabase.auth.exchangeCodeForSession(code)
+    const { data: { session, user }, error: authError } = await supabase.auth.exchangeCodeForSession(code)
 
     if (authError || !user) {
       console.error('Auth exchange error:', authError)
       return NextResponse.redirect(`${origin}/?error=auth_failed`)
+    }
+
+    if (!session) {
+      console.error('No session returned from exchangeCodeForSession')
+      return NextResponse.redirect(`${origin}/?error=no_session`)
     }
 
     console.log('✅ User authenticated via Supabase:', user.id)
@@ -91,9 +99,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Get provider token (for calendar access)
-    const { data: { session } } = await supabase.auth.getSession()
-    const providerToken = session?.provider_token
-    const providerRefreshToken = session?.provider_refresh_token
+    const providerToken = session.provider_token
+    const providerRefreshToken = session.provider_refresh_token
 
     if (providerToken) {
       // Store Google OAuth tokens in our oauth_tokens table for calendar access
@@ -120,8 +127,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Redirect to dashboard
-    return NextResponse.redirect(`${origin}/dashboard`)
+    // Return response with cookies set
+    return response
   } catch (error) {
     console.error('OAuth callback error:', error)
     return NextResponse.redirect(`${origin}/?error=authentication_failed`)
