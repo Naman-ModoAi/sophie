@@ -14,9 +14,11 @@ $FULL_IMAGE = "$REGION-docker.pkg.dev/$PROJECT_ID/$REPO/${IMAGE}:latest"
 $BUILD_ARGS = @(
     "--build-arg", "NEXT_PUBLIC_SUPABASE_URL=https://yxhzykoxktufcziekykt.supabase.co",
     "--build-arg", "NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4aHp5a294a3R1ZmN6aWVreWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNzYwOTcsImV4cCI6MjA4NTc1MjA5N30.wtlCmJ8ANwMPIdwkvS69F1HfG3cpf-SsnWpg-SeaNt8",
-    "--build-arg", "NEXT_PUBLIC_APP_URL=https://meetready-frontend-57662967827.us-central1.run.app",
-    "--build-arg", "NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID=price_1Sut9sL102TlIknQePiqKB0s",
-    "--build-arg", "NEXT_PUBLIC_GA_MEASUREMENT_ID=G-4MFWSDGPW7"
+    "--build-arg", "NEXT_PUBLIC_APP_URL=https://getmeetready.com",
+    "--build-arg", "NEXT_PUBLIC_GOOGLE_CLIENT_ID=107358396923-claspmis9u6p47t9s177n2o4re1l6mg3.apps.googleusercontent.com",
+    "--build-arg", "NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PRICE_ID=price_1SxSBCDQzha52b7iWhlCo19o",
+    "--build-arg", "NEXT_PUBLIC_GA_MEASUREMENT_ID=G-4MFWSDGPW7",
+    "--build-arg", "NEXT_PUBLIC_CLARITY_PROJECT_ID=vc4pvrx24f"
 )
 
 # Check current branch
