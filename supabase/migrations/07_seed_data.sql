@@ -25,28 +25,28 @@ INSERT INTO public.plans (
   (
     'free',
     'Free Plan',
-    10,
+    20,
     FALSE,
     1,
     1,
     30,
     NULL,
     0,
-    'Basic plan with 10 credits per month. Credits reset monthly and don''t roll over. Research data retained for 30 days.',
+    'Free plan with 20 credits per month. Credits reset monthly and don''t roll over. Research data retained for 30 days.',
     FALSE,
     TRUE
   ),
   (
     'pro',
     'Pro Plan',
-    1000,
+    200,
     TRUE,
     1,
     1,
     NULL,
     NULL,
     2000,
-    'Professional plan with 1000 credits per month. Unused credits roll over. Unlimited research data retention and priority support.',
+    'Professional plan with 200 credits per month. Unused credits roll over. Unlimited research data retention and priority support.',
     TRUE,
     TRUE
   )
@@ -71,8 +71,8 @@ DO $$
 DECLARE
   v_free_plan_id UUID;
   v_pro_plan_id UUID;
-  v_free_credits INTEGER;
-  v_pro_credits INTEGER;
+  v_free_credits NUMERIC;
+  v_pro_credits NUMERIC;
 BEGIN
   -- Get plan IDs and credit amounts
   SELECT id, monthly_credits INTO v_free_plan_id, v_free_credits

@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS public.users (
   -- Plan and subscription
   plan_type TEXT DEFAULT 'free' CHECK (plan_type IN ('free', 'pro')),
 
-  -- Credit tracking
-  credits_balance INTEGER DEFAULT 10,
-  credits_used_this_month INTEGER DEFAULT 0,
+  -- Credit tracking (NUMERIC for 0.05 step deductions)
+  credits_balance NUMERIC(10,2) DEFAULT 20,
+  credits_used_this_month NUMERIC(10,2) DEFAULT 0,
   last_credit_reset_at TIMESTAMPTZ DEFAULT DATE_TRUNC('month', NOW()),
 
   -- Token usage tracking
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS public.users (
   -- Referral system
   referral_code TEXT UNIQUE,
   total_referrals_completed INTEGER DEFAULT 0,
-  referral_credits_current_month INTEGER DEFAULT 0,
+  referral_credits_current_month NUMERIC(10,2) DEFAULT 0,
   subscription_extension_months INTEGER DEFAULT 0,
 
   -- Timestamps

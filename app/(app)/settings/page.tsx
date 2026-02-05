@@ -51,7 +51,7 @@ export default async function SettingsPage({
     console.log('Some columns missing, fetching basic user data');
     const { data: basicUser, error: basicError } = await supabase
       .from('users')
-      .select('email')
+      .select('email, plan_type, credits_balance, credits_used_this_month')
       .eq('id', user.id)
       .single();
 
@@ -60,13 +60,13 @@ export default async function SettingsPage({
       redirect('/dashboard');
     }
 
-    // Set defaults for missing columns
+    // Set defaults only for missing columns
     finalUserData = {
       email: basicUser.email,
-      plan_type: 'free' as const,
+      plan_type: basicUser.plan_type || 'free' as const,
       email_timing: 'digest' as const,
-      credits_balance: 0,
-      credits_used_this_month: 0,
+      credits_balance: basicUser.credits_balance ?? 0,
+      credits_used_this_month: basicUser.credits_used_this_month ?? 0,
     };
     subscriptionData = null;
   } else if (error || !userData) {

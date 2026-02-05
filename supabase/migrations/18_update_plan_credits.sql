@@ -60,8 +60,8 @@ WHERE plan_type = 'pro'
 
 DO $$
 DECLARE
-  v_free_plan_credits INTEGER;
-  v_pro_plan_credits INTEGER;
+  v_free_plan_credits NUMERIC;
+  v_pro_plan_credits NUMERIC;
   v_free_users_updated INTEGER;
   v_pro_users_updated INTEGER;
 BEGIN

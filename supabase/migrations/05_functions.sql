@@ -10,14 +10,14 @@
 
 CREATE OR REPLACE FUNCTION public.check_credit_balance(
   p_user_id UUID,
-  p_credits_needed INTEGER
+  p_credits_needed NUMERIC  -- NUMERIC for decimal precision (0.05 steps)
 )
 RETURNS BOOLEAN
 LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 DECLARE
-  v_balance INTEGER;
+  v_balance NUMERIC;
   v_is_pro BOOLEAN;
 BEGIN
   -- Get user's current credits
@@ -50,7 +50,7 @@ COMMENT ON FUNCTION public.check_credit_balance IS 'Check if user has sufficient
 
 CREATE OR REPLACE FUNCTION public.consume_credits(
   p_user_id UUID,
-  p_credits INTEGER,
+  p_credits NUMERIC,  -- NUMERIC for decimal precision (0.05 steps)
   p_meeting_id UUID DEFAULT NULL,
   p_research_type TEXT DEFAULT NULL
 )
@@ -59,7 +59,7 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 DECLARE
-  v_balance INTEGER;
+  v_balance NUMERIC;
 BEGIN
   -- Deduct credits atomically
   UPDATE public.users
@@ -89,10 +89,10 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 DECLARE
-  v_monthly_credits INTEGER;
+  v_monthly_credits NUMERIC;  -- NUMERIC for decimal precision
   v_rollover BOOLEAN;
-  v_current_balance INTEGER;
-  v_new_balance INTEGER;
+  v_current_balance NUMERIC;
+  v_new_balance NUMERIC;
 BEGIN
   -- Get user's plan details from active subscription
   SELECT p.monthly_credits, p.credits_rollover, u.credits_balance

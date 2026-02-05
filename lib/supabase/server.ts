@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
 export async function createClient() {
@@ -31,27 +32,21 @@ export async function createClient() {
 // - Stripe webhooks
 // - Calendar sync action (writes meetings/attendees on behalf of user)
 // - Admin operations
+// - OAuth callback (user creation and token storage)
 // For user-scoped queries, use createClient() with auth check
+//
+// NOTE: Uses createClient from @supabase/supabase-js directly (not createServerClient)
+// because the service role key must bypass RLS, which requires:
+// 1. Using the service_role key
+// 2. NOT using cookies/session (which could override the service role)
 export async function createServiceClient() {
-  const cookieStore = await cookies()
-
-  return createServerClient(
+  return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // Server Component - ignore
-          }
-        },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
       },
     }
   )

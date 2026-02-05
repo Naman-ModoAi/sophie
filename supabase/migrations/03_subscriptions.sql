@@ -13,13 +13,13 @@ CREATE TABLE IF NOT EXISTS public.plans (
   name TEXT UNIQUE NOT NULL,
   display_name TEXT NOT NULL,
 
-  -- Credit allocation
-  monthly_credits INTEGER NOT NULL,
+  -- Credit allocation (NUMERIC for decimal precision)
+  monthly_credits NUMERIC(10,2) NOT NULL,
   credits_rollover BOOLEAN DEFAULT FALSE,
 
-  -- Credit costs
-  person_credit_cost INTEGER NOT NULL DEFAULT 1,
-  company_credit_cost INTEGER NOT NULL DEFAULT 1,
+  -- Credit costs (NUMERIC for 0.05 step deductions)
+  person_credit_cost NUMERIC(10,2) NOT NULL DEFAULT 1,
+  company_credit_cost NUMERIC(10,2) NOT NULL DEFAULT 1,
 
   -- Features
   research_retention_days INTEGER,
