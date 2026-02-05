@@ -115,13 +115,10 @@ export async function POST(request: Request) {
           }
         }
 
-        // Update user's plan_type for backward compatibility
+        // Update user's plan_type
         await supabase
           .from('users')
           .update({
-            stripe_subscription_id: subscription.id,
-            stripe_subscription_status: subscription.status,
-            stripe_customer_id: subscription.customer as string,
             plan_type: subscription.status === 'active' && plan.name === 'pro' ? 'pro' : 'free',
           })
           .eq('id', userId);
@@ -150,11 +147,7 @@ export async function POST(request: Request) {
         // Downgrade user to free plan
         await supabase
           .from('users')
-          .update({
-            stripe_subscription_id: null,
-            stripe_subscription_status: 'canceled',
-            plan_type: 'free',
-          })
+          .update({ plan_type: 'free' })
           .eq('id', userId);
 
         // Allocate free plan credits
@@ -174,31 +167,25 @@ export async function POST(request: Request) {
 
         console.log(`[Stripe Webhook] Processing successful payment for invoice ${invoice.id}`);
 
-        // Get user ID from customer ID
-        const { data: user } = await supabase
-          .from('users')
-          .select('id')
+        // Get user ID and subscription from subscriptions table via stripe_customer_id
+        const { data: sub } = await supabase
+          .from('subscriptions')
+          .select('id, user_id')
           .eq('stripe_customer_id', customerId)
+          .limit(1)
           .single();
 
-        if (!user) {
-          console.warn('[Stripe Webhook] No user found for customer:', customerId);
+        if (!sub) {
+          console.warn('[Stripe Webhook] No subscription found for customer:', customerId);
           break;
         }
-
-        // Get subscription ID from subscriptions table
-        const { data: subscription } = await supabase
-          .from('subscriptions')
-          .select('id')
-          .eq('stripe_subscription_id', invoiceData.subscription as string)
-          .single();
 
         // Create transaction record
         const { error: txError } = await supabase
           .from('transactions')
           .insert({
-            user_id: user.id,
-            subscription_id: subscription?.id || null,
+            user_id: sub.user_id,
+            subscription_id: sub.id,
             stripe_transaction_id: invoiceData.charge || invoice.id,
             stripe_invoice_id: invoice.id,
             stripe_payment_intent_id: invoiceData.payment_intent,
@@ -229,24 +216,19 @@ export async function POST(request: Request) {
 
         console.log(`[Stripe Webhook] Processing failed payment for invoice ${invoice.id}`);
 
-        const { data: user } = await supabase
-          .from('users')
-          .select('id')
+        const { data: failedSub } = await supabase
+          .from('subscriptions')
+          .select('id, user_id')
           .eq('stripe_customer_id', customerId)
+          .limit(1)
           .single();
 
-        if (user) {
+        if (failedSub) {
           // Update subscription status to past_due
           await supabase
             .from('subscriptions')
             .update({ status: 'past_due' })
             .eq('stripe_subscription_id', invoiceData.subscription as string);
-
-          // Update user record
-          await supabase
-            .from('users')
-            .update({ stripe_subscription_status: 'past_due' })
-            .eq('id', user.id);
 
           console.log('[Stripe Webhook] Subscription marked as past_due');
         }

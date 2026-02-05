@@ -56,41 +56,43 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
 
-      const channel = supabase
-        .channel('user-plan-updates')
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'users',
-            filter: `id=eq.${userId}`
-          },
-          (payload) => {
-            if (payload.new.plan_type === 'pro') {
-              channel.unsubscribe();
-              setIsWaitingForUpdate(false);
-              // Force a full page reload to get updated data
-              window.location.href = '/settings?upgraded=true';
-            }
-          }
-        )
-        .subscribe();
+      let resolved = false;
+      let delayedCheck: ReturnType<typeof setTimeout>;
+      const resolve = () => {
+        if (resolved) return;
+        resolved = true;
+        clearTimeout(timeout);
+        clearTimeout(delayedCheck);
+        setIsWaitingForUpdate(false);
+        window.location.href = '/settings?upgraded=true';
+      };
 
-      // Timeout after 10 seconds if webhook hasn't updated the plan
+      const checkPlan = async () => {
+        const { data } = await supabase
+          .from('users')
+          .select('plan_type')
+          .eq('id', userId)
+          .single();
+        if (data?.plan_type === 'pro') resolve();
+      };
+
+      // Give webhook ~5s to process, then check the database
+      delayedCheck = setTimeout(checkPlan, 5000);
+
+      // Timeout after 15 seconds
       const timeout = setTimeout(() => {
-        channel.unsubscribe();
+        if (resolved) return;
+        clearTimeout(delayedCheck);
         setIsWaitingForUpdate(false);
         setToast({
           message: 'Payment successful! Refresh the page if your plan hasn\'t updated.',
           variant: 'success'
         });
-        // Clear URL params to prevent re-triggering
         window.history.replaceState({}, '', '/settings');
-      }, 10000);
+      }, 15000);
 
       return () => {
-        channel.unsubscribe();
+        clearTimeout(delayedCheck);
         clearTimeout(timeout);
       };
     }
@@ -314,6 +316,7 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
                     Free Plan
                     {user.plan_type === 'free' && <Badge variant="default">Current</Badge>}
                   </h3>
+                  <p className="text-lg font-semibold text-text mb-2">$0<span className="text-sm font-normal text-text/60">/month</span></p>
                   <ul className="space-y-1 text-sm text-text/70">
                     <li>✓ 20 credits/month</li>
                     <li>✓ Basic prep notes</li>
@@ -328,6 +331,7 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
                     Pro Plan
                     {user.plan_type === 'pro' && <Badge variant="accent">Current</Badge>}
                   </h3>
+                  <p className="text-lg font-semibold text-text mb-2">$25<span className="text-sm font-normal text-text/60">/month</span></p>
                   <ul className="space-y-1 text-sm text-text/70">
                     <li>✓ 200 credits/month</li>
                     <li>✓ Advanced prep notes</li>

@@ -22,18 +22,20 @@ export async function POST() {
     }
 
     const supabase = await createClient();
-    const { data: userData } = await supabase
-      .from('users')
+    const { data: existingSub } = await supabase
+      .from('subscriptions')
       .select('stripe_customer_id')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
+      .not('stripe_customer_id', 'is', null)
+      .limit(1)
       .single();
 
-    if (!userData?.stripe_customer_id) {
+    if (!existingSub?.stripe_customer_id) {
       return NextResponse.json({ error: 'No Stripe customer found' }, { status: 404 });
     }
 
     const portalSession = await stripe.billingPortal.sessions.create({
-      customer: userData.stripe_customer_id,
+      customer: existingSub.stripe_customer_id,
       return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings?from=portal`,
     });
 

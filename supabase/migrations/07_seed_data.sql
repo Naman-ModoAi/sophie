@@ -44,7 +44,7 @@ INSERT INTO public.plans (
     1,
     1,
     NULL,
-    NULL,
+    NULL,  -- IMPORTANT: Set stripe_price_id manually after deployment via: UPDATE plans SET stripe_price_id = 'price_xxx' WHERE name = 'pro';
     2000,
     'Professional plan with 200 credits per month. Unused credits roll over. Unlimited research data retention and priority support.',
     TRUE,

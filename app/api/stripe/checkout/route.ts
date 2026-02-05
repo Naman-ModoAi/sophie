@@ -28,31 +28,24 @@ export async function POST(request: Request) {
     }
 
     const supabase = await createClient();
-    const { data: userData } = await supabase
-      .from('users')
-      .select('email, stripe_customer_id')
-      .eq('id', user.id)
+
+    // Look up existing Stripe customer ID from subscriptions table
+    const { data: existingSub } = await supabase
+      .from('subscriptions')
+      .select('stripe_customer_id')
+      .eq('user_id', user.id)
+      .not('stripe_customer_id', 'is', null)
+      .limit(1)
       .single();
 
-    if (!userData) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    // Create or retrieve Stripe customer
-    let customerId = userData.stripe_customer_id;
+    let customerId = existingSub?.stripe_customer_id;
 
     if (!customerId) {
       const customer = await stripe.customers.create({
-        email: user.email || userData.email,
+        email: user.email!,
         metadata: { userId: user.id },
       });
       customerId = customer.id;
-
-      // Save customer ID
-      await supabase
-        .from('users')
-        .update({ stripe_customer_id: customerId })
-        .eq('id', user.id);
     }
 
     // Create Checkout Session
