@@ -17,20 +17,28 @@ export default async function SettingsPage({
 
   const supabase = await createClient();
 
-  // Fetch user data
-  const { data: userData, error } = await supabase
-    .from('users')
-    .select('email, plan_type, email_timing, credits_balance, credits_used_this_month')
-    .eq('id', user.id)
-    .single();
+  // Fetch user data, subscription, and OAuth tokens in parallel
+  const [userResult, subscriptionResult, tokenResult] = await Promise.all([
+    supabase
+      .from('users')
+      .select('email, plan_type, email_timing, credits_balance, credits_used_this_month')
+      .eq('id', user.id)
+      .single(),
+    supabase
+      .from('subscriptions')
+      .select('status, cancel_at_period_end, current_period_end')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .single(),
+    supabase
+      .from('oauth_tokens')
+      .select('expires_at')
+      .eq('user_id', user.id)
+      .single(),
+  ]);
 
-  // Fetch subscription data
-  const { data: subscription } = await supabase
-    .from('subscriptions')
-    .select('status, cancel_at_period_end, current_period_end')
-    .eq('user_id', user.id)
-    .eq('status', 'active')
-    .single();
+  const { data: userData, error } = userResult;
+  const { data: subscription } = subscriptionResult;
 
   // If columns don't exist, fetch basic user data
   let finalUserData: {
@@ -76,13 +84,8 @@ export default async function SettingsPage({
     finalUserData = userData;
   }
 
-  // Fetch OAuth token status
-  const { data: token } = await supabase
-    .from('oauth_tokens')
-    .select('expires_at')
-    .eq('user_id', user.id)
-    .single();
-
+  // OAuth token status (already fetched in parallel above)
+  const token = tokenResult.data;
   const calendarConnected = !!token;
   const tokenExpired = token ? new Date(token.expires_at) < new Date() : false;
 

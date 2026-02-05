@@ -70,10 +70,13 @@ export function AttendeesList({ attendees: initialAttendees, meetingId }: Attend
 
       const supabase = createClient();
 
-      // Update attendee name
+      // Update attendee name and mark as manually edited
       const { error: attendeeError } = await supabase
         .from('attendees')
-        .update({ name: attendee.name })
+        .update({
+          name: attendee.name,
+          name_manually_edited: true
+        })
         .eq('id', id);
 
       if (attendeeError) throw attendeeError;
@@ -87,6 +90,12 @@ export function AttendeesList({ attendees: initialAttendees, meetingId }: Attend
           .single();
 
         if (attendeeData?.company_id) {
+          // Mark company as manually edited
+          await supabase
+            .from('attendees')
+            .update({ company_manually_edited: true })
+            .eq('id', id);
+
           await supabase
             .from('companies')
             .update({ name: attendee.company })
@@ -96,6 +105,7 @@ export function AttendeesList({ attendees: initialAttendees, meetingId }: Attend
 
       setEditingId(null);
     } catch (error) {
+      console.error('Save error:', error);
       alert('Failed to save attendee information.');
     } finally {
       setIsSaving(false);

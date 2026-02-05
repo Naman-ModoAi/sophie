@@ -38,6 +38,23 @@ export function DashboardClient({ meetings: initialMeetings, userId }: Dashboard
 
   const selectedMeeting = meetings.find(m => m.id === selectedMeetingId);
 
+  // Auto-sync calendar in the background on mount (non-blocking)
+  useEffect(() => {
+    let cancelled = false;
+    async function backgroundSync() {
+      try {
+        const response = await fetch('/api/calendar/resync', { method: 'POST' });
+        if (!response.ok) {
+          console.error('[backgroundSync] Auto-sync failed');
+        }
+      } catch (error) {
+        console.error('[backgroundSync] Auto-sync error:', error);
+      }
+    }
+    backgroundSync();
+    return () => { cancelled = true; };
+  }, []);
+
   useEffect(() => {
     const channel = supabase
       .channel('meetings-changes')

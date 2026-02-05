@@ -1,5 +1,4 @@
 import { getAuthUser, createClient } from '@/lib/supabase/server';
-import { syncCalendar } from './actions';
 import { DashboardClient } from '@/components/dashboard/DashboardClient';
 import { redirect } from 'next/navigation';
 
@@ -43,13 +42,7 @@ export default async function Dashboard() {
 
   console.log('[Dashboard] User authenticated:', user.id);
 
-  // Auto-sync calendar on page load
-  try {
-    await syncCalendar(user.id, 7);
-  } catch (error: any) {
-    console.error('Auto-sync failed:', error.message);
-  }
-
+  // Fetch existing meetings immediately (calendar sync happens client-side in background)
   const meetings = await getMeetings(user.id);
 
   return (

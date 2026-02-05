@@ -1,10 +1,14 @@
 'use client';
 
+import React, { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   const navItems = [
     {
@@ -46,6 +50,17 @@ export function Sidebar() {
     },
   ];
 
+  function handleNavClick(e: React.MouseEvent, href: string) {
+    // Don't navigate if already on this page
+    if (pathname === href) return;
+
+    e.preventDefault();
+    setPendingHref(href);
+    startTransition(() => {
+      router.push(href);
+    });
+  }
+
   return (
     <aside className="w-60 bg-surface border-r border-text/10 h-screen flex flex-col">
       <div className="p-6">
@@ -55,18 +70,29 @@ export function Sidebar() {
       <nav className="flex-1 px-4 space-y-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
+          const isNavigating = isPending && pendingHref === item.href;
 
           return (
             <Link
               key={item.href}
               href={item.href}
+              onClick={(e) => handleNavClick(e, item.href)}
               className={`flex items-center gap-3 px-4 py-3 rounded-md transition-colors ${
                 isActive
                   ? 'bg-accent/10 text-accent font-medium'
-                  : 'text-text/70 hover:bg-text/5 hover:text-text'
+                  : isNavigating
+                    ? 'bg-accent/5 text-accent/80'
+                    : 'text-text/70 hover:bg-text/5 hover:text-text'
               }`}
             >
-              {item.icon}
+              {isNavigating ? (
+                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+              ) : (
+                item.icon
+              )}
               <span>{item.name}</span>
             </Link>
           );

@@ -153,17 +153,41 @@ export async function POST() {
                 .join(' ');
             };
 
+            // Check for existing attendees with manual edits
+            const { data: existingAttendees } = await supabase
+              .from('attendees')
+              .select('email, name, company_id, name_manually_edited, company_manually_edited')
+              .eq('meeting_id', meeting.id);
+
+            const existingAttendeesMap = new Map(
+              (existingAttendees || []).map(att => [att.email, att])
+            );
+
             const attendeeRecords = validAttendees.map((a) => {
               const domain = a.email!.split('@')[1];
               const extractedName = extractNameFromEmail(a.email!);
+              const existing = existingAttendeesMap.get(a.email!.toLowerCase());
+
+              // Preserve manually edited name, otherwise use calendar data
+              const name = existing?.name_manually_edited
+                ? existing.name
+                : (a.displayName || extractedName || null);
+
+              // Preserve manually edited company_id
+              const companyId = existing?.company_manually_edited
+                ? existing.company_id
+                : (companyMap.get(domain) || null);
 
               return {
                 meeting_id: meeting.id,
                 email: a.email!.toLowerCase(),
-                name: a.displayName || extractedName || null,
+                name,
                 domain,
                 is_internal: domain === userDomain,
-                company_id: companyMap.get(domain) || null,
+                company_id: companyId,
+                // Preserve manual edit flags
+                name_manually_edited: existing?.name_manually_edited || false,
+                company_manually_edited: existing?.company_manually_edited || false,
               };
             });
 
