@@ -6,11 +6,11 @@ export function SecurityTrust() {
   ];
 
   return (
-    <section className="py-16 md:py-24 px-6 bg-surface">
+    <section className="py-[100px] px-6 bg-surface">
       <div className="max-w-4xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-primary mb-4">
             You stay in control.
           </h2>
         </div>
@@ -20,12 +20,12 @@ export function SecurityTrust() {
           {trustIndicators.map((indicator, index) => (
             <div
               key={index}
-              className="flex items-start gap-4 p-6 bg-background rounded-lg border border-text/10"
+              className="flex items-start gap-4 p-6 bg-background-secondary rounded-lg border border-text-primary/10 hover:translate-y-[-4px] hover:shadow-soft transition-all duration-300"
             >
               {/* Checkmark Icon */}
               <div className="flex-shrink-0">
                 <svg
-                  className="w-6 h-6 text-accent"
+                  className="w-6 h-6 text-brand-blue"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -38,7 +38,7 @@ export function SecurityTrust() {
               </div>
 
               {/* Text */}
-              <p className="text-text/80 font-medium">
+              <p className="text-text-primary/80 font-sans font-medium">
                 {indicator}
               </p>
             </div>

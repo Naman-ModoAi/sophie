@@ -118,8 +118,8 @@ export default async function SettingsPage({
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-text mb-2">Settings</h1>
-      <p className="text-text/70 mb-8">Manage your account preferences and subscription</p>
+      <h1 className="text-3xl font-serif font-bold text-text-primary mb-2">Settings</h1>
+      <p className="text-text-secondary mb-8">Manage your account preferences and subscription</p>
 
       <SettingsClient
         userId={user.id}

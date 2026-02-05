@@ -20,7 +20,7 @@ export function Tabs({ tabs, defaultTab }: TabsProps) {
 
   return (
     <div className="w-full">
-      <div className="border-b border-text/10">
+      <div className="border-b border-text-primary/10">
         <nav className="flex gap-4" aria-label="Tabs">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -34,8 +34,8 @@ export function Tabs({ tabs, defaultTab }: TabsProps) {
                   border-b-2 transition-colors
                   ${
                     isActive
-                      ? 'border-accent text-accent'
-                      : 'border-transparent text-text/60 hover:text-text hover:border-text/20'
+                      ? 'border-brand-blue text-brand-blue'
+                      : 'border-transparent text-text-secondary hover:text-text-primary hover:border-text-primary/20'
                   }
                 `}
                 aria-current={isActive ? 'page' : undefined}

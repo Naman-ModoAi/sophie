@@ -30,11 +30,11 @@ export function WhyMeetReady() {
   ];
 
   return (
-    <section className="py-16 md:py-24 px-6 bg-surface">
+    <section className="py-[100px] px-6 bg-surface">
       <div className="max-w-5xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-primary mb-4">
             Stop winging it.
           </h2>
         </div>
@@ -44,17 +44,17 @@ export function WhyMeetReady() {
           {benefits.map((benefit, index) => (
             <div key={index} className="text-center">
               {/* Icon */}
-              <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6 text-accent">
+              <div className="w-16 h-16 bg-brand-blue/10 rounded-full flex items-center justify-center mx-auto mb-6 text-brand-blue">
                 {benefit.icon}
               </div>
 
               {/* Title */}
-              <h3 className="text-xl font-semibold text-text mb-3">
+              <h3 className="text-xl font-sans font-semibold text-text-primary mb-3">
                 {benefit.title}
               </h3>
 
               {/* Description */}
-              <p className="text-text/60 leading-relaxed">
+              <p className="text-text-secondary leading-relaxed">
                 {benefit.description}
               </p>
             </div>
@@ -62,7 +62,7 @@ export function WhyMeetReady() {
         </div>
 
         {/* Bottom Message */}
-        <p className="text-center text-xl text-text/70 italic">
+        <p className="text-center text-xl text-text-secondary font-serif italic">
           Just calmer, sharper conversations.
         </p>
       </div>

@@ -2,46 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design Tokens - Strict color palette */
+/* Design System - MeetReady v2 */
 :root {
-  /* Colors */
-  --color-text: #0A0A0FCC;
-  --color-background: #F0F0F5;
-  --color-accent: #0D9488;
+  /* Brand Colors */
+  --color-brand-blue: #4F7DF3;
+  --color-brand-blue-light: #7B9EF8;
+  --color-brand-blue-soft: #EDF1FE;
+  --color-brand-indigo: #5B4FE3;
+  --color-brand-violet: #7C5CFC;
+
+  /* Semantic Colors */
+  --color-semantic-teal: #36B5A0;
+  --color-semantic-red: #F87171;
+  --color-semantic-peach: #F0A882;
+  --color-semantic-pink: #E87EA1;
+
+  /* Background Colors */
+  --color-bg-default: #FAFBFE;
+  --color-bg-warm: #F6F4FB;
+  --color-bg-cool: #F0F3FD;
+
+  /* Surface */
   --color-surface: #FFFFFF;
 
-  /* Spacing Scale */
-  --spacing-xs: 0.25rem;   /* 4px */
-  --spacing-sm: 0.5rem;    /* 8px */
-  --spacing-md: 1rem;      /* 16px */
-  --spacing-lg: 1.5rem;    /* 24px */
-  --spacing-xl: 2rem;      /* 32px */
-  --spacing-2xl: 3rem;     /* 48px */
+  /* Dark Theme Colors */
+  --color-dark-base: #1A1D2E;
+  --color-dark-mid: #252A42;
+  --color-dark-cool: #1E2B3A;
+  --color-dark-warm: #2A2D42;
 
-  /* Typography Scale */
-  --font-size-xs: 0.75rem;     /* 12px */
-  --font-size-sm: 0.875rem;    /* 14px */
-  --font-size-base: 1rem;      /* 16px */
-  --font-size-lg: 1.125rem;    /* 18px */
-  --font-size-xl: 1.25rem;     /* 20px */
-  --font-size-2xl: 1.5rem;     /* 24px */
-  --font-size-3xl: 1.875rem;   /* 30px */
-  --font-size-4xl: 2.25rem;    /* 36px */
-
-  /* Line Heights */
-  --line-height-tight: 1.25;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
-
-  /* Border Radius */
-  --radius-sm: 0.25rem;    /* 4px */
-  --radius-md: 0.5rem;     /* 8px */
-  --radius-lg: 0.75rem;    /* 12px */
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  /* Text Colors */
+  --color-text-primary: #1A1D2E;
+  --color-text-secondary: #5C6178;
+  --color-text-muted: #9498AD;
 }
 
 html {
@@ -49,10 +42,8 @@ html {
 }
 
 body {
-  color: var(--color-text);
-  background: var(--color-background);
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background: var(--color-bg-default);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -60,5 +51,36 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Glassmorphism Utilities */
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+
+  .glass-badge {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+
+  /* Text Gradient Utility */
+  .text-gradient {
+    background: linear-gradient(135deg, #4F7DF3 0%, #7C5CFC 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }

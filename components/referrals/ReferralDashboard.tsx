@@ -128,7 +128,7 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
   if (!referralData || !stats) {
     return (
       <div className="p-8">
-        <p className="text-text/70">Failed to load referral data</p>
+        <p className="text-text-secondary">Failed to load referral data</p>
       </div>
     );
   }
@@ -143,36 +143,36 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
         />
       )}
       <div className="p-8 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold text-text mb-2">Invite Friends, Earn Credits</h1>
-      <p className="text-text/70 mb-8">
+      <h1 className="text-3xl font-serif font-bold text-text-primary mb-2">Invite Friends, Earn Credits</h1>
+      <p className="text-text-secondary mb-8">
         Share MeetReady with colleagues and earn meeting credits when they sign up
       </p>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card className="p-6">
-          <div className="text-text/70 text-sm mb-1">Total Completed</div>
-          <div className="text-3xl font-bold text-text">{referralData.total_completed}</div>
+          <div className="text-text-secondary text-sm mb-1">Total Completed</div>
+          <div className="text-3xl font-bold text-text-primary">{referralData.total_completed}</div>
         </Card>
         <Card className="p-6">
-          <div className="text-text/70 text-sm mb-1">Pending Referrals</div>
-          <div className="text-3xl font-bold text-text">{referralData.pending_count}</div>
+          <div className="text-text-secondary text-sm mb-1">Pending Referrals</div>
+          <div className="text-3xl font-bold text-text-primary">{referralData.pending_count}</div>
         </Card>
         <Card className="p-6">
-          <div className="text-text/70 text-sm mb-1">Credits Earned</div>
-          <div className="text-3xl font-bold text-accent">{referralData.credits_earned}</div>
+          <div className="text-text-secondary text-sm mb-1">Credits Earned</div>
+          <div className="text-3xl font-bold text-brand-blue">{referralData.credits_earned}</div>
         </Card>
       </div>
 
       {/* Referral Link Card */}
       <Card className="p-6 mb-8">
-        <h2 className="text-xl font-semibold text-text mb-4">Your Referral Link</h2>
+        <h2 className="text-xl font-serif font-semibold text-text-primary mb-4">Your Referral Link</h2>
         <div className="flex gap-2 mb-4">
           <input
             type="text"
             value={referralData.referral_link}
             readOnly
-            className="flex-1 px-4 py-2 bg-background border border-text/20 rounded-md text-text"
+            className="flex-1 px-4 py-2 bg-background border border-text-primary/20 rounded-md text-text-primary"
           />
           <Button onClick={copyToClipboard}>Copy Link</Button>
         </div>
@@ -193,16 +193,16 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
       {/* Milestone Progress (Pro users only) */}
       {stats.next_milestone && (
         <Card className="p-6 mb-8">
-          <h2 className="text-xl font-semibold text-text mb-4">Next Milestone</h2>
+          <h2 className="text-xl font-serif font-semibold text-text-primary mb-4">Next Milestone</h2>
           <div className="mb-2">
-            <span className="text-text/70">Progress to {stats.next_milestone.reward}: </span>
-            <span className="text-text font-semibold">
+            <span className="text-text-secondary">Progress to {stats.next_milestone.reward}: </span>
+            <span className="text-text-primary font-semibold">
               {stats.next_milestone.current}/{stats.next_milestone.target}
             </span>
           </div>
-          <div className="w-full bg-text/10 rounded-full h-2">
+          <div className="w-full bg-text-primary/10 rounded-full h-2">
             <div
-              className="bg-accent h-2 rounded-full transition-all"
+              className="bg-brand-blue h-2 rounded-full transition-all"
               style={{ width: `${(stats.next_milestone.current / stats.next_milestone.target) * 100}%` }}
             />
           </div>
@@ -211,17 +211,17 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
 
       {/* Referral History */}
       <Card className="p-6">
-        <h2 className="text-xl font-semibold text-text mb-4">Referral History</h2>
+        <h2 className="text-xl font-serif font-semibold text-text-primary mb-4">Referral History</h2>
 
         {stats.completed_referrals.length === 0 && stats.pending_referrals.length === 0 ? (
-          <p className="text-text/70">No referrals yet. Share your link to get started!</p>
+          <p className="text-text-secondary">No referrals yet. Share your link to get started!</p>
         ) : (
           <div className="space-y-4">
             {stats.completed_referrals.map((ref) => (
-              <div key={ref.id} className="flex items-center justify-between py-3 border-b border-text/10">
+              <div key={ref.id} className="flex items-center justify-between py-3 border-b border-text-primary/10">
                 <div>
-                  <div className="text-text font-medium">{ref.users.name || ref.users.email}</div>
-                  <div className="text-text/70 text-sm">
+                  <div className="text-text-primary font-medium">{ref.users.name || ref.users.email}</div>
+                  <div className="text-text-secondary text-sm">
                     Completed {new Date(ref.completed_at).toLocaleDateString()}
                   </div>
                 </div>
@@ -229,12 +229,12 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
               </div>
             ))}
             {stats.pending_referrals.map((ref) => (
-              <div key={ref.id} className="flex items-center justify-between py-3 border-b border-text/10">
+              <div key={ref.id} className="flex items-center justify-between py-3 border-b border-text-primary/10">
                 <div>
-                  <div className="text-text font-medium">
+                  <div className="text-text-primary font-medium">
                     {ref.referred_email || 'Pending signup'}
                   </div>
-                  <div className="text-text/70 text-sm">
+                  <div className="text-text-secondary text-sm">
                     {ref.status === 'signed_up' ? 'Signed up' : 'Link clicked'}
                     {' '}
                     {new Date(ref.signed_up_at || ref.created_at).toLocaleDateString()}

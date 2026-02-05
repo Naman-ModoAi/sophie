@@ -48,10 +48,10 @@ export default async function Dashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-text">
+        <h2 className="text-2xl font-serif font-bold text-text-primary">
           Upcoming Meetings
         </h2>
-        <p className="text-sm text-text/60 mt-1">
+        <p className="text-sm text-text-secondary mt-1">
           Next 7 days • Auto-synced with Google Calendar
         </p>
       </div>

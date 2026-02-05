@@ -27,15 +27,15 @@ export function MeetingCard({ meeting, isSelected, onClick }: MeetingCardProps) 
     <button
       onClick={onClick}
       className={`
-        w-full text-left p-4 rounded-md transition-all
+        w-full text-left p-4 rounded-md transition-all duration-300
         ${isSelected
-          ? 'bg-accent/5 border-2 border-accent shadow-md'
-          : 'bg-surface border-2 border-transparent hover:border-text/10 hover:shadow-sm'
+          ? 'bg-brand-blue/5 border-2 border-brand-blue shadow-soft'
+          : 'bg-surface border-2 border-transparent hover:border-text-primary/10 hover:shadow-soft hover:translate-y-[-2px]'
         }
       `}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-semibold text-text line-clamp-1">
+        <h3 className="font-semibold font-serif text-text-primary line-clamp-1">
           {meeting.title || 'Untitled Meeting'}
         </h3>
         <Badge variant={meeting.is_internal ? 'default' : 'accent'}>
@@ -43,7 +43,7 @@ export function MeetingCard({ meeting, isSelected, onClick }: MeetingCardProps) 
         </Badge>
       </div>
 
-      <p className="text-sm text-text/70 mb-2">
+      <p className="text-sm text-text-secondary mb-2">
         {new Date(meeting.start_time).toLocaleString('en-US', {
           weekday: 'short',
           month: 'short',
@@ -54,7 +54,7 @@ export function MeetingCard({ meeting, isSelected, onClick }: MeetingCardProps) 
       </p>
 
       {externalCount > 0 && (
-        <p className="text-xs text-accent">
+        <p className="text-xs text-brand-blue">
           {externalCount} external {externalCount === 1 ? 'attendee' : 'attendees'}
         </p>
       )}

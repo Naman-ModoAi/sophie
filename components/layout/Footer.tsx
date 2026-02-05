@@ -4,34 +4,34 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-surface border-t border-text/10">
+    <footer className="bg-surface border-t border-text-primary/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
           <div>
-            <div className="text-xl font-bold text-text mb-1">MeetReady</div>
-            <div className="text-sm text-text/50 italic">Before every call.</div>
+            <div className="text-xl font-bold font-serif text-text-primary mb-1">MeetReady</div>
+            <div className="text-sm text-text-muted italic">Before every call.</div>
           </div>
 
           {/* Product Links */}
           <div>
-            <h4 className="text-sm font-semibold text-text mb-4">Product</h4>
+            <h4 className="text-sm font-semibold text-text-primary mb-4">Product</h4>
             <div className="flex flex-col gap-3">
               <Link
                 href="#how-it-works"
-                className="text-sm text-text/60 hover:text-text transition-colors"
+                className="text-sm text-text-secondary hover:text-text-primary transition-all duration-300"
               >
                 How it works
               </Link>
               <Link
                 href="#pricing"
-                className="text-sm text-text/60 hover:text-text transition-colors"
+                className="text-sm text-text-secondary hover:text-text-primary transition-all duration-300"
               >
                 Pricing
               </Link>
               <Link
                 href="#contact"
-                className="text-sm text-text/60 hover:text-text transition-colors"
+                className="text-sm text-text-secondary hover:text-text-primary transition-all duration-300"
               >
                 Contact
               </Link>
@@ -40,17 +40,17 @@ export function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h4 className="text-sm font-semibold text-text mb-4">Legal</h4>
+            <h4 className="text-sm font-semibold text-text-primary mb-4">Legal</h4>
             <div className="flex flex-col gap-3">
               <Link
                 href="/terms"
-                className="text-sm text-text/60 hover:text-text transition-colors"
+                className="text-sm text-text-secondary hover:text-text-primary transition-all duration-300"
               >
                 Terms of Service
               </Link>
               <Link
                 href="/privacy"
-                className="text-sm text-text/60 hover:text-text transition-colors"
+                className="text-sm text-text-secondary hover:text-text-primary transition-all duration-300"
               >
                 Privacy Policy
               </Link>
@@ -59,8 +59,8 @@ export function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="pt-8 border-t border-text/10">
-          <p className="text-sm text-text/60 text-center">
+        <div className="pt-8 border-t border-text-primary/10">
+          <p className="text-sm text-text-secondary text-center">
             © {currentYear} MeetReady. All rights reserved.
           </p>
         </div>

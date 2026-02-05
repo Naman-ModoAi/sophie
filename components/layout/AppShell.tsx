@@ -8,7 +8,7 @@ interface AppShellProps {
 
 export function AppShell({ children, userEmail }: AppShellProps) {
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-bg">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <TopNav userEmail={userEmail} />

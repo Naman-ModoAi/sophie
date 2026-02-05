@@ -1,10 +1,11 @@
 import { Metadata } from 'next'
 import { Navigation } from '@/components/landing/Navigation'
 import { Hero } from '@/components/landing/Hero'
+import { SocialProof } from '@/components/landing/SocialProof'
 import { ProblemSection } from '@/components/landing/ProblemSection'
 import { HowItWorks } from '@/components/landing/HowItWorks'
 import { WhatYouGet } from '@/components/landing/WhatYouGet'
-import { Testimonials } from '@/components/landing/Testimonials'
+import { WhoItsFor } from '@/components/landing/WhoItsFor'
 import { WhyMeetReady } from '@/components/landing/WhyMeetReady'
 import { PricingSection } from '@/components/landing/PricingSection'
 import { SecurityTrust } from '@/components/landing/SecurityTrust'
@@ -31,10 +32,11 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex-1">
         <Hero />
+        <SocialProof />
         <ProblemSection />
         <HowItWorks />
         <WhatYouGet />
-        <Testimonials />
+        <WhoItsFor />
         <WhyMeetReady />
         <PricingSection />
         <SecurityTrust />

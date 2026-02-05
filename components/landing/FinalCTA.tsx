@@ -2,22 +2,22 @@ import Link from 'next/link';
 
 export function FinalCTA() {
   return (
-    <section className="py-16 md:py-24 px-6">
+    <section className="py-[100px] px-6">
       <div className="max-w-4xl mx-auto text-center">
         {/* Headline */}
-        <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">
+        <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-primary mb-4">
           Stop winging important conversations.
         </h2>
 
         {/* Subheading */}
-        <p className="text-xl text-text/70 mb-10">
+        <p className="text-xl text-text-secondary mb-10">
           Be call ready — every time.
         </p>
 
         {/* CTA Button */}
         <a
           href="/api/auth/login"
-          className="inline-flex items-center gap-3 bg-accent text-surface px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent/90 transition-all shadow-lg hover:shadow-xl mb-4"
+          className="inline-flex items-center gap-3 bg-brand-blue text-white px-8 py-4 rounded-lg text-lg font-sans font-semibold hover:bg-brand-blue/90 transition-all duration-300 shadow-cta hover:shadow-cta-hover mb-4"
         >
           <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" fillRule="evenodd">
@@ -31,7 +31,7 @@ export function FinalCTA() {
         </a>
 
         {/* Trust Indicator */}
-        <p className="text-sm text-text/50">
+        <p className="text-sm text-text-muted">
           No credit card required
         </p>
       </div>

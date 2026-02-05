@@ -140,7 +140,7 @@ export function DashboardClient({ meetings: initialMeetings, userId }: Dashboard
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Meetings List */}
         <div className="lg:col-span-1">
-          <h3 className="text-sm font-semibold text-text/70 mb-3 px-1">
+          <h3 className="text-sm font-semibold text-text-secondary mb-3 px-1">
             UPCOMING MEETINGS
           </h3>
           <div className="space-y-2">
@@ -160,7 +160,7 @@ export function DashboardClient({ meetings: initialMeetings, userId }: Dashboard
           {selectedMeeting ? (
             <MeetingDetailPanel meeting={selectedMeeting} />
           ) : (
-            <div className="bg-surface rounded-md shadow-sm p-8 text-center text-text/50">
+            <div className="bg-surface rounded-md shadow-soft p-8 text-center text-text-muted">
               Select a meeting to view details
             </div>
           )}

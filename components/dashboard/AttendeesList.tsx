@@ -114,7 +114,7 @@ export function AttendeesList({ attendees: initialAttendees, meetingId }: Attend
 
   if (!attendees || attendees.length === 0) {
     return (
-      <div className="text-sm text-text/50">No attendees</div>
+      <div className="text-sm text-text-muted">No attendees</div>
     );
   }
 
@@ -123,20 +123,20 @@ export function AttendeesList({ attendees: initialAttendees, meetingId }: Attend
       {attendees.map((attendee, idx) => (
         <div
           key={attendee.id || idx}
-          className="flex items-start gap-3 p-3 bg-background rounded-md border border-border/50"
+          className="flex items-start gap-3 p-3 bg-bg rounded-md border border-text-primary/10 shadow-soft hover:shadow-soft hover:translate-y-[-2px] transition-all duration-300"
         >
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
-              <label className="text-xs text-text/60 w-20">Name:</label>
+              <label className="text-xs text-text-secondary w-20">Name:</label>
               {editingId === attendee.id ? (
                 <input
                   type="text"
                   value={attendee.name || ''}
                   onChange={(e) => handleUpdate(attendee.id!, 'name', e.target.value)}
-                  className="flex-1 px-2 py-1 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-accent"
+                  className="flex-1 px-2 py-1 text-sm bg-bg border border-text-primary/10 rounded focus:outline-none focus:ring-1 focus:ring-brand-blue"
                 />
               ) : (
-                <span className="text-sm text-text font-medium">
+                <span className="text-sm text-text-primary font-medium">
                   {attendee.name || 'Not specified'}
                 </span>
               )}
@@ -144,16 +144,16 @@ export function AttendeesList({ attendees: initialAttendees, meetingId }: Attend
 
             {!attendee.is_internal && (
               <div className="flex items-center gap-2">
-                <label className="text-xs text-text/60 w-20">Company:</label>
+                <label className="text-xs text-text-secondary w-20">Company:</label>
                 {editingId === attendee.id ? (
                   <input
                     type="text"
                     value={attendee.company || ''}
                     onChange={(e) => handleUpdate(attendee.id!, 'company', e.target.value)}
-                    className="flex-1 px-2 py-1 text-sm bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-accent"
+                    className="flex-1 px-2 py-1 text-sm bg-bg border border-text-primary/10 rounded focus:outline-none focus:ring-1 focus:ring-brand-blue"
                   />
                 ) : (
-                  <span className="text-sm text-text">
+                  <span className="text-sm text-text-primary">
                     {attendee.company || 'Not specified'}
                   </span>
                 )}
@@ -161,8 +161,8 @@ export function AttendeesList({ attendees: initialAttendees, meetingId }: Attend
             )}
 
             <div className="flex items-center gap-2">
-              <label className="text-xs text-text/60 w-20">Email:</label>
-              <span className="text-sm text-text/70">{attendee.email}</span>
+              <label className="text-xs text-text-secondary w-20">Email:</label>
+              <span className="text-sm text-text-secondary">{attendee.email}</span>
             </div>
           </div>
 

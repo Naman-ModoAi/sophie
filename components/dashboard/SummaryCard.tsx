@@ -29,19 +29,19 @@ export function SummaryCard({
   variant = 'default',
 }: SummaryCardProps) {
   const variantClasses = {
-    default: 'bg-surface border-text/10',
-    accent: 'bg-accent/5 border-accent/20',
+    default: 'bg-surface border-text-primary/10',
+    accent: 'bg-brand-blue/5 border-brand-blue/20',
     success: 'bg-green-500/5 border-green-500/20',
   };
 
   return (
-    <div className={`p-4 rounded-lg border ${variantClasses[variant]} space-y-2`}>
+    <div className={`p-4 rounded-lg border ${variantClasses[variant]} space-y-2 shadow-soft hover:shadow-soft hover:translate-y-[-2px] transition-all duration-300`}>
       <div className="flex items-center gap-2">
         {icon && <span className="text-lg">{icon}</span>}
-        <h4 className="text-sm font-medium text-text/70">{title}</h4>
+        <h4 className="text-sm font-medium text-text-secondary">{title}</h4>
       </div>
-      <div className="text-2xl font-semibold text-text">{value}</div>
-      {subtitle && <p className="text-xs text-text/60">{subtitle}</p>}
+      <div className="text-2xl font-semibold font-serif text-text-primary">{value}</div>
+      {subtitle && <p className="text-xs text-text-secondary">{subtitle}</p>}
     </div>
   );
 }

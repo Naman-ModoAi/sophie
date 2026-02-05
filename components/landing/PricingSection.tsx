@@ -37,11 +37,11 @@ export function PricingSection() {
   ];
 
   return (
-    <section id="pricing" className="py-16 md:py-24 px-6 scroll-mt-20">
+    <section id="pricing" className="py-[100px] px-6 scroll-mt-20">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-primary mb-4">
             Start free. Upgrade when it sticks.
           </h2>
         </div>
@@ -51,28 +51,28 @@ export function PricingSection() {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative bg-surface border rounded-xl p-8 ${
+              className={`relative bg-surface border rounded-xl p-8 hover:translate-y-[-4px] transition-all duration-300 ${
                 plan.isPopular
-                  ? 'border-accent shadow-lg scale-105'
-                  : 'border-text/10'
+                  ? 'border-brand-blue shadow-cta scale-105'
+                  : 'border-text-primary/10 hover:shadow-soft'
               }`}
             >
               {/* Popular Badge */}
               {plan.badge && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-accent text-surface px-4 py-1 rounded-full text-sm font-semibold shadow-md">
+                  <span className="bg-gradient-accent text-white px-4 py-1 rounded-full text-sm font-sans font-semibold shadow-soft">
                     {plan.badge}
                   </span>
                 </div>
               )}
 
               {/* Plan Name */}
-              <h3 className="text-2xl font-bold text-text mb-2">
+              <h3 className="text-2xl font-serif font-bold text-text-primary mb-2">
                 {plan.name}
               </h3>
 
               {/* Description */}
-              <p className="text-text/60 text-sm mb-6">
+              <p className="text-text-secondary text-sm mb-6">
                 {plan.name === 'Free'
                   ? 'Perfect to try MeetReady and build the habit.'
                   : 'For people who live in meetings.'}
@@ -81,15 +81,15 @@ export function PricingSection() {
               {/* Price */}
               <div className="mb-6">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-text">
+                  <span className="text-4xl font-serif font-bold text-text-primary">
                     ${plan.price}
                   </span>
                   {plan.price > 0 && (
-                    <span className="text-text/60">/ month</span>
+                    <span className="text-text-secondary">/ month</span>
                   )}
                 </div>
                 {plan.annualPrice && (
-                  <p className="text-sm text-text/60 mt-1">
+                  <p className="text-sm text-text-secondary mt-1">
                     ${plan.annualPrice}/mo billed annually
                   </p>
                 )}
@@ -100,7 +100,7 @@ export function PricingSection() {
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start gap-3">
                     <svg
-                      className="w-5 h-5 text-accent flex-shrink-0 mt-0.5"
+                      className="w-5 h-5 text-brand-blue flex-shrink-0 mt-0.5"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -110,7 +110,7 @@ export function PricingSection() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="text-text/70 text-sm">{feature}</span>
+                    <span className="text-text-secondary text-sm">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -118,10 +118,10 @@ export function PricingSection() {
               {/* CTA Button */}
               <a
                 href={plan.cta.href}
-                className={`block w-full text-center py-3 rounded-lg font-semibold transition-colors ${
+                className={`block w-full text-center py-3 rounded-lg font-sans font-semibold transition-all duration-300 ${
                   plan.isPopular
-                    ? 'bg-accent text-surface hover:bg-accent/90'
-                    : 'bg-text/5 text-text border border-text/20 hover:bg-text/10'
+                    ? 'bg-brand-blue text-white hover:bg-brand-blue/90 shadow-cta hover:shadow-cta-hover'
+                    : 'bg-text-primary/5 text-text-primary border border-text-primary/20 hover:bg-text-primary/10 hover:shadow-soft'
                 }`}
               >
                 {plan.cta.text}
@@ -131,7 +131,7 @@ export function PricingSection() {
         </div>
 
         {/* Social Proof */}
-        <p className="text-center text-text/60 italic">
+        <p className="text-center text-text-secondary font-serif italic">
           Most users upgrade after their first week.
         </p>
       </div>

@@ -31,7 +31,7 @@ export function Toast({ message, variant, onClose, duration = 3500 }: ToastProps
       className={`
         fixed bottom-6 right-6 z-50
         px-4 py-3 rounded-lg border
-        shadow-lg backdrop-blur-sm
+        shadow-cta backdrop-blur-sm
         animate-in slide-in-from-bottom-5 fade-in
         ${variantStyles[variant]}
       `}

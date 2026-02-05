@@ -44,22 +44,22 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-text/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-text-primary/50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
         className={`
-          bg-surface rounded-lg shadow-lg w-full ${sizeClasses[size]}
+          bg-surface rounded-lg shadow-soft w-full ${sizeClasses[size]}
           transform transition-all
         `}
         onClick={(e) => e.stopPropagation()}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-text/10">
-            <h3 className="text-lg font-semibold text-text">{title}</h3>
+          <div className="flex items-center justify-between px-6 py-4 border-b border-text-primary/10">
+            <h3 className="text-lg font-serif font-semibold text-text-primary">{title}</h3>
             <button
               onClick={onClose}
-              className="text-text/60 hover:text-text transition-colors"
+              className="text-text-secondary hover:text-text-primary transition-colors"
               aria-label="Close modal"
             >
               <svg

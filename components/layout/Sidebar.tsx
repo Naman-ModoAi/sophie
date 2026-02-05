@@ -62,9 +62,9 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="w-60 bg-surface border-r border-text/10 h-screen flex flex-col">
+    <aside className="w-60 bg-surface border-r border-text-primary/10 h-screen flex flex-col">
       <div className="p-6">
-        <h1 className="text-xl font-bold text-text">MeetReady</h1>
+        <h1 className="text-xl font-bold font-serif text-text-primary">MeetReady</h1>
       </div>
 
       <nav className="flex-1 px-4 space-y-1">
@@ -77,12 +77,12 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               onClick={(e) => handleNavClick(e, item.href)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-md transition-colors ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-md transition-all duration-300 ${
                 isActive
-                  ? 'bg-accent/10 text-accent font-medium'
+                  ? 'bg-brand-blue/10 text-brand-blue font-medium'
                   : isNavigating
-                    ? 'bg-accent/5 text-accent/80'
-                    : 'text-text/70 hover:bg-text/5 hover:text-text'
+                    ? 'bg-brand-blue/5 text-brand-blue/80'
+                    : 'text-text-secondary hover:bg-text-primary/5 hover:text-text-primary'
               }`}
             >
               {isNavigating ? (
@@ -99,8 +99,8 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-text/10">
-        <p className="text-xs text-text/50 text-center">
+      <div className="p-4 border-t border-text-primary/10">
+        <p className="text-xs text-text-muted text-center">
           © 2026 MeetReady
         </p>
       </div>

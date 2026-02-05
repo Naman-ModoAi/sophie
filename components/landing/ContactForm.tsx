@@ -27,27 +27,27 @@ export function ContactForm() {
   }
 
   return (
-    <section id="contact" className="py-16 md:py-24 px-6 bg-surface scroll-mt-20">
+    <section id="contact" className="py-[100px] px-6 bg-surface scroll-mt-20">
       <div className="max-w-2xl mx-auto text-center">
         {/* Section Header */}
-        <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">
+        <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-primary mb-4">
           Get in touch
         </h2>
-        <p className="text-text/60 mb-8">
+        <p className="text-text-secondary mb-8">
           Have a question or want to learn more? Drop your email and we'll get back to you.
         </p>
 
         {/* Contact Form */}
         {status === 'success' ? (
           // Success State
-          <div className="bg-accent/10 border border-accent/30 rounded-lg p-6">
-            <svg className="w-12 h-12 text-accent mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+          <div className="bg-brand-blue/10 border border-brand-blue/30 rounded-lg p-6 shadow-soft">
+            <svg className="w-12 h-12 text-brand-blue mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            <p className="text-text font-semibold mb-2">{message}</p>
+            <p className="text-text-primary font-sans font-semibold mb-2">{message}</p>
             <button
               onClick={() => setStatus('idle')}
-              className="text-accent hover:text-accent/80 text-sm underline"
+              className="text-brand-blue hover:text-brand-blue/80 text-sm underline transition-colors duration-300"
             >
               Send another message
             </button>
@@ -64,14 +64,14 @@ export function ContactForm() {
                 placeholder="your@email.com"
                 required
                 disabled={status === 'loading'}
-                className="flex-1 px-4 py-3 bg-background border border-text/20 rounded-lg text-text placeholder:text-text/40 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-3 bg-background-secondary border border-text-primary/20 rounded-lg text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand-blue/50 focus:border-brand-blue disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
               />
 
               {/* Submit Button */}
               <button
                 type="submit"
                 disabled={status === 'loading' || !email}
-                className="px-6 py-3 bg-accent text-surface font-semibold rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="px-6 py-3 bg-brand-blue text-white font-sans font-semibold rounded-lg hover:bg-brand-blue/90 transition-all duration-300 shadow-cta hover:shadow-cta-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {status === 'loading' ? (
                   <>
@@ -95,7 +95,7 @@ export function ContactForm() {
             )}
 
             {/* Privacy Notice */}
-            <p className="text-xs text-text/50">
+            <p className="text-xs text-text-muted">
               We'll only use your email to respond. No spam, ever.
             </p>
           </form>

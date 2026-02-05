@@ -2,29 +2,31 @@ import Link from 'next/link';
 
 export function Hero() {
   return (
-    <section className="py-12 md:py-20 px-6">
-      <div className="max-w-5xl mx-auto">
+    <section className="relative py-20 md:py-32 px-6 bg-gradient-hero overflow-hidden">
+      {/* Floating Orbs */}
+      <div className="absolute top-20 left-10 w-96 h-96 bg-brand-blue/8 rounded-full blur-[100px] animate-float pointer-events-none" />
+      <div className="absolute bottom-20 right-10 w-80 h-80 bg-brand-violet/10 rounded-full blur-[80px] animate-float pointer-events-none" style={{ animationDelay: '5s' }} />
+
+      <div className="max-w-5xl mx-auto relative z-10">
         <div className="text-center">
           {/* Target Audience Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium mb-8">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <circle cx="10" cy="10" r="3" />
-            </svg>
-            AI-powered meeting prep
+          <div className="inline-flex items-center gap-2 px-4 py-2 glass-badge rounded-full text-sm font-medium mb-8">
+            <div className="w-2 h-2 bg-brand-blue rounded-full animate-pulse-dot" />
+            <span className="text-text-primary">AI-powered meeting prep</span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            <span className="text-text">Never walk into a </span>
-            <span className="text-accent">call cold.</span>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif font-normal mb-6 leading-tight tracking-tight">
+            <span className="text-text-primary">Never walk into a </span>
+            <span className="text-gradient">call cold.</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg sm:text-xl text-text/60 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-text-secondary mb-8 max-w-2xl mx-auto leading-relaxed">
             Instant meeting briefs from your calendar so you know who's in the room, what matters, and how to lead the conversation.
           </p>
 
-          <p className="text-base text-text/70 mb-10 italic">
+          <p className="text-base text-text-secondary mb-10 italic font-serif">
             Be call ready. Before every call.
           </p>
 
@@ -32,7 +34,7 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
             <a
               href="/api/auth/login"
-              className="inline-flex items-center gap-3 bg-accent text-surface px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent/90 transition-all shadow-lg hover:shadow-xl w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-3 bg-gradient-accent text-white px-9 py-4 rounded-md text-base font-semibold shadow-cta hover:translate-y-[-2px] hover:shadow-cta-hover transition-all duration-300 w-full sm:w-auto justify-center"
             >
               <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                 <g fill="none" fillRule="evenodd">
@@ -46,38 +48,16 @@ export function Hero() {
             </a>
             <Link
               href="#how-it-works"
-              className="text-accent hover:text-accent/80 font-medium text-lg transition-colors"
+              className="text-brand-blue hover:text-brand-blue-light font-medium text-base transition-colors"
             >
               See how it works →
             </Link>
           </div>
 
           {/* Trust Indicator */}
-          <p className="text-sm text-text/50">
+          <p className="text-sm text-text-muted">
             No credit card required
           </p>
-
-          {/* Target Audience */}
-          <div className="mt-16 pt-12 border-t border-text/10">
-            <p className="text-sm text-text/60 mb-6 font-medium">Built for</p>
-            <div className="grid gap-4 md:grid-cols-3 max-w-3xl mx-auto">
-              <div className="flex items-start gap-3 text-left">
-                <span className="text-2xl">🎯</span>
-                <span className="text-sm text-text/70">Sales reps & founders running deals</span>
-              </div>
-              <div className="flex items-start gap-3 text-left">
-                <span className="text-2xl">💼</span>
-                <span className="text-sm text-text/70">Consultants & partners leading client conversations</span>
-              </div>
-              <div className="flex items-start gap-3 text-left">
-                <span className="text-2xl">⚖️</span>
-                <span className="text-sm text-text/70">Advisors, lawyers & recruiters in high-stakes meetings</span>
-              </div>
-            </div>
-            <p className="text-sm text-text/60 mt-6 italic">
-              If your work depends on conversations, MeetReady is for you.
-            </p>
-          </div>
         </div>
       </div>
     </section>

@@ -42,11 +42,11 @@ export function WhatYouGet() {
   ];
 
   return (
-    <section className="py-16 md:py-24 px-6 bg-surface">
+    <section className="py-[100px] px-6 bg-surface">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-text mb-4">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-primary mb-4">
             Every meeting gets a clear prep brief.
           </h2>
         </div>
@@ -56,15 +56,15 @@ export function WhatYouGet() {
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="bg-background border border-text/10 rounded-xl p-8 hover:border-accent/30 transition-colors"
+              className="bg-background-secondary border border-text-primary/10 rounded-xl p-8 hover:translate-y-[-4px] hover:shadow-soft transition-all duration-300"
             >
               {/* Icon */}
-              <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-6 text-accent">
+              <div className="w-12 h-12 bg-brand-blue/10 rounded-lg flex items-center justify-center mb-6 text-brand-blue">
                 {benefit.icon}
               </div>
 
               {/* Title */}
-              <h3 className="text-xl font-semibold text-text mb-4">
+              <h3 className="text-xl font-sans font-semibold text-text-primary mb-4">
                 {benefit.title}
               </h3>
 
@@ -72,10 +72,10 @@ export function WhatYouGet() {
               <ul className="space-y-3">
                 {benefit.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start gap-2">
-                    <svg className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-brand-blue flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-text/70 text-sm leading-relaxed">
+                    <span className="text-text-secondary text-sm leading-relaxed">
                       {feature}
                     </span>
                   </li>
@@ -86,7 +86,7 @@ export function WhatYouGet() {
         </div>
 
         {/* Bottom Message */}
-        <p className="text-center text-lg text-text/70 italic">
+        <p className="text-center text-lg text-text-secondary font-serif italic">
           Not long documents. Not fluff. Just signal.
         </p>
       </div>
