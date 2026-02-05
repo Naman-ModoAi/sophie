@@ -83,7 +83,10 @@ COMMENT ON FUNCTION public.consume_credits IS 'Deduct credits from user balance 
 
 -- ============================================================================
 
-CREATE OR REPLACE FUNCTION public.allocate_monthly_credits(p_user_id UUID)
+CREATE OR REPLACE FUNCTION public.allocate_monthly_credits(
+  p_user_id UUID,
+  p_is_plan_change BOOLEAN DEFAULT FALSE
+)
 RETURNS VOID
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -111,7 +114,8 @@ BEGIN
   END IF;
 
   -- Calculate new balance based on rollover policy
-  IF v_rollover THEN
+  -- On plan change, always set to plan amount (don't rollover from old plan)
+  IF v_rollover AND NOT p_is_plan_change THEN
     v_new_balance := v_current_balance + v_monthly_credits;
   ELSE
     v_new_balance := v_monthly_credits;
@@ -125,7 +129,7 @@ BEGIN
     last_credit_reset_at = NOW()
   WHERE id = p_user_id;
 
-  RAISE NOTICE 'Allocated % credits to user % (rollover: %)', v_monthly_credits, p_user_id, v_rollover;
+  RAISE NOTICE 'Allocated % credits to user % (rollover: %, plan_change: %)', v_monthly_credits, p_user_id, v_rollover, p_is_plan_change;
 END;
 $$;
 

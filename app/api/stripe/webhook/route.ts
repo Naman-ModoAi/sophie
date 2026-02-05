@@ -105,7 +105,8 @@ export async function POST(request: Request) {
         // Allocate monthly credits immediately for active subscriptions
         if (subscription.status === 'active') {
           const { error: creditError } = await supabase.rpc('allocate_monthly_credits', {
-            p_user_id: userId
+            p_user_id: userId,
+            p_is_plan_change: true
           });
 
           if (creditError) {
@@ -150,9 +151,10 @@ export async function POST(request: Request) {
           .update({ plan_type: 'free' })
           .eq('id', userId);
 
-        // Allocate free plan credits
+        // Allocate free plan credits (plan change: downgrade to free)
         await supabase.rpc('allocate_monthly_credits', {
-          p_user_id: userId
+          p_user_id: userId,
+          p_is_plan_change: true
         });
 
         console.log('[Stripe Webhook] User downgraded to free plan');
