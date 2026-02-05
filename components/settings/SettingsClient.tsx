@@ -57,15 +57,6 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
       );
 
       let resolved = false;
-      let delayedCheck: ReturnType<typeof setTimeout>;
-      const resolve = () => {
-        if (resolved) return;
-        resolved = true;
-        clearTimeout(timeout);
-        clearTimeout(delayedCheck);
-        setIsWaitingForUpdate(false);
-        window.location.href = '/settings?upgraded=true';
-      };
 
       const checkPlan = async () => {
         const { data } = await supabase
@@ -77,7 +68,16 @@ export default function SettingsClient({ userId, user, subscription, calendarCon
       };
 
       // Give webhook ~5s to process, then check the database
-      delayedCheck = setTimeout(checkPlan, 5000);
+      const delayedCheck = setTimeout(checkPlan, 5000);
+
+      const resolve = () => {
+        if (resolved) return;
+        resolved = true;
+        clearTimeout(timeout);
+        clearTimeout(delayedCheck);
+        setIsWaitingForUpdate(false);
+        window.location.href = '/settings?upgraded=true';
+      };
 
       // Timeout after 15 seconds
       const timeout = setTimeout(() => {

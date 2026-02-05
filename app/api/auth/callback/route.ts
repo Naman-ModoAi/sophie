@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
   const error = requestUrl.searchParams.get('error')
-  const origin = requestUrl.origin
+  const origin = process.env.NEXT_PUBLIC_APP_URL || requestUrl.origin
 
   if (error) {
     return NextResponse.redirect(`${origin}/?error=${encodeURIComponent(error)}`)
