@@ -260,8 +260,8 @@ export default function PrivacyPolicy() {
               If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
             </p>
             <div className="bg-surface p-6 rounded-lg border border-text/10 mb-4">
-              <p className="text-text/80 mb-2"><strong>Email:</strong> privacy@meetready.app</p>
-              <p className="text-text/80"><strong>Website:</strong> <a href="https://meetready.app" className="text-accent hover:underline">meetready.app</a></p>
+              <p className="text-text/80 mb-2"><strong>Email:</strong> privacy@sophihq.com</p>
+              <p className="text-text/80"><strong>Website:</strong> <a href="https://sophihq.com" className="text-accent hover:underline">sophihq.com</a></p>
             </div>
             <p className="text-text/80">
               We will make every effort to respond to your inquiry within one month of receipt.

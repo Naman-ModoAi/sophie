@@ -200,8 +200,8 @@ Your continued use of Sophie after any changes to this Privacy Policy constitute
 
 If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
 
-**Email:** privacy@meetready.app
-**Website:** meetready.app
+**Email:** privacy@sophihq.com
+**Website:** sophihq.com
 
 We will make every effort to respond to your inquiry within one month of receipt.
 
@@ -252,4 +252,4 @@ Sophie's use of information received from Google APIs adheres to the [Google API
 
 **End of Privacy Policy**
 
-For the most current version of this policy, please visit: https://meetready.app/privacy
+For the most current version of this policy, please visit: https://sophihq.com/privacy

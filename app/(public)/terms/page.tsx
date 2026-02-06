@@ -270,7 +270,7 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">10. Disclaimer of Warranties</h2>
             <p className="text-text/80 mb-4">
-              MEETREADY IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO:
+              SOPHIE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT</li>
@@ -288,7 +288,7 @@ export default function TermsOfService() {
               <li>We do not guarantee specific results from using the service</li>
             </ul>
             <p className="text-text/80">
-              YOUR USE OF MEETREADY IS AT YOUR SOLE RISK. NO ADVICE OR INFORMATION OBTAINED FROM US OR THROUGH THE SERVICE WILL CREATE ANY WARRANTY NOT EXPRESSLY STATED IN THESE TERMS.
+              YOUR USE OF SOPHIE IS AT YOUR SOLE RISK. NO ADVICE OR INFORMATION OBTAINED FROM US OR THROUGH THE SERVICE WILL CREATE ANY WARRANTY NOT EXPRESSLY STATED IN THESE TERMS.
             </p>
           </section>
 
@@ -296,7 +296,7 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">11. Limitation of Liability</h2>
             <p className="text-text/80 mb-4">
-              TO THE FULLEST EXTENT PERMITTED BY LAW, MEETREADY AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, AND AFFILIATES SHALL NOT BE LIABLE FOR:
+              TO THE FULLEST EXTENT PERMITTED BY LAW, SOPHIE AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, AND AFFILIATES SHALL NOT BE LIABLE FOR:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES</li>
@@ -419,7 +419,7 @@ export default function TermsOfService() {
               Any dispute, controversy, or claim arising out of or relating to these Terms or the service shall be resolved as follows:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
-              <li><strong>Informal Resolution:</strong> You agree to first contact us to attempt to resolve any dispute informally by emailing support@meetready.app</li>
+              <li><strong>Informal Resolution:</strong> You agree to first contact us to attempt to resolve any dispute informally by emailing support@sophihq.com</li>
               <li><strong>Binding Arbitration:</strong> If informal resolution fails within 30 days, the dispute shall be resolved by binding arbitration administered by the American Arbitration Association (AAA) in accordance with its Commercial Arbitration Rules</li>
               <li><strong>Location:</strong> Arbitration will be conducted in Delaware unless both parties agree otherwise</li>
               <li><strong>Costs:</strong> Each party shall bear its own costs, but the arbitrator may award reasonable attorneys' fees to the prevailing party</li>
@@ -427,7 +427,7 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">15.3 Class Action Waiver</h3>
             <p className="text-text/80 mb-4">
-              YOU AND MEETREADY AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR ITS INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR REPRESENTATIVE ACTION.
+              YOU AND SOPHIE AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR ITS INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR REPRESENTATIVE ACTION.
             </p>
 
             <h3 className="text-xl font-semibold text-text mb-3">15.4 Exceptions</h3>
@@ -443,9 +443,9 @@ export default function TermsOfService() {
               If you have any questions, concerns, or feedback about these Terms of Service, please contact us:
             </p>
             <div className="bg-surface p-6 rounded-lg border border-text/10 mb-4">
-              <p className="text-text/80 mb-2"><strong>Email:</strong> support@meetready.app</p>
-              <p className="text-text/80 mb-2"><strong>Website:</strong> <a href="https://meetready.app" className="text-accent hover:underline">meetready.app</a></p>
-              <p className="text-text/80"><strong>Legal Inquiries:</strong> legal@meetready.app</p>
+              <p className="text-text/80 mb-2"><strong>Email:</strong> support@sophihq.com</p>
+              <p className="text-text/80 mb-2"><strong>Website:</strong> <a href="https://sophihq.com" className="text-accent hover:underline">sophihq.com</a></p>
+              <p className="text-text/80"><strong>Legal Inquiries:</strong> legal@sophihq.com</p>
             </div>
             <p className="text-text/80">
               We will make every effort to respond to your inquiry within 5 business days.

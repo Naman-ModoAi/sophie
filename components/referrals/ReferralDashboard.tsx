@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -42,50 +42,19 @@ interface ReferralStats {
   } | null;
 }
 
-export default function ReferralDashboard({ userId }: { userId: string }) {
-  const [referralData, setReferralData] = useState<ReferralData | null>(null);
-  const [stats, setStats] = useState<ReferralStats | null>(null);
-  const [loading, setLoading] = useState(true);
+interface ReferralDashboardProps {
+  referralData: ReferralData;
+  stats: ReferralStats;
+}
+
+export default function ReferralDashboard({ referralData, stats }: ReferralDashboardProps) {
   const [toast, setToast] = useState<{ message: string; variant: ToastVariant } | null>(null);
 
   const showToast = (message: string, variant: ToastVariant) => {
     setToast({ message, variant });
   };
 
-  useEffect(() => {
-    fetchReferralData();
-    fetchStats();
-  }, []);
-
-  const fetchReferralData = async () => {
-    try {
-      const res = await fetch('/api/referrals/my-code');
-      if (res.ok) {
-        const data = await res.json();
-        setReferralData(data);
-      }
-    } catch (error) {
-      // Failed to fetch referral data
-    }
-  };
-
-  const fetchStats = async () => {
-    try {
-      const res = await fetch('/api/referrals/stats');
-      if (res.ok) {
-        const data = await res.json();
-        setStats(data);
-      }
-    } catch (error) {
-      // Failed to fetch stats
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const copyToClipboard = async () => {
-    if (!referralData) return;
-
     try {
       await navigator.clipboard.writeText(referralData.referral_link);
       showToast('Referral link copied to clipboard!', 'success');
@@ -95,7 +64,6 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
   };
 
   const shareViaEmail = () => {
-    if (!referralData) return;
     const subject = encodeURIComponent('Try Sophie - Get 3 bonus meetings!');
     const body = encodeURIComponent(
       `Hey! I've been using Sophie to automatically prep for every meeting – it saves me hours each week.\n\nIf you take a lot of external meetings, you'll love it. Sign up with my link and get 3 bonus meetings:\n\n${referralData.referral_link}`
@@ -104,34 +72,16 @@ export default function ReferralDashboard({ userId }: { userId: string }) {
   };
 
   const shareViaLinkedIn = () => {
-    if (!referralData) return;
     const url = encodeURIComponent(referralData.referral_link);
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
   };
 
   const shareViaTwitter = () => {
-    if (!referralData) return;
     const text = encodeURIComponent(
       `I've been using Sophie to automatically prep for every meeting. Check it out: ${referralData.referral_link}`
     );
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
   };
-
-  if (loading) {
-    return (
-      <div className="p-8">
-        <div className="animate-pulse">Loading...</div>
-      </div>
-    );
-  }
-
-  if (!referralData || !stats) {
-    return (
-      <div className="p-8">
-        <p className="text-text-secondary">Failed to load referral data</p>
-      </div>
-    );
-  }
 
   return (
     <>

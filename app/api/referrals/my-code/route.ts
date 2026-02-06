@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAuthUser, createClient } from '@/lib/supabase/server';
+import { getAuthUser, createClient, createServiceClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,6 +25,31 @@ export async function GET() {
       return NextResponse.json({ error: 'Failed to fetch referral data' }, { status: 500 });
     }
 
+    // Generate referral code if missing (handles users created before trigger was added)
+    let referralCode = userData.referral_code;
+    if (!referralCode) {
+      const serviceSupabase = await createServiceClient();
+      const { data: codeData, error: codeError } = await serviceSupabase
+        .rpc('generate_referral_code');
+
+      if (codeError || !codeData) {
+        console.error('Failed to generate referral code:', codeError);
+        return NextResponse.json({ error: 'Failed to generate referral code' }, { status: 500 });
+      }
+
+      referralCode = codeData as string;
+
+      const { error: updateError } = await serviceSupabase
+        .from('users')
+        .update({ referral_code: referralCode })
+        .eq('id', user.id);
+
+      if (updateError) {
+        console.error('Failed to save referral code:', updateError);
+        return NextResponse.json({ error: 'Failed to save referral code' }, { status: 500 });
+      }
+    }
+
     // Count pending referrals (signed_up but not completed)
     const { count: pendingCount, error: countError } = await supabase
       .from('referrals')
@@ -38,10 +63,10 @@ export async function GET() {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const referralLink = `${appUrl}/ref/${userData.referral_code}`;
+    const referralLink = `${appUrl}/ref/${referralCode}`;
 
     return NextResponse.json({
-      code: userData.referral_code,
+      code: referralCode,
       referral_link: referralLink,
       total_completed: userData.total_referrals_completed,
       pending_count: pendingCount || 0,

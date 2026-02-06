@@ -198,7 +198,7 @@ If you provide feedback, suggestions, or ideas about Sophie, you grant us an unr
 
 ## 10. Disclaimer of Warranties
 
-MEETREADY IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO:
+SOPHIE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO:
 
 - IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT
 - WARRANTIES THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, SECURE, OR VIRUS-FREE
@@ -212,13 +212,13 @@ YOU ACKNOWLEDGE THAT:
 - Third-party service outages may affect Sophie's availability
 - We do not guarantee specific results from using the service
 
-YOUR USE OF MEETREADY IS AT YOUR SOLE RISK. NO ADVICE OR INFORMATION OBTAINED FROM US OR THROUGH THE SERVICE WILL CREATE ANY WARRANTY NOT EXPRESSLY STATED IN THESE TERMS.
+YOUR USE OF SOPHIE IS AT YOUR SOLE RISK. NO ADVICE OR INFORMATION OBTAINED FROM US OR THROUGH THE SERVICE WILL CREATE ANY WARRANTY NOT EXPRESSLY STATED IN THESE TERMS.
 
 ---
 
 ## 11. Limitation of Liability
 
-TO THE FULLEST EXTENT PERMITTED BY LAW, MEETREADY AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, AND AFFILIATES SHALL NOT BE LIABLE FOR:
+TO THE FULLEST EXTENT PERMITTED BY LAW, SOPHIE AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, AND AFFILIATES SHALL NOT BE LIABLE FOR:
 
 - ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES
 - LOSS OF PROFITS, REVENUE, DATA, OR USE
@@ -315,14 +315,14 @@ These Terms shall be governed by and construed in accordance with the laws of th
 
 Any dispute, controversy, or claim arising out of or relating to these Terms or the service shall be resolved as follows:
 
-- **Informal Resolution:** You agree to first contact us to attempt to resolve any dispute informally by emailing support@meetready.app
+- **Informal Resolution:** You agree to first contact us to attempt to resolve any dispute informally by emailing support@sophihq.com
 - **Binding Arbitration:** If informal resolution fails within 30 days, the dispute shall be resolved by binding arbitration administered by the American Arbitration Association (AAA) in accordance with its Commercial Arbitration Rules
 - **Location:** Arbitration will be conducted in Delaware unless both parties agree otherwise
 - **Costs:** Each party shall bear its own costs, but the arbitrator may award reasonable attorneys' fees to the prevailing party
 
 ### 15.3 Class Action Waiver
 
-YOU AND MEETREADY AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR ITS INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR REPRESENTATIVE ACTION.
+YOU AND SOPHIE AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR ITS INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR REPRESENTATIVE ACTION.
 
 ### 15.4 Exceptions
 
@@ -334,9 +334,9 @@ Notwithstanding the above, either party may seek equitable relief in any court o
 
 If you have any questions, concerns, or feedback about these Terms of Service, please contact us:
 
-**Email:** support@meetready.app
-**Website:** [meetready.app](https://meetready.app)
-**Legal Inquiries:** legal@meetready.app
+**Email:** support@sophihq.com
+**Website:** [sophihq.com](https://sophihq.com)
+**Legal Inquiries:** legal@sophihq.com
 
 We will make every effort to respond to your inquiry within 5 business days.
 

@@ -81,6 +81,24 @@ export async function GET(request: NextRequest) {
       // Continue anyway - user exists in auth.users
     } else {
       console.log('✅ User synced to custom users table')
+
+      // Generate referral code if the user doesn't have one yet
+      const { data: existingUser } = await serviceSupabase
+        .from('users')
+        .select('referral_code')
+        .eq('id', user.id)
+        .single()
+
+      if (existingUser && !existingUser.referral_code) {
+        const { data: newCode } = await serviceSupabase.rpc('generate_referral_code')
+        if (newCode) {
+          await serviceSupabase
+            .from('users')
+            .update({ referral_code: newCode })
+            .eq('id', user.id)
+          console.log('✅ Referral code generated for user')
+        }
+      }
     }
 
     // Handle referral tracking if referral code exists

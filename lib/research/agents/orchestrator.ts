@@ -296,11 +296,16 @@ export class ResearchOrchestrator {
   private async checkFirstPrepNote(userId: string): Promise<void> {
     const supabase = await createServiceClient();
 
-    // Count completed prep notes for this user
-    const { count } = await supabase
+    // Count completed prep notes for this user via a join on meetings
+    const { count, error: countError } = await supabase
       .from('prep_notes')
-      .select('*', { count: 'exact', head: true })
-      .eq('meeting_id', supabase.from('meetings').select('id').eq('user_id', userId));
+      .select('*, meetings!inner(user_id)', { count: 'exact', head: true })
+      .eq('meetings.user_id', userId);
+
+    if (countError) {
+      console.error('[Orchestrator] Error counting prep notes:', countError);
+      return;
+    }
 
     // If this is the first prep note, trigger referral completion
     if (count === 1) {
