@@ -29,6 +29,13 @@ export class ResearchOrchestrator {
   async researchMeeting(meetingId: string): Promise<PrepNote> {
     console.log(`[Orchestrator] Starting research for meeting ${meetingId}`);
 
+    // Mark meeting as researching so the UI can track progress
+    const supabaseEarly = await createServiceClient();
+    await supabaseEarly
+      .from('meetings')
+      .update({ status: 'researching' })
+      .eq('id', meetingId);
+
     // Step 1: Fetch meeting from database
     const { meeting, attendees } = await this.fetchMeeting(meetingId);
     const userId = meeting.user_id;
@@ -72,7 +79,7 @@ export class ResearchOrchestrator {
 
     const { data, error } = await supabase
       .from('meetings')
-      .select('*, attendees(*)')
+      .select('*, attendees(*, companies(name, domain))')
       .eq('id', meetingId)
       .single();
 
@@ -109,14 +116,15 @@ export class ResearchOrchestrator {
     for (const attendee of externalAttendees) {
       const email = attendee.email;
       const name = attendee.name || email.split('@')[0];
+      const company = attendee.companies?.name || undefined;
 
-      console.log(`[Orchestrator] Researching person: ${name} (${email})`);
+      console.log(`[Orchestrator] Researching person: ${name} (${email})${company ? ` at ${company}` : ''}`);
 
       try {
         const result = await this.personAgent.researchPerson({
           name,
           email,
-          company: undefined, // Inferred from research
+          company,
           userId,
           meetingId,
         });
@@ -157,12 +165,17 @@ export class ResearchOrchestrator {
     const results: CompanyResearch[] = [];
 
     for (const domain of uniqueDomains) {
-      console.log(`[Orchestrator] Researching company: ${domain}`);
+      const attendeeWithCompany = attendees.find(
+        a => a.domain === domain && a.companies?.name
+      );
+      const companyName = attendeeWithCompany?.companies?.name || undefined;
+
+      console.log(`[Orchestrator] Researching company: ${domain}${companyName ? ` (${companyName})` : ''}`);
 
       try {
         const result = await this.companyAgent.researchCompany({
           domain,
-          companyName: undefined, // Inferred from research
+          companyName,
           userId,
           meetingId,
         });

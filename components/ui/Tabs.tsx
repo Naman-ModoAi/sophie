@@ -46,7 +46,7 @@ export function Tabs({ tabs, defaultTab }: TabsProps) {
           })}
         </nav>
       </div>
-      <div className="py-4">
+      <div className="py-2">
         {activeTabContent}
       </div>
     </div>

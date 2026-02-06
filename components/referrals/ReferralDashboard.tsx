@@ -54,6 +54,17 @@ export default function ReferralDashboard({ referralData, stats }: ReferralDashb
     setToast({ message, variant });
   };
 
+  // Format date consistently for SSR/CSR to avoid hydration errors
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'UTC'
+    });
+  };
+
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(referralData.referral_link);
@@ -172,7 +183,7 @@ export default function ReferralDashboard({ referralData, stats }: ReferralDashb
                 <div>
                   <div className="text-text-primary font-medium">{ref.users.name || ref.users.email}</div>
                   <div className="text-text-secondary text-sm">
-                    Completed {new Date(ref.completed_at).toLocaleDateString()}
+                    Completed {formatDate(ref.completed_at)}
                   </div>
                 </div>
                 <Badge variant="success">Completed</Badge>
@@ -187,7 +198,7 @@ export default function ReferralDashboard({ referralData, stats }: ReferralDashb
                   <div className="text-text-secondary text-sm">
                     {ref.status === 'signed_up' ? 'Signed up' : 'Link clicked'}
                     {' '}
-                    {new Date(ref.signed_up_at || ref.created_at).toLocaleDateString()}
+                    {formatDate(ref.signed_up_at || ref.created_at)}
                   </div>
                 </div>
                 <Badge variant="warning">Pending</Badge>

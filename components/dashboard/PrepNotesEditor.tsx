@@ -27,18 +27,16 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const { showToast } = useToast();
 
-  // Fetch AI-generated prep note on mount
+  // Fetch AI-generated prep note on mount + subscribe to realtime changes
   useEffect(() => {
-    // Reset state when meetingId changes
     setIsLoading(true);
     setAiPrepNote(null);
     setMeetingStatus('pending');
 
+    const supabase = createClient();
+
     async function fetchPrepNote() {
       try {
-        const supabase = createClient();
-
-        // Fetch meeting status
         const { data: meeting } = await supabase
           .from('meetings')
           .select('status')
@@ -47,9 +45,11 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
 
         if (meeting) {
           setMeetingStatus(meeting.status);
+          if (meeting.status === 'researching') {
+            setIsGenerating(true);
+          }
         }
 
-        // Fetch prep note if available
         const { data: prepNote } = await supabase
           .from('prep_notes')
           .select('content')
@@ -67,7 +67,42 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
     }
 
     fetchPrepNote();
-  }, [meetingId]);
+
+    // Subscribe to meeting status changes so we know when research completes
+    const channel = supabase
+      .channel(`meeting-status-${meetingId}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'meetings',
+        filter: `id=eq.${meetingId}`,
+      }, async (payload) => {
+        const newStatus = payload.new.status;
+        setMeetingStatus(newStatus);
+
+        if (newStatus === 'ready') {
+          setIsGenerating(false);
+          // Fetch the newly created prep note
+          const { data: prepNote } = await supabase
+            .from('prep_notes')
+            .select('content')
+            .eq('meeting_id', meetingId)
+            .maybeSingle();
+
+          if (prepNote?.content) {
+            setAiPrepNote(prepNote.content as PrepNote);
+            showToast('Prep note generated successfully!', 'success');
+          }
+        } else if (newStatus === 'researching') {
+          setIsGenerating(true);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [meetingId, showToast]);
 
   const handleChange = (value: string) => {
     setNotes(value);
@@ -257,7 +292,6 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
   const handleGeneratePrepNote = async () => {
     setIsGenerating(true);
     try {
-      // Call frontend API route which proxies to backend
       const response = await fetch('/api/research', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -265,44 +299,28 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
       });
 
       if (!response.ok) {
-        // Parse error response for user-friendly message
         const errorData = await response.json().catch(() => ({}));
 
         if (response.status === 403) {
-          // Credit-related error
           const message = errorData.message ||
                          errorData.error ||
                          'Insufficient credits. Please upgrade your plan.';
           showToast(message, 'error');
-          throw new Error(message);
+          setIsGenerating(false);
+          return;
         }
 
         throw new Error(errorData.error || 'Failed to generate prep note');
       }
 
-      const result = await response.json();
-
-      // Refresh prep note
-      const supabase = createClient();
-      const { data: prepNote, error: fetchError } = await supabase
-        .from('prep_notes')
-        .select('content')
-        .eq('meeting_id', meetingId)
-        .maybeSingle();
-
-      if (prepNote?.content) {
-        setAiPrepNote(prepNote.content as PrepNote);
-        setMeetingStatus('ready');
-      }
-
-      showToast('Prep note generated successfully!', 'success');
+      // Success — realtime subscription will handle the UI update when status changes to 'ready'
     } catch (error) {
-      // Don't show toast again if we already showed it for 403
+      // If fetch itself fails (timeout/network), research may still be running on backend.
+      // The realtime subscription will pick up the status change, so just inform the user.
       if (error instanceof Error && !error.message.includes('credits')) {
-        showToast('Failed to generate prep note. Please try again.', 'error');
+        showToast('Research is running in the background. You\'ll be notified when it\'s ready.', 'info');
       }
-    } finally {
-      setIsGenerating(false);
+      // Keep isGenerating true — the realtime sub will reset it when status changes
     }
   };
 
@@ -324,15 +342,24 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
            'Pending Research'}
         </Badge>
 
-        {!aiPrepNote && meetingStatus !== 'researching' && (
-          <Button
-            variant="primary"
-            onClick={handleGeneratePrepNote}
-            disabled={isGenerating}
-            className="text-sm"
-          >
-            {isGenerating ? 'Generating...' : 'Generate Prep Note'}
-          </Button>
+        {!aiPrepNote && (
+          isGenerating || meetingStatus === 'researching' ? (
+            <span className="text-sm text-text/60 flex items-center gap-2">
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Generating prep notes in background...
+            </span>
+          ) : (
+            <Button
+              variant="primary"
+              onClick={handleGeneratePrepNote}
+              className="text-sm"
+            >
+              Generate Prep Note
+            </Button>
+          )
         )}
       </div>
 

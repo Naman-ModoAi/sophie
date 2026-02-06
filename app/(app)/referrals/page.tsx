@@ -83,7 +83,11 @@ export default async function ReferralsPage() {
 
   const stats = {
     pending_referrals: pendingResult.data || [],
-    completed_referrals: completedResult.data || [],
+    completed_referrals: (completedResult.data || []).map((ref: any) => ({
+      id: ref.id,
+      completed_at: ref.completed_at,
+      users: Array.isArray(ref.users) && ref.users.length > 0 ? ref.users[0] : ref.users,
+    })),
     credits_breakdown: creditsResult.data || [],
     next_milestone: isPro
       ? { target: 5, current: totalCompleted % 5, reward: '1 free month' }

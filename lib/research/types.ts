@@ -93,4 +93,8 @@ export interface AttendeeRecord {
   name?: string;
   domain: string;
   is_internal: boolean;
+  company_id?: string;
+  name_manually_edited?: boolean;
+  company_manually_edited?: boolean;
+  companies?: { name: string; domain: string } | null;
 }
