@@ -1,5 +1,5 @@
 -- ============================================================================
--- SophiHQ - Subscription System
+-- Sophie - Subscription System
 -- Migration: 03_subscriptions
 -- Description: Plans, subscriptions, transactions, and referral system
 -- ============================================================================

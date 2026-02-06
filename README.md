@@ -1,6 +1,6 @@
-# SophiHQ - Frontend
+# Sophie - Frontend
 
-Next.js 14 frontend for SophiHQ with Google OAuth authentication and calendar integration.
+Next.js 14 frontend for Sophie with Google OAuth authentication and calendar integration.
 
 ## Setup
 

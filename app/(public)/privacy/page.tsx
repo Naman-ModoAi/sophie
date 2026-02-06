@@ -2,8 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - SophiHQ',
-  description: 'Privacy Policy for SophiHQ - Learn how we collect, use, and protect your personal information.',
+  title: 'Privacy Policy - Sophie',
+  description: 'Privacy Policy for Sophie - Learn how we collect, use, and protect your personal information.',
 }
 
 export default function PrivacyPolicy() {
@@ -13,7 +13,7 @@ export default function PrivacyPolicy() {
       <header className="bg-surface border-b border-text/10">
         <div className="max-w-4xl mx-auto px-6 py-6">
           <Link href="/" className="text-xl font-bold text-text hover:text-accent transition-colors">
-            SophiHQ
+            Sophie
           </Link>
         </div>
       </header>
@@ -28,10 +28,10 @@ export default function PrivacyPolicy() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">1. Introduction</h2>
             <p className="text-text/80 mb-4">
-              At SophiHQ, we respect your privacy and are committed to protecting the personal information that you share with us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our meeting preparation service.
+              At Sophie, we respect your privacy and are committed to protecting the personal information that you share with us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our meeting preparation service.
             </p>
             <p className="text-text/80">
-              By accessing or using SophiHQ, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy. If you do not agree with the terms of this Privacy Policy, please do not access or use our services.
+              By accessing or using Sophie, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy. If you do not agree with the terms of this Privacy Policy, please do not access or use our services.
             </p>
           </section>
 
@@ -40,7 +40,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-semibold text-text mb-4">2. Information We Collect</h2>
 
             <h3 className="text-xl font-semibold text-text mb-3">2.1 Information You Provide</h3>
-            <p className="text-text/80 mb-4">When you use SophiHQ, we collect information that you provide directly to us, including:</p>
+            <p className="text-text/80 mb-4">When you use Sophie, we collect information that you provide directly to us, including:</p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Account information (name, email address, profile photo) through Google OAuth authentication</li>
               <li>Google Calendar data including meeting details, attendee information, and scheduling data</li>
@@ -50,7 +50,7 @@ export default function PrivacyPolicy() {
             </ul>
 
             <h3 className="text-xl font-semibold text-text mb-3">2.2 Information Collected Automatically</h3>
-            <p className="text-text/80 mb-4">When you access and use SophiHQ, we automatically collect certain information, including:</p>
+            <p className="text-text/80 mb-4">When you access and use Sophie, we automatically collect certain information, including:</p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Usage data: pages visited, features used, time spent on the platform, and interaction patterns</li>
               <li>Device information: IP address, browser type and version, operating system, device identifiers</li>
@@ -73,7 +73,7 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-semibold text-text mb-4">3. How We Use Your Information</h2>
             <p className="text-text/80 mb-4">We use the information we collect for the following purposes:</p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
-              <li><strong>Service Delivery:</strong> To provide, operate, and maintain SophiHQ's meeting preparation features</li>
+              <li><strong>Service Delivery:</strong> To provide, operate, and maintain Sophie's meeting preparation features</li>
               <li><strong>AI Research:</strong> To research meeting attendees and companies and generate personalized meeting briefs</li>
               <li><strong>Email Delivery:</strong> To send you automated meeting preparation notes before your scheduled calls</li>
               <li><strong>Account Management:</strong> To manage your account, subscription, and credit balance</li>
@@ -105,7 +105,7 @@ export default function PrivacyPolicy() {
 
             <h3 className="text-xl font-semibold text-text mb-3">4.2 Business Transfers</h3>
             <p className="text-text/80 mb-4">
-              If SophiHQ is involved in a merger, acquisition, asset sale, or bankruptcy, your information may be transferred as part of that transaction. We will notify you of any such change in ownership or control of your personal information.
+              If Sophie is involved in a merger, acquisition, asset sale, or bankruptcy, your information may be transferred as part of that transaction. We will notify you of any such change in ownership or control of your personal information.
             </p>
 
             <h3 className="text-xl font-semibold text-text mb-3">4.3 Legal Requirements</h3>
@@ -113,7 +113,7 @@ export default function PrivacyPolicy() {
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Comply with legal processes, court orders, or government requests</li>
               <li>Enforce our Terms of Service and other agreements</li>
-              <li>Protect the rights, property, or safety of SophiHQ, our users, or others</li>
+              <li>Protect the rights, property, or safety of Sophie, our users, or others</li>
               <li>Investigate and prevent fraud, security issues, or technical problems</li>
             </ul>
 
@@ -180,7 +180,7 @@ export default function PrivacyPolicy() {
 
             <h3 className="text-xl font-semibold text-text mb-3">7.1 Google Calendar Access</h3>
             <p className="text-text/80 mb-4">
-              You can revoke SophiHQ's access to your Google Calendar at any time through your Google Account settings at <a href="https://myaccount.google.com/permissions" className="text-accent hover:underline">myaccount.google.com/permissions</a>. Note that revoking access will prevent SophiHQ from syncing your calendar and providing meeting preparation services.
+              You can revoke Sophie's access to your Google Calendar at any time through your Google Account settings at <a href="https://myaccount.google.com/permissions" className="text-accent hover:underline">myaccount.google.com/permissions</a>. Note that revoking access will prevent Sophie from syncing your calendar and providing meeting preparation services.
             </p>
 
             <h3 className="text-xl font-semibold text-text mb-3">7.2 Email Preferences</h3>
@@ -193,7 +193,7 @@ export default function PrivacyPolicy() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">8. Cookies and Tracking Technologies</h2>
             <p className="text-text/80 mb-4">
-              SophiHQ uses cookies and similar tracking technologies to enhance your experience, maintain your session, and analyze usage patterns. The types of cookies we use include:
+              Sophie uses cookies and similar tracking technologies to enhance your experience, maintain your session, and analyze usage patterns. The types of cookies we use include:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li><strong>Essential Cookies:</strong> Required for authentication, security, and basic functionality</li>
@@ -201,7 +201,7 @@ export default function PrivacyPolicy() {
               <li><strong>Functional Cookies:</strong> Remember your preferences and settings</li>
             </ul>
             <p className="text-text/80 mb-4">
-              You can control cookies through your browser settings. However, disabling certain cookies may limit your ability to use some features of SophiHQ.
+              You can control cookies through your browser settings. However, disabling certain cookies may limit your ability to use some features of Sophie.
             </p>
           </section>
 
@@ -209,7 +209,7 @@ export default function PrivacyPolicy() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">9. Third-Party Links and Services</h2>
             <p className="text-text/80 mb-4">
-              Our service may contain links to third-party websites, services, or applications that are not owned or controlled by SophiHQ. This Privacy Policy does not apply to these third-party services. We encourage you to review the privacy policies of any third-party services before providing them with your personal information.
+              Our service may contain links to third-party websites, services, or applications that are not owned or controlled by Sophie. This Privacy Policy does not apply to these third-party services. We encourage you to review the privacy policies of any third-party services before providing them with your personal information.
             </p>
             <p className="text-text/80 mb-4">
               In particular, we integrate with:
@@ -224,7 +224,7 @@ export default function PrivacyPolicy() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">10. Children's Privacy</h2>
             <p className="text-text/80 mb-4">
-              SophiHQ is not intended for use by individuals under the age of 18. We do not knowingly collect personal information from children under 18. If you become aware that a child has provided us with personal information, please contact us immediately. If we discover that we have collected personal information from a child under 18, we will take steps to delete such information promptly.
+              Sophie is not intended for use by individuals under the age of 18. We do not knowingly collect personal information from children under 18. If you become aware that a child has provided us with personal information, please contact us immediately. If we discover that we have collected personal information from a child under 18, we will take steps to delete such information promptly.
             </p>
           </section>
 
@@ -232,10 +232,10 @@ export default function PrivacyPolicy() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">11. International Data Transfers</h2>
             <p className="text-text/80 mb-4">
-              SophiHQ is based in the United States, and your information may be transferred to, stored, and processed in the United States and other countries where our service providers operate. These countries may have data protection laws that differ from those in your country of residence.
+              Sophie is based in the United States, and your information may be transferred to, stored, and processed in the United States and other countries where our service providers operate. These countries may have data protection laws that differ from those in your country of residence.
             </p>
             <p className="text-text/80 mb-4">
-              By using SophiHQ, you consent to the transfer of your information to the United States and other countries. We implement appropriate safeguards to protect your personal information in accordance with this Privacy Policy, regardless of where it is processed.
+              By using Sophie, you consent to the transfer of your information to the United States and other countries. We implement appropriate safeguards to protect your personal information in accordance with this Privacy Policy, regardless of where it is processed.
             </p>
           </section>
 
@@ -249,7 +249,7 @@ export default function PrivacyPolicy() {
               If we make material changes to this Privacy Policy, we will notify you by email or through a prominent notice on our service prior to the changes taking effect. We encourage you to review this Privacy Policy periodically to stay informed about how we collect, use, and protect your information.
             </p>
             <p className="text-text/80 mb-4">
-              Your continued use of SophiHQ after any changes to this Privacy Policy constitutes your acceptance of the updated policy.
+              Your continued use of Sophie after any changes to this Privacy Policy constitutes your acceptance of the updated policy.
             </p>
           </section>
 
@@ -312,7 +312,7 @@ export default function PrivacyPolicy() {
       <footer className="bg-surface border-t border-text/10 mt-12">
         <div className="max-w-4xl mx-auto px-6 py-6">
           <p className="text-sm text-text/60 text-center">
-            © {new Date().getFullYear()} SophiHQ. All rights reserved.
+            © {new Date().getFullYear()} Sophie. All rights reserved.
           </p>
         </div>
       </footer>

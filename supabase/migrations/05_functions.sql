@@ -1,5 +1,5 @@
 -- ============================================================================
--- SophiHQ - Database Functions
+-- Sophie - Database Functions
 -- Migration: 05_functions
 -- Description: Credit management, token tracking, and referral functions
 -- ============================================================================

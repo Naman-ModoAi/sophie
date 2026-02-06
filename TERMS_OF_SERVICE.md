@@ -6,17 +6,17 @@
 
 ## 1. Acceptance of Terms
 
-Welcome to SophiHQ. By accessing or using our service, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use SophiHQ.
+Welcome to Sophie. By accessing or using our service, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use Sophie.
 
-These Terms constitute a legally binding agreement between you and SophiHQ. Your use of the service, including any features, content, or functionality, signifies your acceptance of these Terms and our Privacy Policy, which is incorporated herein by reference.
+These Terms constitute a legally binding agreement between you and Sophie. Your use of the service, including any features, content, or functionality, signifies your acceptance of these Terms and our Privacy Policy, which is incorporated herein by reference.
 
-We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting. Your continued use of SophiHQ after changes are posted constitutes your acceptance of the modified Terms.
+We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting. Your continued use of Sophie after changes are posted constitutes your acceptance of the modified Terms.
 
 ---
 
 ## 2. Service Description
 
-SophiHQ is a meeting preparation service that integrates with Google Calendar to automatically research meeting attendees and generate personalized preparation notes. Our service includes:
+Sophie is a meeting preparation service that integrates with Google Calendar to automatically research meeting attendees and generate personalized preparation notes. Our service includes:
 
 - Automatic synchronization with your Google Calendar
 - AI-powered research on external meeting attendees and their companies
@@ -25,7 +25,7 @@ SophiHQ is a meeting preparation service that integrates with Google Calendar to
 - Credit-based usage system for managing research capacity
 - Subscription management and billing through Stripe
 
-SophiHQ uses artificial intelligence (Google Gemini AI) to research publicly available information and generate meeting briefs. The quality and accuracy of research may vary based on the availability of public information about meeting attendees.
+Sophie uses artificial intelligence (Google Gemini AI) to research publicly available information and generate meeting briefs. The quality and accuracy of research may vary based on the availability of public information about meeting attendees.
 
 We reserve the right to modify, suspend, or discontinue any aspect of the service at any time, with or without notice, for any reason.
 
@@ -35,7 +35,7 @@ We reserve the right to modify, suspend, or discontinue any aspect of the servic
 
 ### 3.1 Account Creation
 
-To use SophiHQ, you must create an account by authenticating with your Google account using Google OAuth. By creating an account, you represent and warrant that:
+To use Sophie, you must create an account by authenticating with your Google account using Google OAuth. By creating an account, you represent and warrant that:
 
 - You are at least 18 years of age
 - All information you provide is accurate, current, and complete
@@ -61,7 +61,7 @@ We reserve the right to suspend or terminate your account at any time, with or w
 
 ### 4.1 Credit System
 
-SophiHQ operates on a credit-based system where 1 credit equals $0.01 USD. Credits are consumed when researching meeting attendees, with costs based on actual API usage including:
+Sophie operates on a credit-based system where 1 credit equals $0.01 USD. Credits are consumed when researching meeting attendees, with costs based on actual API usage including:
 
 - AI model token usage (input, output, cached, and thinking tokens)
 - Search query costs (Gemini 3.x) or grounding costs (Gemini 2.x)
@@ -69,7 +69,7 @@ SophiHQ operates on a credit-based system where 1 credit equals $0.01 USD. Credi
 
 ### 4.2 Subscription Plans
 
-SophiHQ offers two subscription tiers:
+Sophie offers two subscription tiers:
 
 - **Free Plan:** 10 credits per month with no credit rollover. Sufficient for approximately 5-10 meeting attendees researched per month.
 - **Pro Plan:** 1,000 credits per month with credit rollover enabled. Sufficient for approximately 500-1,000 meeting attendees researched per month. Billed monthly via Stripe.
@@ -116,11 +116,11 @@ You may upgrade or downgrade your subscription plan at any time. Upgrades take e
 
 ### 6.1 Calendar Data
 
-By granting SophiHQ access to your Google Calendar, you authorize us to access, process, and store your calendar data, including meeting titles, descriptions, attendee lists, and scheduling information, solely for the purpose of providing our services.
+By granting Sophie access to your Google Calendar, you authorize us to access, process, and store your calendar data, including meeting titles, descriptions, attendee lists, and scheduling information, solely for the purpose of providing our services.
 
 ### 6.2 Licenses Granted to Us
 
-You grant SophiHQ a non-exclusive, worldwide, royalty-free license to access, use, process, and store your calendar data and related information for the following purposes:
+You grant Sophie a non-exclusive, worldwide, royalty-free license to access, use, process, and store your calendar data and related information for the following purposes:
 
 - Providing and improving our meeting preparation services
 - Generating AI-powered research and meeting briefs
@@ -134,13 +134,13 @@ You retain all ownership rights to your calendar data. We do not claim ownership
 
 ### 6.4 Third-Party Data
 
-SophiHQ researches publicly available information about meeting attendees and their companies. By using our service, you acknowledge that this research may include information obtained from third-party sources and that we are not responsible for the accuracy, completeness, or legality of such information.
+Sophie researches publicly available information about meeting attendees and their companies. By using our service, you acknowledge that this research may include information obtained from third-party sources and that we are not responsible for the accuracy, completeness, or legality of such information.
 
 ---
 
 ## 7. Prohibited Use
 
-You agree not to use SophiHQ for any unlawful or prohibited purpose. Specifically, you agree not to:
+You agree not to use Sophie for any unlawful or prohibited purpose. Specifically, you agree not to:
 
 - Violate any applicable laws, regulations, or third-party rights
 - Use the service to harass, stalk, or harm others
@@ -161,7 +161,7 @@ Violation of these restrictions may result in immediate termination of your acco
 
 ## 8. Third-Party Services
 
-SophiHQ integrates with and relies on third-party services to provide our functionality:
+Sophie integrates with and relies on third-party services to provide our functionality:
 
 - **Google Calendar API:** For calendar synchronization and meeting data access
 - **Google OAuth:** For authentication and authorization
@@ -171,7 +171,7 @@ SophiHQ integrates with and relies on third-party services to provide our functi
 
 Your use of these third-party services is subject to their respective terms of service and privacy policies. We are not responsible for the availability, functionality, or actions of these third-party services. Any disputes with third-party services should be resolved directly with the provider.
 
-If a third-party service becomes unavailable or changes its terms in a way that affects SophiHQ, we may need to modify or discontinue features that rely on that service.
+If a third-party service becomes unavailable or changes its terms in a way that affects Sophie, we may need to modify or discontinue features that rely on that service.
 
 ---
 
@@ -179,11 +179,11 @@ If a third-party service becomes unavailable or changes its terms in a way that 
 
 ### 9.1 Our Ownership
 
-SophiHQ and all of its original content, features, functionality, design, software, trademarks, logos, and branding are owned by SophiHQ and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property laws.
+Sophie and all of its original content, features, functionality, design, software, trademarks, logos, and branding are owned by Sophie and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property laws.
 
 ### 9.2 Limited License
 
-We grant you a limited, non-exclusive, non-transferable, revocable license to access and use SophiHQ for your personal or internal business use, subject to these Terms. This license does not include any right to:
+We grant you a limited, non-exclusive, non-transferable, revocable license to access and use Sophie for your personal or internal business use, subject to these Terms. This license does not include any right to:
 
 - Modify, copy, or create derivative works of the service
 - Reverse engineer or attempt to extract source code
@@ -192,7 +192,7 @@ We grant you a limited, non-exclusive, non-transferable, revocable license to ac
 
 ### 9.3 Feedback
 
-If you provide feedback, suggestions, or ideas about SophiHQ, you grant us an unrestricted, perpetual, royalty-free right to use, modify, and incorporate such feedback into our service without compensation or attribution to you.
+If you provide feedback, suggestions, or ideas about Sophie, you grant us an unrestricted, perpetual, royalty-free right to use, modify, and incorporate such feedback into our service without compensation or attribution to you.
 
 ---
 
@@ -209,7 +209,7 @@ YOU ACKNOWLEDGE THAT:
 
 - AI-generated research may contain inaccuracies or outdated information
 - You are responsible for verifying information before relying on it
-- Third-party service outages may affect SophiHQ's availability
+- Third-party service outages may affect Sophie's availability
 - We do not guarantee specific results from using the service
 
 YOUR USE OF MEETREADY IS AT YOUR SOLE RISK. NO ADVICE OR INFORMATION OBTAINED FROM US OR THROUGH THE SERVICE WILL CREATE ANY WARRANTY NOT EXPRESSLY STATED IN THESE TERMS.
@@ -238,7 +238,7 @@ SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OR LIMITATION OF CERTAIN DAMAGES. 
 
 ## 12. Indemnification
 
-You agree to indemnify, defend, and hold harmless SophiHQ and its officers, directors, employees, agents, affiliates, successors, and assigns from and against any and all losses, damages, liabilities, deficiencies, claims, actions, judgments, settlements, interest, awards, penalties, fines, costs, or expenses (including reasonable attorneys' fees) arising from or relating to:
+You agree to indemnify, defend, and hold harmless Sophie and its officers, directors, employees, agents, affiliates, successors, and assigns from and against any and all losses, damages, liabilities, deficiencies, claims, actions, judgments, settlements, interest, awards, penalties, fines, costs, or expenses (including reasonable attorneys' fees) arising from or relating to:
 
 - Your use or misuse of the service
 - Your violation of these Terms
@@ -258,12 +258,12 @@ We reserve the right to assume exclusive defense and control of any matter subje
 You may terminate your account at any time by:
 
 - Canceling your subscription through account settings or Stripe Customer Portal
-- Revoking SophiHQ's access to your Google Calendar through Google Account settings
+- Revoking Sophie's access to your Google Calendar through Google Account settings
 - Contacting us to request account deletion
 
 ### 13.2 Termination by Us
 
-We reserve the right to suspend or terminate your access to SophiHQ at any time, with or without cause, with or without notice, effective immediately. Reasons for termination may include, but are not limited to:
+We reserve the right to suspend or terminate your access to Sophie at any time, with or without cause, with or without notice, effective immediately. Reasons for termination may include, but are not limited to:
 
 - Violation of these Terms
 - Fraudulent, abusive, or illegal activity
@@ -301,7 +301,7 @@ Material changes may include modifications to:
 - Data usage or privacy practices
 - Liability limitations or dispute resolution procedures
 
-Your continued use of SophiHQ after changes take effect constitutes your acceptance of the modified Terms. If you do not agree with the changes, you must cancel your account and stop using the service before the changes take effect.
+Your continued use of Sophie after changes take effect constitutes your acceptance of the modified Terms. If you do not agree with the changes, you must cancel your account and stop using the service before the changes take effect.
 
 ---
 
@@ -346,7 +346,7 @@ We will make every effort to respond to your inquiry within 5 business days.
 
 ### 17.1 Entire Agreement
 
-These Terms, together with our Privacy Policy, constitute the entire agreement between you and SophiHQ regarding your use of the service and supersede all prior agreements and understandings, whether written or oral.
+These Terms, together with our Privacy Policy, constitute the entire agreement between you and Sophie regarding your use of the service and supersede all prior agreements and understandings, whether written or oral.
 
 ### 17.2 Severability
 
@@ -366,8 +366,8 @@ We shall not be liable for any failure to perform our obligations under these Te
 
 ### 17.6 Relationship of Parties
 
-No agency, partnership, joint venture, or employment relationship is created between you and SophiHQ as a result of these Terms or your use of the service.
+No agency, partnership, joint venture, or employment relationship is created between you and Sophie as a result of these Terms or your use of the service.
 
 ---
 
-© 2026 SophiHQ. All rights reserved.
+© 2026 Sophie. All rights reserved.

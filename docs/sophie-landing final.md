@@ -1,4 +1,4 @@
-SophiHQ
+Sophie
 
 * [How it works](#bookmark=id.5k8guhen59y0)  
 * [Pricing](#bookmark=id.g7bl9itjn7ac)  
@@ -24,7 +24,7 @@ Built for
 
 ⚖️ Advisors, lawyers & recruiters in high-stakes meetings
 
-*If your work depends on conversations, SophiHQ is for you.*
+*If your work depends on conversations, Sophie is for you.*
 
 The problem
 
@@ -52,7 +52,7 @@ Who you're meeting
 What they care about
 
 What to focus on in this conversation  
-*SophiHQ fills that gap — automatically.*
+*Sophie fills that gap — automatically.*
 
 How it works
 
@@ -66,7 +66,7 @@ Securely connect your Google Calendar in seconds.
 
 2
 
-### **SophiHQ does the homework**
+### **Sophie does the homework**
 
 We pull together context on the company, attendees, and situation around each meeting.
 
@@ -117,7 +117,7 @@ Jake R.
 
 Account Executive
 
-*Clients keep saying "you really did your homework." I didn't — SophiHQ did.*
+*Clients keep saying "you really did your homework." I didn't — Sophie did.*
 
 SP
 
@@ -133,7 +133,7 @@ Michael K.
 
 Founder & CEO
 
-Why SophiHQ
+Why Sophie
 
 ## **Stop winging it.**
 
@@ -152,7 +152,7 @@ Plans & Pricing
 
 Free
 
-Perfect to try SophiHQ and build the habit.
+Perfect to try Sophie and build the habit.
 
 $0
 
@@ -211,7 +211,7 @@ Be call ready — every time.
 [Connect Google Calendar — Free](#bookmark=id.t8m18gbiza24)  
 No credit card required
 
-SophiHQ
+Sophie
 
 *Before every call.*
 
@@ -234,4 +234,4 @@ Legal
 
 ---
 
-© 2025 SophiHQ. All rights reserved.
+© 2025 Sophie. All rights reserved.

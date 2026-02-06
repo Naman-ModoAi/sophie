@@ -1,5 +1,5 @@
 -- ============================================================================
--- SophiHQ - Seed Data
+-- Sophie - Seed Data
 -- Migration: 07_seed_data
 -- Description: Insert initial plan data and generate referral codes
 -- ============================================================================

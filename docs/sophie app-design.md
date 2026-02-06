@@ -1,4 +1,4 @@
-## SophiHQ — Design System
+## Sophie — Design System
 
 **For Next.js (Tailwind CSS \+ TypeScript) | v1.0 — Feb 2026**
 

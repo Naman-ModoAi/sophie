@@ -2,12 +2,12 @@
 
 ## Overview
 
-Transform the current basic landing page into a comprehensive marketing site that follows the content from "SophiHQ-landing final.md" document. The landing page should effectively communicate SophiHQ's value proposition, showcase features, display pricing, and include social proof.
+Transform the current basic landing page into a comprehensive marketing site that follows the content from "Sophie-landing final.md" document. The landing page should effectively communicate Sophie's value proposition, showcase features, display pricing, and include social proof.
 
 ## Business Goals
 
 - Convert visitors into free trial signups via Google Calendar OAuth
-- Clearly communicate the problem SophiHQ solves
+- Clearly communicate the problem Sophie solves
 - Display pricing transparently (Free and Pro plans)
 - Build trust through testimonials and security messaging
 - Provide clear calls-to-action throughout the page
@@ -20,7 +20,7 @@ Transform the current basic landing page into a comprehensive marketing site tha
 
 ## User Stories
 
-1. **As a visitor**, I want to quickly understand what SophiHQ does so I can decide if it's relevant for me
+1. **As a visitor**, I want to quickly understand what Sophie does so I can decide if it's relevant for me
 2. **As a potential customer**, I want to see how the product works so I can understand the workflow
 3. **As a price-conscious user**, I want to see transparent pricing so I can make an informed decision
 4. **As a security-conscious professional**, I want to know my data is safe before connecting my calendar
@@ -29,7 +29,7 @@ Transform the current basic landing page into a comprehensive marketing site tha
 ## Functional Requirements
 
 ### Navigation Bar
-- Brand name/logo: "SophiHQ" with tagline "Before every call"
+- Brand name/logo: "Sophie" with tagline "Before every call"
 - Navigation links: How it works, Pricing, Contact
 - Primary CTA: "Connect Google Calendar — Free"
 - Should be sticky/fixed on scroll (optional enhancement)
@@ -55,7 +55,7 @@ Transform the current basic landing page into a comprehensive marketing site tha
 - **Headline**: "Simple. Automatic. Ready."
 - 3-step process:
   1. **Connect your calendar**: Securely connect Google Calendar in seconds
-  2. **SophiHQ does the homework**: We pull together context on the company, attendees, and situation
+  2. **Sophie does the homework**: We pull together context on the company, attendees, and situation
   3. **You show up ready**: A short, skimmable brief — before every call
 - Each step should have an icon/number indicator
 - Optional: Add illustration or screenshot for each step
@@ -81,10 +81,10 @@ Transform the current basic landing page into a comprehensive marketing site tha
 - **Context line**: "Used by sales reps, consultants, and advisors who spend their day in back-to-back meetings. Early access users onboarding now."
 - 3 testimonials with initials, name, and role:
   1. Jake R. (Account Executive): "Saved me 20–30 minutes before every call. I used to have 6 tabs open — now I just check my brief."
-  2. Sarah P. (Management Consultant): "Clients keep saying 'you really did your homework.' I didn't — SophiHQ did."
+  2. Sarah P. (Management Consultant): "Clients keep saying 'you really did your homework.' I didn't — Sophie did."
   3. Michael K. (Founder & CEO): "Game changer for back-to-back days. I walk into every meeting knowing exactly what to focus on."
 
-### Why SophiHQ Section
+### Why Sophie Section
 - **Headline**: "Stop winging it."
 - 3 key benefits:
   - **No manual prep**: Your briefs are ready before you are
@@ -137,11 +137,11 @@ Transform the current basic landing page into a comprehensive marketing site tha
 - **Trust indicator**: "No credit card required"
 
 ### Footer
-- Brand name: "SophiHQ" with tagline
+- Brand name: "Sophie" with tagline
 - Navigation sections:
   - **Product**: How it works, Pricing, Contact
   - **Legal**: Terms of Service, Privacy Policy
-- Copyright: "© 2025 SophiHQ. All rights reserved."
+- Copyright: "© 2025 Sophie. All rights reserved."
 
 ## Non-Functional Requirements
 
@@ -201,6 +201,6 @@ Transform the current basic landing page into a comprehensive marketing site tha
 
 ## References
 
-- Content source: `docs/SophiHQ-landing final.md`
+- Content source: `docs/Sophie-landing final.md`
 - Current implementation: `app/(public)/page.tsx`
 - Design system: `CLAUDE.md` (Design System section)

@@ -1,4 +1,4 @@
-# SophiHQ Frontend - Cloud Run Deployment Guide
+# Sophie Frontend - Cloud Run Deployment Guide
 
 This guide covers deploying the Next.js frontend to Google Cloud Run.
 
@@ -256,7 +256,7 @@ gcloud compute backend-buckets create meetready-cdn \
 ```bash
 # Create uptime check
 gcloud monitoring uptime-checks create https://your-service-url.run.app \
-  --display-name="SophiHQ Frontend Uptime"
+  --display-name="Sophie Frontend Uptime"
 
 # Create alert policy
 # (Use Google Cloud Console for detailed configuration)
@@ -390,7 +390,7 @@ gcloud run services delete $SERVICE_NAME --region $REGION
 For issues specific to:
 - **Cloud Run**: https://cloud.google.com/run/docs
 - **Next.js Deployment**: https://nextjs.org/docs/deployment
-- **SophiHQ App**: Check CLAUDE.md and internal documentation
+- **Sophie App**: Check CLAUDE.md and internal documentation
 
 ---
 

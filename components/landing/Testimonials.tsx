@@ -7,7 +7,7 @@ export function Testimonials() {
       role: "Account Executive",
     },
     {
-      quote: "Clients keep saying 'you really did your homework.' I didn't — SophiHQ did.",
+      quote: "Clients keep saying 'you really did your homework.' I didn't — Sophie did.",
       initials: "SP",
       name: "Sarah P.",
       role: "Management Consultant",

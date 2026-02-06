@@ -1,5 +1,5 @@
 -- ============================================================================
--- SophiHQ - Add Missing Token Columns
+-- Sophie - Add Missing Token Columns
 -- Migration: 14_add_missing_token_columns
 -- Description: Add tool_use_prompt_tokens and thoughts_tokens if they don't exist
 -- ============================================================================

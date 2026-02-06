@@ -11,7 +11,7 @@ export function Navigation({ className = '' }: NavigationProps) {
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
           <div className="flex flex-col">
-            <div className="text-xl font-bold text-text-primary">SophiHQ</div>
+            <div className="text-xl font-bold text-text-primary">Sophie</div>
             <div className="text-xs text-text-muted">Before every call</div>
           </div>
 

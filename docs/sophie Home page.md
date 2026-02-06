@@ -1,10 +1,10 @@
-# SophiHQ Home page
+# Sophie Home page
 
 Complete Homepage Copy (ready to ship)
 
 HERO SECTION
 
-Never walk into a meeting unprepared. SophiHQ creates instant meeting briefs from your calendar — automatically.
+Never walk into a meeting unprepared. Sophie creates instant meeting briefs from your calendar — automatically.
 
 Before every call.
 
@@ -28,7 +28,7 @@ Important meetings deserve better preparation.
 
 HOW IT WORKS
 
-1. Connect your calendar SophiHQ securely reads your upcoming meetings.  
+1. Connect your calendar Sophie securely reads your upcoming meetings.  
      
 2. We prepare the brief We gather context on companies, attendees, and priorities.  
      
@@ -46,7 +46,7 @@ All in one clean, skimmable view.
 
 WHO IT’S FOR •	Sales reps & founders •	Consultants & partners •	Lawyers, advisors, recruiters
 
-If your work depends on conversations, SophiHQ is for you.
+If your work depends on conversations, Sophie is for you.
 
 ⸻
 

@@ -1,6 +1,6 @@
 # Changelog - Frontend
 
-All notable changes to the SophiHQ frontend will be documented in this file.
+All notable changes to the Sophie frontend will be documented in this file.
 
 ---
 
@@ -11,7 +11,7 @@ All notable changes to the SophiHQ frontend will be documented in this file.
 #### Added
 
 - **Comprehensive Landing Page** (`app/(public)/page.tsx`)
-  - Complete marketing site following SophiHQ branding and messaging
+  - Complete marketing site following Sophie branding and messaging
   - 11 modular section components for easy maintenance and reusability
   - Full mobile-responsive design with mobile-first approach
   - SEO optimized with proper metadata and semantic HTML
@@ -38,7 +38,7 @@ All notable changes to the SophiHQ frontend will be documented in this file.
 
 - **HowItWorks.tsx** - 3-step process explanation
   - Step 1: Connect your calendar
-  - Step 2: SophiHQ does the homework
+  - Step 2: Sophie does the homework
   - Step 3: You show up ready
   - Numbered badges and icons for each step
   - Grid layout with hover effects
@@ -55,7 +55,7 @@ All notable changes to the SophiHQ frontend will be documented in this file.
   - Names and roles (Account Executive, Management Consultant, Founder & CEO)
   - Context line about early access users
 
-- **WhySophiHQ.tsx** - Key differentiators
+- **WhySophie.tsx** - Key differentiators
   - "Stop winging it" headline
   - 3 key benefits with icons
   - Focus on: No manual prep, No scattered tabs, No awkward moments
@@ -103,7 +103,7 @@ All notable changes to the SophiHQ frontend will be documented in this file.
 - TypeScript interfaces for all landing page data structures
 
 **Footer Enhancement** (`components/layout/Footer.tsx`):
-- Added SophiHQ branding with tagline
+- Added Sophie branding with tagline
 - Restructured into 3-column grid (Brand, Product, Legal)
 - Product section links (How it works, Pricing, Contact)
 - Legal section links (Terms, Privacy)
@@ -150,7 +150,7 @@ All notable changes to the SophiHQ frontend will be documented in this file.
 #### Impact
 
 - ✅ Complete marketing site ready for production
-- ✅ Professional presentation of SophiHQ value proposition
+- ✅ Professional presentation of Sophie value proposition
 - ✅ Clear conversion path from landing page to OAuth signup
 - ✅ Mobile-responsive design for all screen sizes
 - ✅ SEO-optimized for better discoverability
@@ -520,7 +520,7 @@ Dashboard Page (Server)
 
 - **Enhanced Landing Page** (`app/(public)/page.tsx`)
   - **Hero Section**
-    - Large, prominent headline (SophiHQ)
+    - Large, prominent headline (Sophie)
     - Improved typography hierarchy (4xl/5xl responsive heading)
     - Better spacing and padding
     - Centered layout with max-width constraint
@@ -774,7 +774,7 @@ Dashboard Page (Server)
 - **Font Loading** (`app/layout.tsx`)
   - Configured Geist Sans as single font family
   - Removed Geist Mono (spec requires single font family)
-  - Updated metadata with SophiHQ branding
+  - Updated metadata with Sophie branding
   - Applied font-sans class to body
 
 #### Changed

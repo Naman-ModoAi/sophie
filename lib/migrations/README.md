@@ -1,6 +1,6 @@
 # Database Migrations
 
-This directory contains all database schema and configuration migrations for SophiHQ.
+This directory contains all database schema and configuration migrations for Sophie.
 
 ## Migrations Overview
 

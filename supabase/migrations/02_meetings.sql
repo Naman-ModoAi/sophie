@@ -1,5 +1,5 @@
 -- ============================================================================
--- SophiHQ - Meetings and Attendees
+-- Sophie - Meetings and Attendees
 -- Migration: 02_meetings
 -- Description: Calendar meetings, attendees, companies, and prep notes
 -- ============================================================================

@@ -1,5 +1,5 @@
 -- ============================================================================
--- SophiHQ - Token and API Usage Tracking
+-- Sophie - Token and API Usage Tracking
 -- Migration: 04_token_tracking
 -- Description: Track Gemini API token consumption and external API usage
 -- ============================================================================

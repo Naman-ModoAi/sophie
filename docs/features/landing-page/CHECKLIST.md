@@ -72,8 +72,8 @@
 - [x] Add initials, name, role for each
 - [x] Make mobile responsive
 
-#### Why SophiHQ Section
-- [x] Create `components/landing/WhySophiHQ.tsx`
+#### Why Sophie Section
+- [x] Create `components/landing/WhySophie.tsx`
 - [x] Add headline
 - [x] Add 3 key benefits
 - [x] Add key message
@@ -129,7 +129,7 @@
 
 ### Footer Updates
 - [x] Review existing Footer component
-- [x] Add "SophiHQ" branding
+- [x] Add "Sophie" branding
 - [x] Add Product section links
 - [x] Ensure Legal links exist
 - [x] Test all footer links

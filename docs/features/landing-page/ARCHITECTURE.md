@@ -19,7 +19,7 @@ components/
     HowItWorks.tsx                     # 3-step process
     WhatYouGet.tsx                     # Benefits breakdown
     Testimonials.tsx                   # Social proof with quotes
-    WhySophiHQ.tsx                   # Key differentiators
+    WhySophie.tsx                   # Key differentiators
     PricingSection.tsx                 # Pricing cards (Free & Pro)
     SecurityTrust.tsx                  # Trust indicators
     ContactForm.tsx                    # Contact form with validation
@@ -308,10 +308,10 @@ Update `app/(public)/page.tsx` with metadata:
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'SophiHQ - Never walk into a call cold',
+  title: 'Sophie - Never walk into a call cold',
   description: 'Instant meeting briefs from your calendar. AI-powered research on attendees and companies delivered before every call.',
   openGraph: {
-    title: 'SophiHQ - Never walk into a call cold',
+    title: 'Sophie - Never walk into a call cold',
     description: 'Instant meeting briefs from your calendar. AI-powered research on attendees and companies delivered before every call.',
     type: 'website',
   },

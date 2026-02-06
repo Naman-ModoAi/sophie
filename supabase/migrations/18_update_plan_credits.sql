@@ -1,5 +1,5 @@
 -- ============================================================================
--- SophiHQ - Update Plan Credits
+-- Sophie - Update Plan Credits
 -- Migration: 18_update_plan_credits
 -- Description: Align plan credits with landing page pricing
 --              Free: 10 -> 20 credits/month

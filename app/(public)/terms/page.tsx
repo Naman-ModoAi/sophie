@@ -2,8 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service - SophiHQ',
-  description: 'Terms of Service for SophiHQ - Review the terms and conditions governing your use of our meeting preparation service.',
+  title: 'Terms of Service - Sophie',
+  description: 'Terms of Service for Sophie - Review the terms and conditions governing your use of our meeting preparation service.',
 }
 
 export default function TermsOfService() {
@@ -13,7 +13,7 @@ export default function TermsOfService() {
       <header className="bg-surface border-b border-text/10">
         <div className="max-w-4xl mx-auto px-6 py-6">
           <Link href="/" className="text-xl font-bold text-text hover:text-accent transition-colors">
-            SophiHQ
+            Sophie
           </Link>
         </div>
       </header>
@@ -28,13 +28,13 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">1. Acceptance of Terms</h2>
             <p className="text-text/80 mb-4">
-              Welcome to SophiHQ. By accessing or using our service, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use SophiHQ.
+              Welcome to Sophie. By accessing or using our service, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use Sophie.
             </p>
             <p className="text-text/80 mb-4">
-              These Terms constitute a legally binding agreement between you and SophiHQ. Your use of the service, including any features, content, or functionality, signifies your acceptance of these Terms and our Privacy Policy, which is incorporated herein by reference.
+              These Terms constitute a legally binding agreement between you and Sophie. Your use of the service, including any features, content, or functionality, signifies your acceptance of these Terms and our Privacy Policy, which is incorporated herein by reference.
             </p>
             <p className="text-text/80">
-              We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting. Your continued use of SophiHQ after changes are posted constitutes your acceptance of the modified Terms.
+              We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting. Your continued use of Sophie after changes are posted constitutes your acceptance of the modified Terms.
             </p>
           </section>
 
@@ -42,7 +42,7 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">2. Service Description</h2>
             <p className="text-text/80 mb-4">
-              SophiHQ is a meeting preparation service that integrates with Google Calendar to automatically research meeting attendees and generate personalized preparation notes. Our service includes:
+              Sophie is a meeting preparation service that integrates with Google Calendar to automatically research meeting attendees and generate personalized preparation notes. Our service includes:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Automatic synchronization with your Google Calendar</li>
@@ -53,7 +53,7 @@ export default function TermsOfService() {
               <li>Subscription management and billing through Stripe</li>
             </ul>
             <p className="text-text/80 mb-4">
-              SophiHQ uses artificial intelligence (Google Gemini AI) to research publicly available information and generate meeting briefs. The quality and accuracy of research may vary based on the availability of public information about meeting attendees.
+              Sophie uses artificial intelligence (Google Gemini AI) to research publicly available information and generate meeting briefs. The quality and accuracy of research may vary based on the availability of public information about meeting attendees.
             </p>
             <p className="text-text/80">
               We reserve the right to modify, suspend, or discontinue any aspect of the service at any time, with or without notice, for any reason.
@@ -66,7 +66,7 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">3.1 Account Creation</h3>
             <p className="text-text/80 mb-4">
-              To use SophiHQ, you must create an account by authenticating with your Google account using Google OAuth. By creating an account, you represent and warrant that:
+              To use Sophie, you must create an account by authenticating with your Google account using Google OAuth. By creating an account, you represent and warrant that:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>You are at least 18 years of age</li>
@@ -98,7 +98,7 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">4.1 Credit System</h3>
             <p className="text-text/80 mb-4">
-              SophiHQ operates on a credit-based system where 1 credit equals $0.01 USD. Credits are consumed when researching meeting attendees, with costs based on actual API usage including:
+              Sophie operates on a credit-based system where 1 credit equals $0.01 USD. Credits are consumed when researching meeting attendees, with costs based on actual API usage including:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>AI model token usage (input, output, cached, and thinking tokens)</li>
@@ -108,7 +108,7 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">4.2 Subscription Plans</h3>
             <p className="text-text/80 mb-4">
-              SophiHQ offers two subscription tiers:
+              Sophie offers two subscription tiers:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li><strong>Free Plan:</strong> 10 credits per month with no credit rollover. Sufficient for approximately 5-10 meeting attendees researched per month.</li>
@@ -168,12 +168,12 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">6.1 Calendar Data</h3>
             <p className="text-text/80 mb-4">
-              By granting SophiHQ access to your Google Calendar, you authorize us to access, process, and store your calendar data, including meeting titles, descriptions, attendee lists, and scheduling information, solely for the purpose of providing our services.
+              By granting Sophie access to your Google Calendar, you authorize us to access, process, and store your calendar data, including meeting titles, descriptions, attendee lists, and scheduling information, solely for the purpose of providing our services.
             </p>
 
             <h3 className="text-xl font-semibold text-text mb-3">6.2 Licenses Granted to Us</h3>
             <p className="text-text/80 mb-4">
-              You grant SophiHQ a non-exclusive, worldwide, royalty-free license to access, use, process, and store your calendar data and related information for the following purposes:
+              You grant Sophie a non-exclusive, worldwide, royalty-free license to access, use, process, and store your calendar data and related information for the following purposes:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Providing and improving our meeting preparation services</li>
@@ -190,7 +190,7 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">6.4 Third-Party Data</h3>
             <p className="text-text/80 mb-4">
-              SophiHQ researches publicly available information about meeting attendees and their companies. By using our service, you acknowledge that this research may include information obtained from third-party sources and that we are not responsible for the accuracy, completeness, or legality of such information.
+              Sophie researches publicly available information about meeting attendees and their companies. By using our service, you acknowledge that this research may include information obtained from third-party sources and that we are not responsible for the accuracy, completeness, or legality of such information.
             </p>
           </section>
 
@@ -198,7 +198,7 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">7. Prohibited Use</h2>
             <p className="text-text/80 mb-4">
-              You agree not to use SophiHQ for any unlawful or prohibited purpose. Specifically, you agree not to:
+              You agree not to use Sophie for any unlawful or prohibited purpose. Specifically, you agree not to:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Violate any applicable laws, regulations, or third-party rights</li>
@@ -223,7 +223,7 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">8. Third-Party Services</h2>
             <p className="text-text/80 mb-4">
-              SophiHQ integrates with and relies on third-party services to provide our functionality:
+              Sophie integrates with and relies on third-party services to provide our functionality:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li><strong>Google Calendar API:</strong> For calendar synchronization and meeting data access</li>
@@ -236,7 +236,7 @@ export default function TermsOfService() {
               Your use of these third-party services is subject to their respective terms of service and privacy policies. We are not responsible for the availability, functionality, or actions of these third-party services. Any disputes with third-party services should be resolved directly with the provider.
             </p>
             <p className="text-text/80">
-              If a third-party service becomes unavailable or changes its terms in a way that affects SophiHQ, we may need to modify or discontinue features that rely on that service.
+              If a third-party service becomes unavailable or changes its terms in a way that affects Sophie, we may need to modify or discontinue features that rely on that service.
             </p>
           </section>
 
@@ -246,12 +246,12 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">9.1 Our Ownership</h3>
             <p className="text-text/80 mb-4">
-              SophiHQ and all of its original content, features, functionality, design, software, trademarks, logos, and branding are owned by SophiHQ and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property laws.
+              Sophie and all of its original content, features, functionality, design, software, trademarks, logos, and branding are owned by Sophie and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property laws.
             </p>
 
             <h3 className="text-xl font-semibold text-text mb-3">9.2 Limited License</h3>
             <p className="text-text/80 mb-4">
-              We grant you a limited, non-exclusive, non-transferable, revocable license to access and use SophiHQ for your personal or internal business use, subject to these Terms. This license does not include any right to:
+              We grant you a limited, non-exclusive, non-transferable, revocable license to access and use Sophie for your personal or internal business use, subject to these Terms. This license does not include any right to:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Modify, copy, or create derivative works of the service</li>
@@ -262,7 +262,7 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">9.3 Feedback</h3>
             <p className="text-text/80 mb-4">
-              If you provide feedback, suggestions, or ideas about SophiHQ, you grant us an unrestricted, perpetual, royalty-free right to use, modify, and incorporate such feedback into our service without compensation or attribution to you.
+              If you provide feedback, suggestions, or ideas about Sophie, you grant us an unrestricted, perpetual, royalty-free right to use, modify, and incorporate such feedback into our service without compensation or attribution to you.
             </p>
           </section>
 
@@ -284,7 +284,7 @@ export default function TermsOfService() {
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>AI-generated research may contain inaccuracies or outdated information</li>
               <li>You are responsible for verifying information before relying on it</li>
-              <li>Third-party service outages may affect SophiHQ's availability</li>
+              <li>Third-party service outages may affect Sophie's availability</li>
               <li>We do not guarantee specific results from using the service</li>
             </ul>
             <p className="text-text/80">
@@ -322,7 +322,7 @@ export default function TermsOfService() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-text mb-4">12. Indemnification</h2>
             <p className="text-text/80 mb-4">
-              You agree to indemnify, defend, and hold harmless SophiHQ and its officers, directors, employees, agents, affiliates, successors, and assigns from and against any and all losses, damages, liabilities, deficiencies, claims, actions, judgments, settlements, interest, awards, penalties, fines, costs, or expenses (including reasonable attorneys' fees) arising from or relating to:
+              You agree to indemnify, defend, and hold harmless Sophie and its officers, directors, employees, agents, affiliates, successors, and assigns from and against any and all losses, damages, liabilities, deficiencies, claims, actions, judgments, settlements, interest, awards, penalties, fines, costs, or expenses (including reasonable attorneys' fees) arising from or relating to:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Your use or misuse of the service</li>
@@ -347,13 +347,13 @@ export default function TermsOfService() {
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Canceling your subscription through account settings or Stripe Customer Portal</li>
-              <li>Revoking SophiHQ's access to your Google Calendar through Google Account settings</li>
+              <li>Revoking Sophie's access to your Google Calendar through Google Account settings</li>
               <li>Contacting us to request account deletion</li>
             </ul>
 
             <h3 className="text-xl font-semibold text-text mb-3">13.2 Termination by Us</h3>
             <p className="text-text/80 mb-4">
-              We reserve the right to suspend or terminate your access to SophiHQ at any time, with or without cause, with or without notice, effective immediately. Reasons for termination may include, but are not limited to:
+              We reserve the right to suspend or terminate your access to Sophie at any time, with or without cause, with or without notice, effective immediately. Reasons for termination may include, but are not limited to:
             </p>
             <ul className="list-disc pl-6 mb-4 text-text/80 space-y-2">
               <li>Violation of these Terms</li>
@@ -401,7 +401,7 @@ export default function TermsOfService() {
               <li>Liability limitations or dispute resolution procedures</li>
             </ul>
             <p className="text-text/80 mb-4">
-              Your continued use of SophiHQ after changes take effect constitutes your acceptance of the modified Terms. If you do not agree with the changes, you must cancel your account and stop using the service before the changes take effect.
+              Your continued use of Sophie after changes take effect constitutes your acceptance of the modified Terms. If you do not agree with the changes, you must cancel your account and stop using the service before the changes take effect.
             </p>
           </section>
 
@@ -458,7 +458,7 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">17.1 Entire Agreement</h3>
             <p className="text-text/80 mb-4">
-              These Terms, together with our Privacy Policy, constitute the entire agreement between you and SophiHQ regarding your use of the service and supersede all prior agreements and understandings, whether written or oral.
+              These Terms, together with our Privacy Policy, constitute the entire agreement between you and Sophie regarding your use of the service and supersede all prior agreements and understandings, whether written or oral.
             </p>
 
             <h3 className="text-xl font-semibold text-text mb-3">17.2 Severability</h3>
@@ -483,7 +483,7 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-semibold text-text mb-3">17.6 Relationship of Parties</h3>
             <p className="text-text/80 mb-4">
-              No agency, partnership, joint venture, or employment relationship is created between you and SophiHQ as a result of these Terms or your use of the service.
+              No agency, partnership, joint venture, or employment relationship is created between you and Sophie as a result of these Terms or your use of the service.
             </p>
           </section>
         </div>
@@ -500,7 +500,7 @@ export default function TermsOfService() {
       <footer className="bg-surface border-t border-text/10 mt-12">
         <div className="max-w-4xl mx-auto px-6 py-6">
           <p className="text-sm text-text/60 text-center">
-            © {new Date().getFullYear()} SophiHQ. All rights reserved.
+            © {new Date().getFullYear()} Sophie. All rights reserved.
           </p>
         </div>
       </footer>

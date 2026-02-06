@@ -1,12 +1,12 @@
-# Claude Context - SophiHQ Frontend
+# Claude Context - Sophie Frontend
 
-This document provides context for AI assistants (like Claude) working on the SophiHQ frontend codebase.
+This document provides context for AI assistants (like Claude) working on the Sophie frontend codebase.
 
 ---
 
 ## Project Overview
 
-**SophiHQ** is a meeting preparation tool that automatically researches meeting attendees and generates prep notes using AI.
+**Sophie** is a meeting preparation tool that automatically researches meeting attendees and generates prep notes using AI.
 
 ### Core Features
 - Google Calendar integration with automatic meeting sync

@@ -1,4 +1,4 @@
-export function WhySophiHQ() {
+export function WhySophie() {
   const benefits = [
     {
       title: 'No manual prep.',
