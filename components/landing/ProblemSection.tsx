@@ -53,7 +53,7 @@ export function ProblemSection() {
         </div>
 
         <p className="text-center text-lg text-brand-blue font-medium mt-12 italic font-serif">
-          MeetReady fills that gap — automatically.
+          SophiHQ fills that gap — automatically.
         </p>
       </div>
     </section>

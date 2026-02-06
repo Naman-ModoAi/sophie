@@ -1,5 +1,5 @@
 -- ============================================================================
--- MeetReady - Database Functions
+-- SophiHQ - Database Functions
 -- Migration: 05_functions
 -- Description: Credit management, token tracking, and referral functions
 -- ============================================================================
@@ -133,7 +133,7 @@ BEGIN
 END;
 $$;
 
-COMMENT ON FUNCTION public.allocate_monthly_credits IS 'Allocate monthly credits based on user plan';
+COMMENT ON FUNCTION public.allocate_monthly_credits(UUID, BOOLEAN) IS 'Allocate monthly credits based on user plan. Use p_is_plan_change=TRUE on upgrades/downgrades.';
 
 -- ============================================================================
 

@@ -4,7 +4,7 @@ This document provides guidelines for agentic coding agents working in this Next
 
 ## Project Overview
 
-MeetReady is a Next.js 14 frontend with Google OAuth authentication and calendar integration. It uses the App Router, TypeScript, Tailwind CSS, Supabase for data, and iron-session for session management.
+SophiHQ is a Next.js 14 frontend with Google OAuth authentication and calendar integration. It uses the App Router, TypeScript, Tailwind CSS, Supabase for data, and iron-session for session management.
 
 ## Development Commands
 

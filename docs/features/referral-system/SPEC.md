@@ -1,4 +1,4 @@
-# **MeetReady.app**
+# **SophiHQ.app**
 
 Referral System Feature Specification
 
@@ -10,7 +10,7 @@ Version 1.0  |  February 2026
 
 # **1. Executive Summary**
 
-This document specifies a referral system for MeetReady.app that incentivizes users to invite others to the platform. The system rewards both the referrer and the referred user with meeting credit benefits, creating a win-win viral growth mechanism.
+This document specifies a referral system for SophiHQ.app that incentivizes users to invite others to the platform. The system rewards both the referrer and the referred user with meeting credit benefits, creating a win-win viral growth mechanism.
 
 **Key Objectives:**
 - Drive user acquisition through word-of-mouth
@@ -270,16 +270,16 @@ Components:
 ## **5.5 Email Templates Needed**
 
 ### **Referrer Invitation Email** (User-initiated)
-Subject: "I thought you'd love MeetReady – get 3 bonus meetings!"
+Subject: "I thought you'd love SophiHQ – get 3 bonus meetings!"
 Body:
 - Personal message from referrer
-- What MeetReady does (1-2 sentences)
+- What SophiHQ does (1-2 sentences)
 - Benefit callout: "Sign up and generate your first prep note to unlock 3 bonus meetings"
 - CTA button with referral link
 - Footer: Unsubscribe option
 
 ### **Referral Completed - Referrer** (Auto-sent)
-Subject: "🎉 [Name] joined MeetReady – you earned 2 credits!"
+Subject: "🎉 [Name] joined SophiHQ – you earned 2 credits!"
 Body:
 - Congratulations message
 - Credits added confirmation
@@ -287,7 +287,7 @@ Body:
 - CTA: Invite more friends
 
 ### **Referral Completed - Referred User** (Auto-sent)
-Subject: "Welcome to MeetReady! Here are your 3 bonus meetings 🚀"
+Subject: "Welcome to SophiHQ! Here are your 3 bonus meetings 🚀"
 Body:
 - Welcome message
 - Bonus credits unlocked
@@ -295,7 +295,7 @@ Body:
 - CTA: View dashboard
 
 ### **Milestone Achieved - Pro Users** (Auto-sent)
-Subject: "You earned a free month of MeetReady Pro! 🎁"
+Subject: "You earned a free month of SophiHQ Pro! 🎁"
 Body:
 - Celebration message
 - Free month added to subscription
@@ -404,12 +404,12 @@ Admin panel should show:
 Provide users with pre-written messages they can customize:
 
 **LinkedIn:**
-"I've been using MeetReady to automatically prep for every meeting – saves me hours each week. If you take a lot of external meetings, you'll love it. Sign up with my link and get 3 bonus meetings: [link]"
+"I've been using SophiHQ to automatically prep for every meeting – saves me hours each week. If you take a lot of external meetings, you'll love it. Sign up with my link and get 3 bonus meetings: [link]"
 
 **Email:**
-Subject: Check out MeetReady – you'll love this
+Subject: Check out SophiHQ – you'll love this
 
-Body: "Hey [Name], I thought you'd find this useful. MeetReady automatically researches everyone on my calendar before meetings and sends me prep notes. It's been a game-changer for client calls. Try it out: [link] (you'll get 3 bonus meetings on me!)"
+Body: "Hey [Name], I thought you'd find this useful. SophiHQ automatically researches everyone on my calendar before meetings and sends me prep notes. It's been a game-changer for client calls. Try it out: [link] (you'll get 3 bonus meetings on me!)"
 
 ---
 
@@ -537,7 +537,7 @@ The referral system is considered successful if, within 3 months:
 
 ## **Story 1: Free User Refers a Friend**
 **As a** Free plan user  
-**I want to** share MeetReady with my colleague  
+**I want to** share SophiHQ with my colleague  
 **So that** I can earn extra meeting credits
 
 **Acceptance Criteria:**

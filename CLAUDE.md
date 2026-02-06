@@ -1,12 +1,12 @@
-# Claude Context - MeetReady Frontend
+# Claude Context - SophiHQ Frontend
 
-This document provides context for AI assistants (like Claude) working on the MeetReady frontend codebase.
+This document provides context for AI assistants (like Claude) working on the SophiHQ frontend codebase.
 
 ---
 
 ## Project Overview
 
-**MeetReady** is a meeting preparation tool that automatically researches meeting attendees and generates prep notes using AI.
+**SophiHQ** is a meeting preparation tool that automatically researches meeting attendees and generates prep notes using AI.
 
 ### Core Features
 - Google Calendar integration with automatic meeting sync

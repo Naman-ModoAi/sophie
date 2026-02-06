@@ -14,9 +14,9 @@ export default async function HowToUsePage() {
     <div className="max-w-4xl mx-auto px-6 py-12">
       {/* Page Header */}
       <div className="mb-12">
-        <h1 className="text-4xl font-serif font-bold text-text-primary mb-4">How to Use MeetReady</h1>
+        <h1 className="text-4xl font-serif font-bold text-text-primary mb-4">How to Use SophiHQ</h1>
         <p className="text-lg text-text-secondary leading-relaxed">
-          MeetReady helps you prepare for meetings by automatically researching attendees and companies.
+          SophiHQ helps you prepare for meetings by automatically researching attendees and companies.
           Follow this guide to get the most out of the platform.
         </p>
       </div>
@@ -215,7 +215,7 @@ export default async function HowToUsePage() {
           </div>
 
           <p className="text-text-secondary leading-relaxed mb-6">
-            MeetReady automatically detects attendee names and companies from calendar invites, but sometimes
+            SophiHQ automatically detects attendee names and companies from calendar invites, but sometimes
             this information is incomplete. You can edit attendee details to ensure accurate AI research.
           </p>
 

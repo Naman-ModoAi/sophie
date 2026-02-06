@@ -9,6 +9,9 @@
 -- the plan amount instead of adding to existing balance.
 -- ============================================================================
 
+-- Drop the old single-parameter function to avoid overload ambiguity
+DROP FUNCTION IF EXISTS public.allocate_monthly_credits(UUID);
+
 CREATE OR REPLACE FUNCTION public.allocate_monthly_credits(
   p_user_id UUID,
   p_is_plan_change BOOLEAN DEFAULT FALSE
@@ -59,4 +62,4 @@ BEGIN
 END;
 $$;
 
-COMMENT ON FUNCTION public.allocate_monthly_credits IS 'Allocate monthly credits based on user plan. Use p_is_plan_change=TRUE on upgrades/downgrades to prevent rollover from old plan.';
+COMMENT ON FUNCTION public.allocate_monthly_credits(UUID, BOOLEAN) IS 'Allocate monthly credits based on user plan. Use p_is_plan_change=TRUE on upgrades/downgrades to prevent rollover from old plan.';

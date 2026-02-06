@@ -29,7 +29,7 @@ export function WhoItsFor() {
           </div>
 
           <p className="text-sm text-text-secondary mt-8 italic font-serif">
-            If your work depends on conversations, MeetReady is for you.
+            If your work depends on conversations, SophiHQ is for you.
           </p>
         </div>
       </div>

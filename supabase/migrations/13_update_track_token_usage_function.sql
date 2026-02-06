@@ -1,5 +1,5 @@
 -- ============================================================================
--- MeetReady - Update track_token_usage Function
+-- SophiHQ - Update track_token_usage Function
 -- Migration: 13_update_track_token_usage_function
 -- Description: Clean up old function overloads (the canonical version is in 05_functions.sql)
 -- ============================================================================

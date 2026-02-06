@@ -1,5 +1,5 @@
 -- ============================================================================
--- MeetReady - Meetings and Attendees
+-- SophiHQ - Meetings and Attendees
 -- Migration: 02_meetings
 -- Description: Calendar meetings, attendees, companies, and prep notes
 -- ============================================================================

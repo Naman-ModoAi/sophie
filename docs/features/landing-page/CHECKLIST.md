@@ -72,8 +72,8 @@
 - [x] Add initials, name, role for each
 - [x] Make mobile responsive
 
-#### Why MeetReady Section
-- [x] Create `components/landing/WhyMeetReady.tsx`
+#### Why SophiHQ Section
+- [x] Create `components/landing/WhySophiHQ.tsx`
 - [x] Add headline
 - [x] Add 3 key benefits
 - [x] Add key message
@@ -129,7 +129,7 @@
 
 ### Footer Updates
 - [x] Review existing Footer component
-- [x] Add "MeetReady" branding
+- [x] Add "SophiHQ" branding
 - [x] Add Product section links
 - [x] Ensure Legal links exist
 - [x] Test all footer links

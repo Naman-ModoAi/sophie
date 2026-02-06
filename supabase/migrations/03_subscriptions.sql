@@ -1,5 +1,5 @@
 -- ============================================================================
--- MeetReady - Subscription System
+-- SophiHQ - Subscription System
 -- Migration: 03_subscriptions
 -- Description: Plans, subscriptions, transactions, and referral system
 -- ============================================================================

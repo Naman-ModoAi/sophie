@@ -1,15 +1,15 @@
 # Privacy Policy
 
-**MeetReady**
+**SophiHQ**
 **Last Updated: February 4, 2026**
 
 ---
 
 ## 1. Introduction
 
-At MeetReady, we respect your privacy and are committed to protecting the personal information that you share with us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our meeting preparation service.
+At SophiHQ, we respect your privacy and are committed to protecting the personal information that you share with us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our meeting preparation service.
 
-By accessing or using MeetReady, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy. If you do not agree with the terms of this Privacy Policy, please do not access or use our services.
+By accessing or using SophiHQ, you acknowledge that you have read, understood, and agree to be bound by this Privacy Policy. If you do not agree with the terms of this Privacy Policy, please do not access or use our services.
 
 ---
 
@@ -17,7 +17,7 @@ By accessing or using MeetReady, you acknowledge that you have read, understood,
 
 ### 2.1 Information You Provide
 
-When you use MeetReady, we collect information that you provide directly to us, including:
+When you use SophiHQ, we collect information that you provide directly to us, including:
 
 - Account information (name, email address, profile photo) through Google OAuth authentication
 - Google Calendar data including meeting details, attendee information, and scheduling data
@@ -27,7 +27,7 @@ When you use MeetReady, we collect information that you provide directly to us, 
 
 ### 2.2 Information Collected Automatically
 
-When you access and use MeetReady, we automatically collect certain information, including:
+When you access and use SophiHQ, we automatically collect certain information, including:
 
 - Usage data: pages visited, features used, time spent on the platform, and interaction patterns
 - Device information: IP address, browser type and version, operating system, device identifiers
@@ -49,7 +49,7 @@ We collect information from third-party sources to provide our meeting preparati
 
 We use the information we collect for the following purposes:
 
-- **Service Delivery:** To provide, operate, and maintain MeetReady's meeting preparation features
+- **Service Delivery:** To provide, operate, and maintain SophiHQ's meeting preparation features
 - **AI Research:** To research meeting attendees and companies and generate personalized meeting briefs
 - **Email Delivery:** To send you automated meeting preparation notes before your scheduled calls
 - **Account Management:** To manage your account, subscription, and credit balance
@@ -80,7 +80,7 @@ We share information with third-party service providers who perform services on 
 
 ### 4.2 Business Transfers
 
-If MeetReady is involved in a merger, acquisition, asset sale, or bankruptcy, your information may be transferred as part of that transaction. We will notify you of any such change in ownership or control of your personal information.
+If SophiHQ is involved in a merger, acquisition, asset sale, or bankruptcy, your information may be transferred as part of that transaction. We will notify you of any such change in ownership or control of your personal information.
 
 ### 4.3 Legal Requirements
 
@@ -88,7 +88,7 @@ We may disclose your information if required to do so by law or in response to v
 
 - Comply with legal processes, court orders, or government requests
 - Enforce our Terms of Service and other agreements
-- Protect the rights, property, or safety of MeetReady, our users, or others
+- Protect the rights, property, or safety of SophiHQ, our users, or others
 - Investigate and prevent fraud, security issues, or technical problems
 
 ### 4.4 With Your Consent
@@ -141,7 +141,7 @@ To exercise any of these rights, please contact us at the information provided i
 
 ### 7.1 Google Calendar Access
 
-You can revoke MeetReady's access to your Google Calendar at any time through your Google Account settings at myaccount.google.com/permissions. Note that revoking access will prevent MeetReady from syncing your calendar and providing meeting preparation services.
+You can revoke SophiHQ's access to your Google Calendar at any time through your Google Account settings at myaccount.google.com/permissions. Note that revoking access will prevent SophiHQ from syncing your calendar and providing meeting preparation services.
 
 ### 7.2 Email Preferences
 
@@ -151,19 +151,19 @@ You can manage your email notification preferences in your account settings, inc
 
 ## 8. Cookies and Tracking Technologies
 
-MeetReady uses cookies and similar tracking technologies to enhance your experience, maintain your session, and analyze usage patterns. The types of cookies we use include:
+SophiHQ uses cookies and similar tracking technologies to enhance your experience, maintain your session, and analyze usage patterns. The types of cookies we use include:
 
 - **Essential Cookies:** Required for authentication, security, and basic functionality
 - **Performance Cookies:** Help us understand how users interact with our service
 - **Functional Cookies:** Remember your preferences and settings
 
-You can control cookies through your browser settings. However, disabling certain cookies may limit your ability to use some features of MeetReady.
+You can control cookies through your browser settings. However, disabling certain cookies may limit your ability to use some features of SophiHQ.
 
 ---
 
 ## 9. Third-Party Links and Services
 
-Our service may contain links to third-party websites, services, or applications that are not owned or controlled by MeetReady. This Privacy Policy does not apply to these third-party services. We encourage you to review the privacy policies of any third-party services before providing them with your personal information.
+Our service may contain links to third-party websites, services, or applications that are not owned or controlled by SophiHQ. This Privacy Policy does not apply to these third-party services. We encourage you to review the privacy policies of any third-party services before providing them with your personal information.
 
 In particular, we integrate with:
 
@@ -174,15 +174,15 @@ In particular, we integrate with:
 
 ## 10. Children's Privacy
 
-MeetReady is not intended for use by individuals under the age of 18. We do not knowingly collect personal information from children under 18. If you become aware that a child has provided us with personal information, please contact us immediately. If we discover that we have collected personal information from a child under 18, we will take steps to delete such information promptly.
+SophiHQ is not intended for use by individuals under the age of 18. We do not knowingly collect personal information from children under 18. If you become aware that a child has provided us with personal information, please contact us immediately. If we discover that we have collected personal information from a child under 18, we will take steps to delete such information promptly.
 
 ---
 
 ## 11. International Data Transfers
 
-MeetReady is based in the United States, and your information may be transferred to, stored, and processed in the United States and other countries where our service providers operate. These countries may have data protection laws that differ from those in your country of residence.
+SophiHQ is based in the United States, and your information may be transferred to, stored, and processed in the United States and other countries where our service providers operate. These countries may have data protection laws that differ from those in your country of residence.
 
-By using MeetReady, you consent to the transfer of your information to the United States and other countries. We implement appropriate safeguards to protect your personal information in accordance with this Privacy Policy, regardless of where it is processed.
+By using SophiHQ, you consent to the transfer of your information to the United States and other countries. We implement appropriate safeguards to protect your personal information in accordance with this Privacy Policy, regardless of where it is processed.
 
 ---
 
@@ -192,7 +192,7 @@ We may update this Privacy Policy from time to time to reflect changes in our pr
 
 If we make material changes to this Privacy Policy, we will notify you by email or through a prominent notice on our service prior to the changes taking effect. We encourage you to review this Privacy Policy periodically to stay informed about how we collect, use, and protect your information.
 
-Your continued use of MeetReady after any changes to this Privacy Policy constitutes your acceptance of the updated policy.
+Your continued use of SophiHQ after any changes to this Privacy Policy constitutes your acceptance of the updated policy.
 
 ---
 
@@ -234,19 +234,19 @@ Our legal bases for processing your personal information include: (a) your conse
 
 ## Google API Services User Data Policy Compliance
 
-MeetReady's use of information received from Google APIs adheres to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including the Limited Use requirements.
+SophiHQ's use of information received from Google APIs adheres to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including the Limited Use requirements.
 
 **Specifically:**
 
-1. **Limited Use:** MeetReady only uses Google Calendar API data to provide meeting preparation services to you. We do not use this data for any other purpose.
+1. **Limited Use:** SophiHQ only uses Google Calendar API data to provide meeting preparation services to you. We do not use this data for any other purpose.
 
 2. **No Data Transfer:** We do not transfer Google Calendar data to third parties except as necessary to provide our service (e.g., to our secure database for processing) or as required by law.
 
-3. **No Human Readability:** Google Calendar data is processed automatically by our systems and AI models. MeetReady employees do not read your calendar data except as necessary to provide support or comply with legal obligations.
+3. **No Human Readability:** Google Calendar data is processed automatically by our systems and AI models. SophiHQ employees do not read your calendar data except as necessary to provide support or comply with legal obligations.
 
 4. **Secure Storage:** All Google Calendar data is stored securely with encryption and access controls.
 
-5. **User Control:** You maintain full control over your Google Calendar data and can revoke MeetReady's access at any time through your Google Account settings.
+5. **User Control:** You maintain full control over your Google Calendar data and can revoke SophiHQ's access at any time through your Google Account settings.
 
 ---
 

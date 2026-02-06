@@ -1,5 +1,5 @@
 -- ============================================================================
--- MeetReady - Credit Cost Baseline System
+-- SophiHQ - Credit Cost Baseline System
 -- Migration: 12_credit_cost_baseline
 -- Description: Cost-based baseline for credit calculation (replaces token-based baseline)
 -- ============================================================================

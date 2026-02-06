@@ -1,5 +1,5 @@
 -- ============================================================================
--- MeetReady - Row Level Security Policies
+-- SophiHQ - Row Level Security Policies
 -- Migration: 06_rls_policies
 -- Description: RLS policies and grants for all tables
 -- ============================================================================

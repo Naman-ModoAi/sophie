@@ -1,6 +1,6 @@
 # Google Cloud Build configuration for automatic deployment
 # This file enables CI/CD for Cloud Run deployments
-# Triggered on push to main branch from IceCream-Labs/meetready
+# Triggered on push to main branch from IceCream-Labs/sophihq
 
 steps:
   # Build the Docker image

@@ -1,6 +1,6 @@
-# MeetReady - Frontend
+# SophiHQ - Frontend
 
-Next.js 14 frontend for MeetReady with Google OAuth authentication and calendar integration.
+Next.js 14 frontend for SophiHQ with Google OAuth authentication and calendar integration.
 
 ## Setup
 

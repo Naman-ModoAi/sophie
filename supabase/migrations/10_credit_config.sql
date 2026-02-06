@@ -1,5 +1,5 @@
 -- ============================================================================
--- MeetReady - Credit Configuration System
+-- SophiHQ - Credit Configuration System
 -- Migration: 10_credit_config
 -- Description: Store credit pricing parameters in database for easy updates
 -- ============================================================================

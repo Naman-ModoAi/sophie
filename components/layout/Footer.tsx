@@ -9,7 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
           <div>
-            <div className="text-xl font-bold font-serif text-text-primary mb-1">MeetReady</div>
+            <div className="text-xl font-bold font-serif text-text-primary mb-1">SophiHQ</div>
             <div className="text-sm text-text-muted italic">Before every call.</div>
           </div>
 
@@ -61,7 +61,7 @@ export function Footer() {
         {/* Copyright */}
         <div className="pt-8 border-t border-text-primary/10">
           <p className="text-sm text-text-secondary text-center">
-            © {currentYear} MeetReady. All rights reserved.
+            © {currentYear} SophiHQ. All rights reserved.
           </p>
         </div>
       </div>

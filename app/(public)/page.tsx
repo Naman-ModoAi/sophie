@@ -6,7 +6,7 @@ import { ProblemSection } from '@/components/landing/ProblemSection'
 import { HowItWorks } from '@/components/landing/HowItWorks'
 import { WhatYouGet } from '@/components/landing/WhatYouGet'
 import { WhoItsFor } from '@/components/landing/WhoItsFor'
-import { WhyMeetReady } from '@/components/landing/WhyMeetReady'
+import { WhySophiHQ } from '@/components/landing/WhySophiHQ'
 import { PricingSection } from '@/components/landing/PricingSection'
 import { SecurityTrust } from '@/components/landing/SecurityTrust'
 import { ContactForm } from '@/components/landing/ContactForm'
@@ -14,10 +14,10 @@ import { FinalCTA } from '@/components/landing/FinalCTA'
 import { Footer } from '@/components/layout/Footer'
 
 export const metadata: Metadata = {
-  title: 'MeetReady - Never walk into a call cold',
+  title: 'SophiHQ - Never walk into a call cold',
   description: 'Instant meeting briefs from your calendar. AI-powered research on attendees and companies delivered before every call. Be call ready, before every call.',
   openGraph: {
-    title: 'MeetReady - Never walk into a call cold',
+    title: 'SophiHQ - Never walk into a call cold',
     description: 'Instant meeting briefs from your calendar. AI-powered research on attendees and companies delivered before every call.',
     type: 'website',
   },
@@ -37,7 +37,7 @@ export default function Home() {
         <HowItWorks />
         <WhatYouGet />
         <WhoItsFor />
-        <WhyMeetReady />
+        <WhySophiHQ />
         <PricingSection />
         <SecurityTrust />
         <ContactForm />

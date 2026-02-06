@@ -10,7 +10,7 @@ export default function ReferralLanding({ referrerName }: { referrerName: string
           <div className="text-4xl mb-4">🎉</div>
           <h1 className="text-3xl font-bold text-text mb-2">You've been invited!</h1>
           <p className="text-text/70">
-            <span className="font-semibold text-accent">{referrerName}</span> has invited you to try MeetReady
+            <span className="font-semibold text-accent">{referrerName}</span> has invited you to try SophiHQ
           </p>
         </div>
 
@@ -22,7 +22,7 @@ export default function ReferralLanding({ referrerName }: { referrerName: string
         </div>
 
         <div className="space-y-4 mb-6">
-          <h3 className="font-semibold text-text">What is MeetReady?</h3>
+          <h3 className="font-semibold text-text">What is SophiHQ?</h3>
           <ul className="space-y-2 text-text/70 text-sm">
             <li className="flex items-start gap-2">
               <span className="text-accent">✓</span>

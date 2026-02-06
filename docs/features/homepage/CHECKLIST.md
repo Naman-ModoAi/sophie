@@ -75,7 +75,7 @@
 - [ ] Simple, clean layout
 - [ ] "If your work depends on conversations..."
 
-### 2.8 Why MeetReady
+### 2.8 Why SophiHQ
 - [ ] Update with new copy (3 points)
 - [ ] "No manual prep / No scattered notes / No awkward moments"
 - [ ] Simplified layout

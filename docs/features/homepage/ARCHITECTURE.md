@@ -19,7 +19,7 @@ components/
     ├── HowItWorks.tsx        # 3-step cards
     ├── WhatYouGet.tsx        # Benefits focus
     ├── WhoItsFor.tsx         # NEW component
-    ├── WhyMeetReady.tsx      # Updated 3-point list
+    ├── WhySophiHQ.tsx      # Updated 3-point list
     ├── PricingSection.tsx    # Styled update
     ├── FinalCTA.tsx          # Updated copy
     └── (remove unused)

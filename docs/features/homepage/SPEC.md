@@ -1,11 +1,11 @@
 # Homepage Redesign - Feature Specification
 
 ## Overview
-Complete redesign of the MeetReady homepage with a premium, modern aesthetic featuring soft gradients, glassmorphism, and refined typography.
+Complete redesign of the SophiHQ homepage with a premium, modern aesthetic featuring soft gradients, glassmorphism, and refined typography.
 
 ## Goals
 1. **Visual Upgrade**: Transform from simple teal design to sophisticated gradient-based design system
-2. **Brand Elevation**: Position MeetReady as a premium, thoughtful product
+2. **Brand Elevation**: Position SophiHQ as a premium, thoughtful product
 3. **Improved Copy**: Implement concise, benefit-focused messaging
 4. **Modern UX**: Add smooth animations, glass effects, and interactive elements
 
@@ -37,7 +37,7 @@ Complete redesign of the MeetReady homepage with a premium, modern aesthetic fea
 4. **How It Works**: 3-step process
 5. **What You Get**: Feature → Benefit mapping
 6. **Who It's For**: Target personas
-7. **Why MeetReady**: Key differentiators
+7. **Why SophiHQ**: Key differentiators
 8. **CTA**: "Be ready for every meeting"
 
 ## Technical Implementation
@@ -55,7 +55,7 @@ Complete redesign of the MeetReady homepage with a premium, modern aesthetic fea
 - [ ] Redesign HowItWorks with step cards
 - [ ] Update WhatYouGet with benefit focus
 - [ ] Add WhoItsFor section (new)
-- [ ] Update WhyMeetReady section
+- [ ] Update WhySophiHQ section
 - [ ] Redesign PricingSection (if needed)
 - [ ] Update FinalCTA with new copy
 - [ ] Keep Footer as-is (or minor updates)
@@ -88,6 +88,6 @@ The new design tokens, fonts, and visual style will be used across all pages.
 - Database schema changes
 
 ## References
-- Content: `/docs/meetready Home page.md`
-- Design system: `/docs/meetready app-design.md`
+- Content: `/docs/SophiHQ Home page.md`
+- Design system: `/docs/SophiHQ app-design.md`
 - Current page: `/app/(public)/page.tsx`

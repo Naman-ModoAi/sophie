@@ -19,7 +19,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "MeetReady - Never walk into a call cold",
+  title: "SophiHQ - Never walk into a call cold",
   description: "AI-powered meeting preparation with Google Calendar integration",
 };
 

@@ -1,6 +1,6 @@
 # Database Migrations
 
-This directory contains all database schema and configuration migrations for MeetReady.
+This directory contains all database schema and configuration migrations for SophiHQ.
 
 ## Migrations Overview
 

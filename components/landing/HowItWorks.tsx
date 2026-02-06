@@ -12,7 +12,7 @@ export function HowItWorks() {
     },
     {
       number: 2,
-      title: 'MeetReady does the homework',
+      title: 'SophiHQ does the homework',
       description: 'We pull together context on the company, attendees, and situation around each meeting.',
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

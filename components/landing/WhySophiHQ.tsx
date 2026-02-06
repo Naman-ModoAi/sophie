@@ -1,4 +1,4 @@
-export function WhyMeetReady() {
+export function WhySophiHQ() {
   const benefits = [
     {
       title: 'No manual prep.',
