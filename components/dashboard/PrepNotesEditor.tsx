@@ -333,7 +333,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Status Badge and Generate Button */}
       <div className="flex items-center justify-between gap-2">
         <Badge variant={meetingStatus === 'ready' ? 'success' : 'default'}>
@@ -365,7 +365,7 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
 
       {/* AI-Generated Prep Note */}
       {aiPrepNote && (
-        <div className="space-y-6">
+        <div className="space-y-3">
           {/* Actions Bar */}
           <div className="flex justify-end items-center">
             <Button variant="secondary" onClick={exportToPDF} className="text-sm">
@@ -374,7 +374,6 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
           </div>
 
           {/* Tabbed Content */}
-          <div id="prep-notes-export-content">
           <Tabs
             defaultTab="overview"
             tabs={[
@@ -413,12 +412,11 @@ export function PrepNotesEditor({ meetingId, initialNotes = '', onSave }: PrepNo
               },
             ]}
           />
-          </div>
         </div>
       )}
 
       {/* User's Personal Notes */}
-      <div className="space-y-2">
+      <div className="space-y-1">
         <h3 className="text-sm font-medium text-text/70">Your Notes</h3>
         <Textarea
           value={notes}

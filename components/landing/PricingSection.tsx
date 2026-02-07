@@ -74,7 +74,7 @@ export function PricingSection() {
               {/* Description */}
               <p className="text-text-secondary text-sm mb-6">
                 {plan.name === 'Free'
-                  ? 'Perfect to try Sophie and build the habit.'
+                  ? 'Perfect to try Sophi and build the habit.'
                   : 'For people who live in meetings.'}
               </p>
 

@@ -12,7 +12,7 @@ export function HowItWorks() {
     },
     {
       number: 2,
-      title: 'Sophie does the homework',
+      title: 'Sophi does the homework',
       description: 'We pull together context on the company, attendees, and situation around each meeting.',
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

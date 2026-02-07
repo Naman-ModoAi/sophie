@@ -75,9 +75,9 @@ export default function ReferralDashboard({ referralData, stats }: ReferralDashb
   };
 
   const shareViaEmail = () => {
-    const subject = encodeURIComponent('Try Sophie - Get 3 bonus meetings!');
+    const subject = encodeURIComponent('Try Sophi - Get 3 bonus meetings!');
     const body = encodeURIComponent(
-      `Hey! I've been using Sophie to automatically prep for every meeting – it saves me hours each week.\n\nIf you take a lot of external meetings, you'll love it. Sign up with my link and get 3 bonus meetings:\n\n${referralData.referral_link}`
+      `Hey! I've been using Sophi to automatically prep for every meeting – it saves me hours each week.\n\nIf you take a lot of external meetings, you'll love it. Sign up with my link and get 3 bonus meetings:\n\n${referralData.referral_link}`
     );
     window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
   };
@@ -89,7 +89,7 @@ export default function ReferralDashboard({ referralData, stats }: ReferralDashb
 
   const shareViaTwitter = () => {
     const text = encodeURIComponent(
-      `I've been using Sophie to automatically prep for every meeting. Check it out: ${referralData.referral_link}`
+      `I've been using Sophi to automatically prep for every meeting. Check it out: ${referralData.referral_link}`
     );
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
   };
@@ -106,7 +106,7 @@ export default function ReferralDashboard({ referralData, stats }: ReferralDashb
       <div className="p-8 max-w-6xl mx-auto">
       <h1 className="text-3xl font-serif font-bold text-text-primary mb-2">Invite Friends, Earn Credits</h1>
       <p className="text-text-secondary mb-8">
-        Share Sophie with colleagues and earn meeting credits when they sign up
+        Share Sophi with colleagues and earn meeting credits when they sign up
       </p>
 
       {/* Stats Cards */}

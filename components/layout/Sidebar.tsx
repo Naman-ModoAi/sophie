@@ -64,7 +64,7 @@ export function Sidebar() {
   return (
     <aside className="w-60 bg-surface border-r border-text-primary/10 h-screen flex flex-col">
       <div className="p-6">
-        <h1 className="text-xl font-bold font-serif text-text-primary">Sophie</h1>
+        <h1 className="text-xl font-bold font-serif text-text-primary">Sophi</h1>
       </div>
 
       <nav className="flex-1 px-4 space-y-1">
@@ -101,7 +101,7 @@ export function Sidebar() {
 
       <div className="p-4 border-t border-text-primary/10">
         <p className="text-xs text-text-muted text-center">
-          © 2026 Sophie
+          © 2026 Sophi
         </p>
       </div>
     </aside>

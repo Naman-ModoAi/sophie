@@ -53,7 +53,7 @@ export function ProblemSection() {
         </div>
 
         <p className="text-center text-lg text-brand-blue font-medium mt-12 italic font-serif">
-          Sophie fills that gap — automatically.
+          Sophi fills that gap — automatically.
         </p>
       </div>
     </section>
